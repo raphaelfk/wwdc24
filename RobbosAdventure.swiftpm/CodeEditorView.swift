@@ -11,6 +11,7 @@ struct CodeBlock: Identifiable, Equatable {
     var id = UUID()
     var command: String?
     var condition: String?
+    var highlighted: Bool
     var inlineBlocks: [CodeBlock] = []
     let type: CodeBlockType
 }
@@ -22,8 +23,8 @@ enum CodeBlockType: Equatable {
 }
 
 struct CodeEditorView: View {
-    @State var codeBlocksList: [CodeBlock] = []
-    var codeBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward", type: .commandBlock), CodeBlock(command: "moveLeft", type: .commandBlock)]
+    @Binding var codeBlocksList: [CodeBlock]
+    var codeBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -74,9 +75,22 @@ struct CodeEditorView: View {
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 8)
                                             .background {
-                                                Color(hex: "78C1B3")
+                                                Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
                                             }
                                             .clipShape(RoundedRectangle(cornerRadius: 8))
+                                            .onTapGesture {
+                                                // go through list and delete the tapped code block
+                                                withAnimation(.interactiveSpring) {
+                                                    var index = 0
+                                                    for codeBlockSearched in codeBlocksList {
+                                                        if codeBlockSearched.id == codeBlock.id {
+                                                            codeBlocksList.remove(at: index)
+                                                            break
+                                                        }
+                                                        index += 1
+                                                    }
+                                                }
+                                            }
                                     case .ifBlock:
                                         VStack(alignment: .leading, spacing: -8) {
                                             HStack(spacing: 16) {
@@ -133,6 +147,7 @@ struct CodeEditorView: View {
                                             
                                         }
                                 }
+                                
                             }
                             
                             Spacer()
@@ -144,15 +159,20 @@ struct CodeEditorView: View {
             }
             .dropDestination(for: String.self) { items, location in
                 let blockToBeAdded = items.first ?? ""
-                switch blockToBeAdded {
-                    case "moveForward":
-                        codeBlocksList.append(CodeBlock(command: "moveForward", type: .commandBlock))
-                        
-                    case "moveLeft":
-                        codeBlocksList.append(CodeBlock(command: "moveLeft", type: .commandBlock))
-                        
-                    default:
-                        return true
+                withAnimation(.spring) {
+                    switch blockToBeAdded {
+                        case "moveForward()":
+                            codeBlocksList.append(CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock))
+                            
+                        case "rotateLeft()":
+                            codeBlocksList.append(CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock))
+                            
+                        case "rotateRight()":
+                            codeBlocksList.append(CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock))
+                        default:
+                            return true
+                    }
+                    return true
                 }
                 return true
             }
@@ -240,6 +260,6 @@ struct CodeEditorView: View {
     }
 }
 
-#Preview {
-    CodeEditorView()
-}
+//#Preview {
+//    CodeEditorView()
+//}
