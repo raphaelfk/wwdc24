@@ -13,6 +13,7 @@ struct DashboardView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var firstLevelComplete = false
     @State var secondLevelAvailable = false
+    @State var secondLevelComplete = false
     @State var showStars1 = true
     @State var showStars2 = false
     @State var showStars3 = false
@@ -173,9 +174,9 @@ struct DashboardView: View {
                             Spacer()
                             
                             if secondLevelAvailable {
-                                Button(action: {
-                                    
-                                }, label: {
+                                NavigationLink {
+                                    SecondLevelView(secondLevelComplete: $secondLevelComplete, thirdLevelAvailable: $thirdLevelAvailable)
+                                } label: {
                                     HStack {
                                         Image(systemName: "play.fill")
                                         Text("Play")
@@ -188,8 +189,7 @@ struct DashboardView: View {
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(.gray.opacity(0.25))
                                     }
-                                    
-                                })
+                                }
                             }
                             
                         }

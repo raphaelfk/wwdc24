@@ -25,6 +25,9 @@ enum CodeBlockType: Equatable {
 struct CodeEditorView: View {
     @Binding var codeBlocksList: [CodeBlock]
     var codeBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
+    var currentMission: Int
+    @Binding var runningScene: Bool
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -186,56 +189,150 @@ struct CodeEditorView: View {
                 return true
             }
             
-            
-            // Divider
-            Rectangle()
-                .frame(height: 0.35)
-                .foregroundStyle(.white)
-            
-            // Code blocks gallery
-            VStack(alignment: .leading) {
-                HStack(spacing: 4) {
-                    Image(systemName: "command")
-                    Text("Commands")
-                    
-                    Spacer()
-                }
-                .foregroundStyle(.white)
-                .font(.subheadline)
-                .fontWeight(.medium)
+            if !runningScene {
+                // Divider
+                Rectangle()
+                    .frame(height: 0.35)
+                    .foregroundStyle(.white)
                 
-                ForEach(codeBlocksGallery) { codeBlock in
-                    switch codeBlock.type {
-                        case .commandBlock:
-                            Text(codeBlock.command ?? "Error")
-                                .fontDesign(.monospaced)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background {
-                                    Color(hex: "78C1B3")
-                                }
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .onTapGesture {
-                                    withAnimation(.interactiveSpring) {
-                                        self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
-                                    }
-                                }
-                                .draggable(codeBlock.command ?? "")
-                                
+                // Code blocks gallery
+                HStack {
+                    // ribbo commands
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "command")
+                            Text("Commands")
                             
-                        case .ifBlock:
+                            Spacer()
+                        }
+                        .foregroundStyle(.white)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        
+                        ForEach(codeBlocksGallery) { codeBlock in
+                            switch codeBlock.type {
+                                case .commandBlock:
+                                    Text(codeBlock.command ?? "Error")
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "78C1B3")
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        .onTapGesture {
+                                            withAnimation(.interactiveSpring) {
+                                                self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                            }
+                                        }
+                                        .draggable(codeBlock.command ?? "")
+                                    
+                                    
+                                case .ifBlock:
+                                    VStack(alignment: .leading, spacing: -8) {
+                                        HStack(spacing: 16) {
+                                            Text("if")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "FF79B3")
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        
+                                        HStack(spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "FF79B3"))
+                                                .frame(width: 8, height: 80)
+                                            
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                            
+                                        }
+                                        
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color(hex: "FF79B3"))
+                                            .frame(width: 48, height: 32)
+                                        
+                                    }
+                                case .forBlock:
+                                    VStack(alignment: .leading, spacing: -8) {
+                                        HStack(spacing: 16) {
+                                            Text("for")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            Text("0")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                                .background {
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(.white.opacity(0.5))
+                                                        .frame(width: 48, height: 32)
+                                                }
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "FF79B3")
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        
+                                        HStack(spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "FF79B3"))
+                                                .frame(width: 8, height: 80)
+                                            
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                            
+                                        }
+                                        
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(Color(hex: "FF79B3"))
+                                            .frame(width: 48, height: 32)
+                                        
+                                    }
+                            }
+                        }
+                    }
+                    
+                    // for loop
+                    if currentMission > 1 {
+                        VStack(alignment: .leading) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                Text("For Loops")
+                                
+                                Spacer()
+                            }
+                            .foregroundStyle(.white)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            
                             VStack(alignment: .leading, spacing: -8) {
                                 HStack(spacing: 16) {
-                                    Text("if")
+                                    Text("for")
                                         .fontDesign(.monospaced)
                                         .fontWeight(.medium)
                                         .foregroundStyle(.white)
                                     
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(.white.opacity(0.5))
-                                        .frame(width: 48, height: 32)
+                                        .frame(width: 36, height: 32)
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 8)
@@ -254,24 +351,21 @@ struct CodeEditorView: View {
                                         .frame(width: 48, height: 32)
                                     
                                 }
-
-                                RoundedRectangle(cornerRadius: 8)
+                                
+                                RoundedRectangle(cornerRadius: 4)
                                     .fill(Color(hex: "FF79B3"))
-                                    .frame(width: 48, height: 32)
+                                    .frame(width: 32, height: 16)
                                 
                             }
-                        case .forBlock:
-                            VStack {
-                                
-                            }
+                        }
                     }
+                    
+                }
+                .padding()
+                .background {
+                    Color(.white).opacity(0.1)
                 }
             }
-            .padding()
-            .background {
-                Color(.white).opacity(0.1)
-            }
-            
             
         }
         .background(Color(hex: "292A2F"))
