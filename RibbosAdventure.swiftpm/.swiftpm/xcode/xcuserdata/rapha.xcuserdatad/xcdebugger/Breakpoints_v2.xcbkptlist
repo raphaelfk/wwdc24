@@ -3,4 +3,133 @@
    uuid = "92FDEE35-773E-412C-ACB7-149B0C4BB0C9"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1147043D-2AB6-4D8E-81DB-AF59919B5856"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstLevelView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "403"
+            endingLineNumber = "403"
+            landmarkName = "runFirstLevelCode()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "1147043D-2AB6-4D8E-81DB-AF59919B5856 - a66e05d8119be5f6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(19) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "374"
+                  endingLineNumber = "374"
+                  offsetFromSymbolStart = "100">
+               </Location>
+               <Location
+                  uuid = "1147043D-2AB6-4D8E-81DB-AF59919B5856 - d780014b5e31fe0e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(20) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "374"
+                  endingLineNumber = "374"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "1147043D-2AB6-4D8E-81DB-AF59919B5856 - fe9b51d30d49530f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(21) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "374"
+                  endingLineNumber = "374"
+                  offsetFromSymbolStart = "176">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "31AAC8D3-B188-4853-8AE1-22D7F30E97C9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstLevelView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
+            landmarkName = "runFirstLevelCode()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FFC59642-0889-4A11-9362-6B69F859E0DE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstLevelView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "413"
+            endingLineNumber = "413"
+            landmarkName = "runFirstLevelCode()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstLevelView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "418"
+            endingLineNumber = "418"
+            landmarkName = "runFirstLevelCode()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5BDA2386-2565-4E41-A948-E2A1FE4FB321"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstLevelView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "404"
+            endingLineNumber = "404"
+            landmarkName = "runFirstLevelCode()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

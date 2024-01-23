@@ -26,6 +26,7 @@ struct FirstLevelView: View {
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
     @State var showLevelCompleteSheet = false
+    @State var showLevelFailedSheet = false
     @State var showScene = true
 
     var body: some View {
@@ -97,7 +98,7 @@ struct FirstLevelView: View {
                 // Scene view
                 if showScene {
                     ZStack {
-                        SceneView(scene: scene, pointOfView: cameraNode, options: [.allowsCameraControl,.autoenablesDefaultLighting])
+                        SceneView(scene: scene, pointOfView: cameraNode, options: [.autoenablesDefaultLighting])
                         
                         VStack {
                             HStack {
@@ -168,43 +169,137 @@ struct FirstLevelView: View {
                     .padding(.leading, 8)
                 }
             }
+            // fail sheet
+            .sheet(isPresented: $showLevelFailedSheet, content: {
+                ZStack {
+                    if colorScheme == .light {
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.88, green: 0.33, blue: 0.26),
+                                .white,
+                                .white
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    } else {
+                        LinearGradient(
+                            colors: [
+                                Color(red: 0.88, green: 0.33, blue: 0.26),
+                                .black,
+                                .black
+                            ],
+                            startPoint: .top, 
+                            endPoint: .bottom
+                        )
+
+                    }
+                    
+                    
+                    VStack(alignment: .center, spacing: 16) {
+                        Spacer()
+                        
+                        Text("On no!")
+                            .font(.largeTitle)
+                            .fontDesign(.monospaced)
+                            .fontWeight(.bold)
+                            .padding(.bottom, 80)
+                        
+                        Text("It looks like your code did not pass our test's safety requirements for Ribbo!\n\nBut don’t worry, this is just a simulator and nothing was actually sent, so Ribbo is fine!\n\nYou can try again, and if you need any help you can read the entire mission description by clicking on the ”Read More...” button.")
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(8)
+                            .padding(.horizontal, 32)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            self.presentationMode.wrappedValue.dismiss()
+                            
+                        }, label: {
+                            Text("Back to Dashboard")
+                                .fontWeight(.semibold)
+                                .fontDesign(.monospaced)
+                                .padding()
+                                .background {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(.gray.opacity(0.25))
+                                }
+                                .padding(.bottom, 32)
+                        })
+                        .buttonStyle(.plain)
+                    }
+                    .padding(32)
+                    
+                }
+                
+            })
         }
         .padding()
         .background(Color(hex: colorScheme == .light ? "F2F1F6" : "131313").ignoresSafeArea())
         .navigationTitle("First Mission")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showLevelCompleteSheet, content: {
-            VStack(alignment: .center, spacing: 16) {
-                Spacer()
-                
-                Text("Congratulations!")
-                    .font(.title)
-                    .fontDesign(.monospaced)
-                    .fontWeight(.bold)
-                
-                Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet!\n\nIt is by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
-                
-                Spacer()
-                
-                Button(action: {
-                    firstLevelComplete = true
-                    secondLevelAvailable = true
-                    self.presentationMode.wrappedValue.dismiss()
+            ZStack {
+                if colorScheme == .light {
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.47, green: 0.76, blue: 0.7),
+                            .white,
+                            .white
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                } else {
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.47, green: 0.76, blue: 0.7),
+                            .black,
+                            .black
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
                     
-                }, label: {
-                    Text("Back to Dashboard")
-                        .fontWeight(.semibold)
+                }
+                
+                VStack(alignment: .center, spacing: 16) {
+                    Spacer()
+                    
+                    Text("Congratulations!")
+                        .font(.largeTitle)
                         .fontDesign(.monospaced)
-                        .padding()
-                        .background {
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.gray.opacity(0.25))
-                        }
-                        .padding(.bottom, 32)
-                })
-                .buttonStyle(.plain)
+                        .fontWeight(.bold)
+                        .padding(.bottom, 80)
+                    
+                    Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet!\n\nIt is by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(8)
+                        .padding(.horizontal, 32)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        firstLevelComplete = true
+                        secondLevelAvailable = true
+                        self.presentationMode.wrappedValue.dismiss()
+                        
+                    }, label: {
+                        Text("Back to Dashboard")
+                            .fontWeight(.semibold)
+                            .fontDesign(.monospaced)
+                            .padding()
+                            .background {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.gray.opacity(0.25))
+                            }
+                            .padding(.bottom, 32)
+                    })
+                    .buttonStyle(.plain)
+                }
+                .padding(32)
             }
-            .padding(32)
+            
         })
     }
     
@@ -300,6 +395,30 @@ struct FirstLevelView: View {
                     
                     // wait between running commands
                     try await Task.sleep(nanoseconds: 500_000)
+                    
+                    let xPosition = await ribboNode.position.x
+                    let zPosition = await ribboNode.position.z
+                    
+                    // checking for allowed ribbo coordinates (to see if the code failed)
+                    if await ribboNode.position.z <= -1.4 {
+                        showLevelFailedSheet = true
+                        break
+                    } else if await ribboNode.position.z >= 2.8 {
+                        showLevelFailedSheet = true
+                        break
+                    }
+                    
+                    if await ribboNode.position.x  >= -1.4 {
+                        if await ribboNode.position.z >= 1.4 {
+                            showLevelFailedSheet = true
+                            break
+                        }
+                    } else if await ribboNode.position.x  < -3.2 {
+                        if await ribboNode.position.z < 1.2 {
+                            showLevelFailedSheet = true
+                            break
+                        }
+                    }
                 }
 
                 for int in 0 ..< codeBlocksList.count {

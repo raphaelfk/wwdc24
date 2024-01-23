@@ -93,6 +93,7 @@ struct OnboardingView: View {
                         .frame(width: 500)
                         .lineSpacing(16.0)
                         .padding(.trailing, 32)
+                        .multilineTextAlignment(.center)
                 }
                 
             }
