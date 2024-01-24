@@ -20,6 +20,7 @@ struct SecondLevelView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
     var scene = SCNScene(named: "SecondLevelScene.scn")
+    @State var sceneReady = false
     @Binding var secondLevelComplete: Bool
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
@@ -89,7 +90,7 @@ struct SecondLevelView: View {
             HStack {
                 // Code editor
                 if showCodeEditor {
-                    CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 2, runningScene: $runningScene)
+                    CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 2, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .padding(.trailing, 8)
                 }
@@ -98,6 +99,12 @@ struct SecondLevelView: View {
                 if showScene {
                     ZStack {
                         SceneView(scene: scene, pointOfView: cameraNode, options: [.allowsCameraControl,.autoenablesDefaultLighting])
+                            .onAppear {
+                                Task {
+                                    try await Task.sleep(nanoseconds: 3_000_000_000)
+                                    sceneReady = true
+                                }
+                            }
                         
                         VStack {
                             HStack {
@@ -163,10 +170,18 @@ struct SecondLevelView: View {
                             
                             Spacer()
                         }
+                        
+                        if !sceneReady {
+                            Rectangle()
+                                .fill(.thinMaterial)
+                            
+                            ProgressView()
+                        }
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding(.leading, 8)
                 }
+            
             }
         }
         .padding()

@@ -24,15 +24,20 @@ enum CodeBlockType: Equatable {
 
 struct CodeEditorView: View {
     @Binding var codeBlocksList: [CodeBlock]
-    var codeBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
+    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
     var currentMission: Int
+    @Binding var isCodeEditorExpanded: Bool
     @Binding var runningScene: Bool
-    
+    @State var selectedBlock: UUID?
+    @Binding var showCodeEditor: Bool
+    @Binding var showIntroduction: Bool
+    @State var showNumberPad = false
+    @Binding var showScene: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Top bar
-            HStack {
+            HStack(alignment: .center) {
                 Image(systemName: "chevron.left.forwardslash.chevron.right")
                     .font(.subheadline)
                     .fontWeight(.semibold)
@@ -45,12 +50,42 @@ struct CodeEditorView: View {
                 
                 Spacer()
                 
-                Image(systemName: "arrow.up.left.and.arrow.down.right")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                Button {
+                    withAnimation(.spring) {
+                        // if the code editor is already expanded, reduce it
+                        if isCodeEditorExpanded {
+                            showCodeEditor = true
+                            showIntroduction = true
+                            showScene = true
+                            isCodeEditorExpanded = false
+                        
+                        // if the code editor is not expanded, expand it
+                        } else {
+                            isCodeEditorExpanded = true
+                            showIntroduction = false
+                            showScene = false
+                            showCodeEditor = true
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: isCodeEditorExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                    }
                     .foregroundStyle(.white)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 10)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.gray.opacity(0.25))
+                    }
+                }
+                .buttonStyle(.plain)
+
+                
             }
-            .padding()
+            .padding(.leading)
+            .padding(.vertical, 8)
+            .padding(.trailing, 8)
             
             // Divider
             Rectangle()
@@ -66,7 +101,7 @@ struct CodeEditorView: View {
                             Text("Click on blocks or move them to this space to compose your code!")
                                 .foregroundStyle(.gray)
                             
-                            // Code blocks
+                        // Code blocks
                         } else {
                             ForEach(codeBlocksList) { codeBlock in
                                 switch codeBlock.type {
@@ -77,12 +112,14 @@ struct CodeEditorView: View {
                                                 .fontWeight(.medium)
                                                 .foregroundStyle(.white)
                                             
-                                            Divider()
-                                            
-                                            Image(systemName: "xmark")
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                                .font(.footnote)
+                                            if !runningScene {
+                                                Divider()
+                                                
+                                                Image(systemName: "xmark")
+                                                    .fontWeight(.medium)
+                                                    .foregroundStyle(.white)
+                                                    .font(.footnote)
+                                            }
                                         }
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 8)
@@ -92,19 +129,22 @@ struct CodeEditorView: View {
                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                         .onTapGesture {
                                             // go through list and delete the tapped code block
-                                            withAnimation(.interactiveSpring) {
-                                                var index = 0
-                                                for codeBlockSearched in codeBlocksList {
-                                                    if codeBlockSearched.id == codeBlock.id {
-                                                        codeBlocksList.remove(at: index)
-                                                        break
+                                            if !runningScene {
+                                                withAnimation(.interactiveSpring) {
+                                                    var index = 0
+                                                    for codeBlockSearched in codeBlocksList {
+                                                        if codeBlockSearched.id == codeBlock.id {
+                                                            codeBlocksList.remove(at: index)
+                                                            break
+                                                        }
+                                                        index += 1
                                                     }
-                                                    index += 1
                                                 }
                                             }
+                                            
                                         }
                                     case .ifBlock:
-                                        VStack(alignment: .leading, spacing: -8) {
+                                        VStack(alignment: .leading, spacing: 0) {
                                             HStack(spacing: 16) {
                                                 Text("if")
                                                     .fontDesign(.monospaced)
@@ -154,10 +194,9 @@ struct CodeEditorView: View {
                                                 .frame(width: 48, height: 32)
                                             
                                         }
+                                        
                                     case .forBlock:
-                                        VStack {
-                                            
-                                        }
+                                        ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                 }
                                 
                             }
@@ -181,6 +220,8 @@ struct CodeEditorView: View {
                             
                         case "rotateRight()":
                             codeBlocksList.append(CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock))
+                        case "forLoop":
+                            codeBlocksList.append(CodeBlock(highlighted: false, type: .forBlock))
                         default:
                             return true
                     }
@@ -209,110 +250,44 @@ struct CodeEditorView: View {
                         .font(.subheadline)
                         .fontWeight(.medium)
                         
-                        ForEach(codeBlocksGallery) { codeBlock in
-                            switch codeBlock.type {
-                                case .commandBlock:
-                                    Text(codeBlock.command ?? "Error")
-                                        .fontDesign(.monospaced)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 8)
-                                        .background {
-                                            Color(hex: "78C1B3")
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .onTapGesture {
-                                            withAnimation(.interactiveSpring) {
-                                                self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
-                                            }
-                                        }
-                                        .draggable(codeBlock.command ?? "")
-                                    
-                                    
-                                case .ifBlock:
-                                    VStack(alignment: .leading, spacing: -8) {
-                                        HStack(spacing: 16) {
-                                            Text("if")
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                            
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(.white.opacity(0.5))
-                                                .frame(width: 48, height: 32)
-                                        }
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 8)
-                                        .background {
-                                            Color(hex: "FF79B3")
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        
-                                        HStack(spacing: 16) {
-                                            Rectangle()
-                                                .fill(Color(hex: "FF79B3"))
-                                                .frame(width: 8, height: 80)
-                                            
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(.white.opacity(0.5))
-                                                .frame(width: 48, height: 32)
-                                            
-                                        }
-                                        
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color(hex: "FF79B3"))
-                                            .frame(width: 48, height: 32)
-                                        
-                                    }
-                                case .forBlock:
-                                    VStack(alignment: .leading, spacing: -8) {
-                                        HStack(spacing: 16) {
-                                            Text("for")
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                            
-                                            Text("0")
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                                .background {
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .fill(.white.opacity(0.5))
-                                                        .frame(width: 48, height: 32)
+                        // command blocks
+                        ForEach(commandBlocksGallery) { codeBlock in
+                            Text(codeBlock.command ?? "Error")
+                                .fontDesign(.monospaced)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background {
+                                    Color(hex: "78C1B3")
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .onTapGesture {
+                                    withAnimation(.interactiveSpring) {
+                                        // going through list to see if any blocks that accept inline commands are selected
+                                        if selectedBlock != nil {
+                                            var listIndex = 0
+                                            for block in self.codeBlocksList {
+                                                if block.id == self.selectedBlock {
+                                                    break
                                                 }
-                                        }
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 8)
-                                        .background {
-                                            Color(hex: "FF79B3")
-                                        }
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        
-                                        HStack(spacing: 16) {
-                                            Rectangle()
-                                                .fill(Color(hex: "FF79B3"))
-                                                .frame(width: 8, height: 80)
+                                                listIndex += 1
+                                            }
                                             
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(.white.opacity(0.5))
-                                                .frame(width: 48, height: 32)
-                                            
+                                            self.codeBlocksList[listIndex].inlineBlocks.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                        } else {
+                                            self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
                                         }
-                                        
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color(hex: "FF79B3"))
-                                            .frame(width: 48, height: 32)
-                                        
                                     }
-                            }
+                                }
+                                .draggable(codeBlock.command ?? "")
                         }
                     }
                     
                     // for loop
-                    if currentMission > 1 {
+                    if currentMission > 1 && selectedBlock == nil {
                         VStack(alignment: .leading) {
+                            // section title
                             HStack(spacing: 4) {
                                 Image(systemName: "arrow.triangle.2.circlepath")
                                 Text("For Loops")
@@ -323,6 +298,7 @@ struct CodeEditorView: View {
                             .font(.subheadline)
                             .fontWeight(.medium)
                             
+                            // for block
                             VStack(alignment: .leading, spacing: -8) {
                                 HStack(spacing: 16) {
                                     Text("for")
@@ -332,7 +308,7 @@ struct CodeEditorView: View {
                                     
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(.white.opacity(0.5))
-                                        .frame(width: 36, height: 32)
+                                        .frame(width: 36, height: 28)
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 8)
@@ -358,6 +334,65 @@ struct CodeEditorView: View {
                                 
                             }
                         }
+                        .onTapGesture {
+                            withAnimation(.interactiveSpring) {
+                                self.codeBlocksList.append(CodeBlock(highlighted: false, type: .forBlock))
+                            }
+                        }
+                        .draggable("forLoop")
+                    }
+                    
+                    // if statements
+                    if currentMission > 2 && selectedBlock == nil {
+                        VStack(alignment: .leading) {
+                            // section title
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.triangle.branch")
+                                Text("If Statements")
+                                
+                                Spacer()
+                            }
+                            .foregroundStyle(.white)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            
+                            // if block
+                            VStack(alignment: .leading, spacing: -8) {
+                                HStack(spacing: 16) {
+                                    Text("if")
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                    
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.white.opacity(0.5))
+                                        .frame(width: 48, height: 32)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background {
+                                    Color(hex: "FF79B3")
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                
+                                HStack(spacing: 16) {
+                                    Rectangle()
+                                        .fill(Color(hex: "FF79B3"))
+                                        .frame(width: 8, height: 80)
+                                    
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(.white.opacity(0.5))
+                                        .frame(width: 48, height: 32)
+                                    
+                                }
+                                
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color(hex: "FF79B3"))
+                                    .frame(width: 48, height: 32)
+                                
+                            }
+                        }
+                        .draggable("ifStatement")
                     }
                     
                 }
@@ -369,6 +404,11 @@ struct CodeEditorView: View {
             
         }
         .background(Color(hex: "292A2F"))
+        .onTapGesture {
+            withAnimation(.spring) {
+                self.selectedBlock = nil
+            }
+        }
     }
 }
 

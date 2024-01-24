@@ -12,7 +12,7 @@ struct DashboardView: View {
     @State private var animateGradient = false
     @Environment(\.colorScheme) var colorScheme
     @State var firstLevelComplete = false
-    @State var secondLevelAvailable = false
+    @State var secondLevelAvailable = true
     @State var secondLevelComplete = false
     @State var showStars1 = true
     @State var showStars2 = false

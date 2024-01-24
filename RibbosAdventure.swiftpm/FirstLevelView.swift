@@ -90,7 +90,7 @@ struct FirstLevelView: View {
             HStack {
                 // Code editor
                 if showCodeEditor {
-                    CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 1, runningScene: $runningScene)
+                    CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 1, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .padding(.trailing, 8)
                 }
@@ -326,12 +326,15 @@ struct FirstLevelView: View {
                 for codeBlock in codeBlocksList {
                     var listIndex = 0
                     for codeBlockFromList in codeBlocksList {
-                        if codeBlockFromList.id == codeBlock.id {
-                            codeBlocksList[listIndex].highlighted = true
-                        } else {
-                            codeBlocksList[listIndex].highlighted = false
+                        withAnimation(.spring) {
+                            if codeBlockFromList.id == codeBlock.id {
+                                
+                                codeBlocksList[listIndex].highlighted = true
+                            } else {
+                                codeBlocksList[listIndex].highlighted = false
+                            }
+                            listIndex += 1
                         }
-                        listIndex += 1
                     }
                     
                     switch codeBlock.command {
