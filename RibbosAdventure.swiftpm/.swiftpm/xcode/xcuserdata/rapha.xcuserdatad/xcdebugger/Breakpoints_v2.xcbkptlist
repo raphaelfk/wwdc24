@@ -14,8 +14,8 @@
             filePath = "FirstLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "406"
-            endingLineNumber = "406"
+            startingLineNumber = "436"
+            endingLineNumber = "436"
             landmarkName = "runFirstLevelCode()"
             landmarkType = "7">
             <Locations>
@@ -77,8 +77,8 @@
             filePath = "FirstLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
+            startingLineNumber = "440"
+            endingLineNumber = "440"
             landmarkName = "runFirstLevelCode()"
             landmarkType = "7">
          </BreakpointContent>
@@ -93,8 +93,8 @@
             filePath = "FirstLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "416"
-            endingLineNumber = "416"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "runFirstLevelCode()"
             landmarkType = "7">
          </BreakpointContent>
@@ -109,10 +109,222 @@
             filePath = "FirstLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "421"
-            endingLineNumber = "421"
+            startingLineNumber = "451"
+            endingLineNumber = "451"
             landmarkName = "runFirstLevelCode()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 76e25e7af175e682"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "451"
+                  endingLineNumber = "451"
+                  offsetFromSymbolStart = "5352">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 420dc7f954bd1f3d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(15) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "451"
+                  endingLineNumber = "451"
+                  offsetFromSymbolStart = "4992">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 76e25e7af175e6c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "5980">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - a94fa8851b1d22c6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "184">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - cddb02cf25247ec0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "208">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - e1a75d194fcbbac2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "232">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 430b7a35992f6cc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(9) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "256">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - eed3799a965e8b7f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(11) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "752">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 1c2226e9f52dc179"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(13) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "724">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 9ccb9a6f4cea7e74"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(14) await resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "56">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 420dc7f954bd1f7b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(15) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "428">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 6904144103f4b87a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(16) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "164">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 6904144103f4b87a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(16) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "453"
+                  endingLineNumber = "453"
+                  offsetFromSymbolStart = "184">
+               </Location>
+               <Location
+                  uuid = "258038BF-0212-41AE-A8C7-410DFF0FCE05 - 420dc7f954bd1f3d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(15) suspend resume partial function for closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.FirstLevelView.runFirstLevelCode() -&gt; ()"
+                  moduleName = "Ribbo&#x2019;s Adventure"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/FirstLevelView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "451"
+                  endingLineNumber = "451"
+                  offsetFromSymbolStart = "6532">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -125,8 +337,8 @@
             filePath = "FirstLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "407"
-            endingLineNumber = "407"
+            startingLineNumber = "437"
+            endingLineNumber = "437"
             landmarkName = "runFirstLevelCode()"
             landmarkType = "7">
          </BreakpointContent>

@@ -16,30 +16,33 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(
-                stops: [
-                    Gradient.Stop(color: Color(red: 0.03, green: 0.05, blue: 0.22), location: 0.00),
-                    Gradient.Stop(color: Color(red: 0.02, green: 0.03, blue: 0.14), location: 0.50),
-                    Gradient.Stop(color: Color(red: 0.01, green: 0.04, blue: 0.16), location: 1.00),
-                ],
-                startPoint: UnitPoint(x: 1, y: 0),
-                endPoint: UnitPoint(x: 0, y: 1)
-            )
-            .ignoresSafeArea()
-            .onAppear {
-                // setup for the cards' stars animations
-                withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
-                    showStars1.toggle()
-                }
-                
-                withAnimation(.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
-                    showStars2.toggle()
-                }
-                
-                withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) {
-                    showStars3.toggle()
+            GeometryReader { geo in
+                LinearGradient(
+                    stops: [
+                        Gradient.Stop(color: Color(red: 0.03, green: 0.05, blue: 0.22), location: 0.00),
+                        Gradient.Stop(color: Color(red: 0.02, green: 0.03, blue: 0.14), location: 0.50),
+                        Gradient.Stop(color: Color(red: 0.01, green: 0.04, blue: 0.16), location: 1.00),
+                    ],
+                    startPoint: UnitPoint(x: 1, y: 0),
+                    endPoint: UnitPoint(x: 0, y: 1)
+                )
+                .ignoresSafeArea()
+                .onAppear {
+                    // setup for the cards' stars animations
+                    withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                        showStars1.toggle()
+                    }
+                    
+                    withAnimation(.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
+                        showStars2.toggle()
+                    }
+                    
+                    withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) {
+                        showStars3.toggle()
+                    }
                 }
             }
+            
             
             ZStack {
                 if showStars1 {
@@ -60,7 +63,6 @@ struct OnboardingView: View {
                     Spacer()
                 }
             }
-            
             
             // text
             HStack {
@@ -86,7 +88,7 @@ struct OnboardingView: View {
                     
                 } else if onboardingStage == 2 {
                     
-                    Text("Your job is to help Ribbo overcome these challenges by creating algorithms, a set of steps, for him to follow.\nFor each mission, there will always be a job description that the control center provided to you, in case you need any help along the way!")
+                    Text("Your job is to help Ribbo overcome these challenges by creating algorithms, a set of steps, for him to follow.\n\nFor each mission, there will always be a job description that the control center provided to you, in case you need any help along the way!")
                         .foregroundStyle(.white)
                         .font(.headline)
                         .fontDesign(.monospaced)
@@ -110,7 +112,9 @@ struct OnboardingView: View {
                         } else if onboardingStage == 1 {
                             onboardingStage = 2
                         } else if onboardingStage == 2 {
-                            finishedOnboarding = true
+                            withAnimation(.easeInOut(duration: 1.5)) {
+                                finishedOnboarding = true
+                            }
                         }
                     }
                     

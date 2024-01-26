@@ -31,7 +31,6 @@ struct CodeEditorView: View {
     @State var selectedBlock: UUID?
     @Binding var showCodeEditor: Bool
     @Binding var showIntroduction: Bool
-    @State var showNumberPad = false
     @Binding var showScene: Bool
     
     var body: some View {
@@ -98,7 +97,7 @@ struct CodeEditorView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         // Empty state
                         if codeBlocksList.isEmpty {
-                            Text("Click on blocks or move them to this space to compose your code!")
+                            Text("Click on blocks to compose your code!")
                                 .foregroundStyle(.gray)
                             
                         // Code blocks

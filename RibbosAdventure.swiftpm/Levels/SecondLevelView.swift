@@ -14,6 +14,7 @@ struct SecondLevelView: View {
     }
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
+    @EnvironmentObject var gameManager: GameManager
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
     @State var isSceneExpanded = false
@@ -21,13 +22,11 @@ struct SecondLevelView: View {
     @State var runningScene = false
     var scene = SCNScene(named: "SecondLevelScene.scn")
     @State var sceneReady = false
-    @Binding var secondLevelComplete: Bool
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
     @State var showLevelCompleteSheet = false
     @State var showScene = true
-    @Binding var thirdLevelAvailable: Bool
     
     var body: some View {
         VStack(spacing: 16) {
@@ -98,7 +97,7 @@ struct SecondLevelView: View {
                 // Scene view
                 if showScene {
                     ZStack {
-                        SceneView(scene: scene, pointOfView: cameraNode, options: [.allowsCameraControl,.autoenablesDefaultLighting])
+                        SceneView(scene: scene, pointOfView: cameraNode, options: [.allowsCameraControl,.autoenablesDefaultLighting, .rendersContinuously])
                             .onAppear {
                                 Task {
                                     try await Task.sleep(nanoseconds: 3_000_000_000)
@@ -202,8 +201,8 @@ struct SecondLevelView: View {
                 Spacer()
                 
                 Button(action: {
-                    secondLevelComplete = true
-                    thirdLevelAvailable = true
+                    gameManager.secondLevelComplete = true
+                    gameManager.thirdLevelAvailable = true
                     self.presentationMode.wrappedValue.dismiss()
                     
                 }, label: {
@@ -230,87 +229,175 @@ struct SecondLevelView: View {
         
         if let ribboNode = scene?.rootNode.childNode(withName: "ribbo", recursively: true) {
             // move actions
-            let moveFront = SCNAction.moveBy(x: -1.5, y: 0, z: 0, duration: 1)
-            let moveBack = SCNAction.moveBy(x: 1.5, y: 0, z: 0, duration: 1)
-            let moveLeft = SCNAction.moveBy(x: 0, y: 0, z: 1.5, duration: 1)
-            let moveRight = SCNAction.moveBy(x: 0, y: 0, z: -1.5, duration: 1)
+            let moveFront = SCNAction.moveBy(x: -1.25, y: 0, z: 0, duration: 1)
+            let moveBack = SCNAction.moveBy(x: 1.25, y: 0, z: 0, duration: 1)
+            let moveLeft = SCNAction.moveBy(x: 0, y: 0, z: 1.25, duration: 1)
+            let moveRight = SCNAction.moveBy(x: 0, y: 0, z: -1.25, duration: 1)
             
             // running code on ribbo
             Task {
                 var ribboDirection = 0 // 0 forward, 1 left, -1 right, 2 back (considering start position)
                 var currentAngle: Float = 0
                 
-                var rotateLeft = SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (1.57 + currentAngle)), duration: 1)
-                
                 // iterating over each code block placed on the code editor
                 for codeBlock in codeBlocksList {
+                    // highlighting the current running blocks
                     var listIndex = 0
+                    var currentBlockIndex = 0
                     for codeBlockFromList in codeBlocksList {
                         if codeBlockFromList.id == codeBlock.id {
                             codeBlocksList[listIndex].highlighted = true
+                            currentBlockIndex = listIndex
                         } else {
                             codeBlocksList[listIndex].highlighted = false
                         }
                         listIndex += 1
                     }
                     
-                    switch codeBlock.command {
-                        case "moveForward()":
-                            if ribboDirection == 0 {
-                                await ribboNode.runAction(moveFront)
-                            } else if ribboDirection == 1 {
-                                await ribboNode.runAction(moveLeft)
-                            } else if ribboDirection == 2 {
-                                await ribboNode.runAction(moveBack)
-                            } else if ribboDirection == -1 {
-                                await ribboNode.runAction(moveRight)
+                    // running the blocks
+                    if codeBlock.type == .commandBlock {
+                        switch codeBlock.command {
+                            case "moveForward()":
+                                if ribboDirection == 0 {
+                                    await ribboNode.runAction(moveFront)
+                                } else if ribboDirection == 1 {
+                                    await ribboNode.runAction(moveLeft)
+                                } else if ribboDirection == 2 {
+                                    await ribboNode.runAction(moveBack)
+                                } else if ribboDirection == -1 {
+                                    await ribboNode.runAction(moveRight)
+                                }
+                                
+                                
+                            case "rotateLeft()":
+                                await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
+                                currentAngle += 1.57
+                                
+                                // facing forward, turn left
+                                if ribboDirection == 0 {
+                                    ribboDirection += 1
+                                    
+                                    // facing left, turn back
+                                } else if ribboDirection == 1 {
+                                    ribboDirection += 1
+                                    
+                                    // facing back, turn right
+                                } else if ribboDirection == 2 {
+                                    ribboDirection = -1
+                                    
+                                    // facing right, turn forward
+                                } else if ribboDirection == -1 {
+                                    ribboDirection += 1
+                                }
+                                
+                            case "rotateRight()":
+                                await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
+                                currentAngle -= 1.57
+                                
+                                // facing forward, turn to right
+                                if ribboDirection == 0 {
+                                    ribboDirection -= 1
+                                    
+                                    // facing left, turn to front
+                                } else if ribboDirection == 1 {
+                                    ribboDirection -= 1
+                                    
+                                    // facing back, turn to left
+                                } else if ribboDirection == 2 {
+                                    ribboDirection = 1
+                                    
+                                    // facing right, turn to back
+                                } else if ribboDirection == -1 {
+                                    ribboDirection = 2
+                                }
+                                
+                            default:
+                                print("No command (\(codeBlock.command ?? "Error") found!")
+                        }
+                    } else { // if it is a for loop block
+
+                        // iterating for the defined number of times
+                        for _ in 0 ..< (Int(codeBlock.command ?? "0") ?? 0) {
+                            
+                            // going through each inline block
+                            for inlineBlock in codeBlocksList[currentBlockIndex].inlineBlocks {
+                                var inlineListIndex = 0
+                                
+                                // highlighting the current inline running blocks
+                                for codeBlockFromInlineList in codeBlocksList[inlineListIndex].inlineBlocks {
+                                    if codeBlockFromInlineList.id == codeBlock.id {
+                                        codeBlocksList[inlineListIndex].highlighted = true
+                                    } else {
+                                        codeBlocksList[inlineListIndex].highlighted = false
+                                    }
+                                    inlineListIndex += 1
+                                }
+                                
+                                // running the commands
+                                switch inlineBlock.command {
+                                    case "moveForward()":
+                                        if ribboDirection == 0 {
+                                            await ribboNode.runAction(moveFront)
+                                        } else if ribboDirection == 1 {
+                                            await ribboNode.runAction(moveLeft)
+                                        } else if ribboDirection == 2 {
+                                            await ribboNode.runAction(moveBack)
+                                        } else if ribboDirection == -1 {
+                                            await ribboNode.runAction(moveRight)
+                                        }
+                                        
+                                        
+                                    case "rotateLeft()":
+                                        await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
+                                        currentAngle += 1.57
+                                        
+                                        // facing forward, turn left
+                                        if ribboDirection == 0 {
+                                            ribboDirection += 1
+                                            
+                                            // facing left, turn back
+                                        } else if ribboDirection == 1 {
+                                            ribboDirection += 1
+                                            
+                                            // facing back, turn right
+                                        } else if ribboDirection == 2 {
+                                            ribboDirection = -1
+                                            
+                                            // facing right, turn forward
+                                        } else if ribboDirection == -1 {
+                                            ribboDirection += 1
+                                        }
+                                        
+                                    case "rotateRight()":
+                                        await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
+                                        currentAngle -= 1.57
+                                        
+                                        // facing forward, turn to right
+                                        if ribboDirection == 0 {
+                                            ribboDirection -= 1
+                                            
+                                            // facing left, turn to front
+                                        } else if ribboDirection == 1 {
+                                            ribboDirection -= 1
+                                            
+                                            // facing back, turn to left
+                                        } else if ribboDirection == 2 {
+                                            ribboDirection = 1
+                                            
+                                            // facing right, turn to back
+                                        } else if ribboDirection == -1 {
+                                            ribboDirection = 2
+                                        }
+                                        
+                                    default:
+                                        print("No command (\(inlineBlock.command ?? "Error") found!")
+                                }
+
+                                // wait between running commands
+                                try await Task.sleep(nanoseconds: 500_000)
                             }
                             
-                            
-                        case "rotateLeft()":
-                            await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
-                            currentAngle += 1.57
-                            
-                            // facing forward, turn left
-                            if ribboDirection == 0 {
-                                ribboDirection += 1
-                                
-                                // facing left, turn back
-                            } else if ribboDirection == 1 {
-                                ribboDirection += 1
-                                
-                                // facing back, turn right
-                            } else if ribboDirection == 2 {
-                                ribboDirection = -1
-                                
-                                // facing right, turn forward
-                            } else if ribboDirection == -1 {
-                                ribboDirection += 1
-                            }
-                            
-                        case "rotateRight()":
-                            await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
-                            currentAngle -= 1.57
-                            
-                            // facing forward, turn to right
-                            if ribboDirection == 0 {
-                                ribboDirection -= 1
-                                
-                                // facing left, turn to front
-                            } else if ribboDirection == 1 {
-                                ribboDirection -= 1
-                                
-                                // facing back, turn to left
-                            } else if ribboDirection == 2 {
-                                ribboDirection = 1
-                                
-                                // facing right, turn to back
-                            } else if ribboDirection == -1 {
-                                ribboDirection = 2
-                            }
-                            
-                        default:
-                            print("No command (\(codeBlock.command ?? "Error") found!")
+                        }
                     }
                     
                     // wait between running commands

@@ -4,17 +4,27 @@ import SwiftUI
 
 struct ContentView: View {
     @State var finishedOnboarding = false
+    @ObservedObject var gameManager = GameManager()
     
     var body: some View {
-        NavigationView {
+        VStack {
             if finishedOnboarding {
-                DashboardView()
+                if gameManager.playingFirstLevel {
+                    FirstLevelView()
+                } else if gameManager.playingSecondLevel {
+                    SecondLevelView()
+                } else if gameManager.playingThirdLevel {
+                    
+                } else {
+                    DashboardView()
+                }
+                
             } else {
                 OnboardingView(finishedOnboarding: $finishedOnboarding)
             }
-            
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .environmentObject(gameManager)
+        
     }
 }
 

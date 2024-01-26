@@ -43,6 +43,29 @@ struct ForBlockView: View {
                         .padding()
                 }
                 
+                if !runningScene {
+                    HStack(spacing: 12) {
+                        Divider()
+                        
+                        Image(systemName: "xmark")
+                            .fontWeight(.medium)
+                            .foregroundStyle(.white)
+                            .font(.footnote)
+                    }
+                    .onTapGesture {
+                        // removing block from codeBlocks list
+                        withAnimation(.interactiveSpring) {
+                            var listIndex = 0
+                            for codeBlockSearched in codeBlocksList {
+                                if codeBlockSearched.id == codeBlock.id {
+                                    codeBlocksList.remove(at: listIndex)
+                                    break
+                                }
+                                listIndex += 1
+                            }
+                        }
+                    }
+                }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -114,15 +137,24 @@ struct ForBlockView: View {
                             .onTapGesture {
                                 // go through list and delete the tapped code block
                                 if !runningScene {
-#warning("fazer a lógica de deletar o code block de dentro")
                                     withAnimation(.interactiveSpring) {
-                                        var index = 0
-                                        for codeBlockSearched in codeBlock.inlineBlocks {
-                                            if codeBlockSearched.id == inlineBlock.id {
-                                                codeBlocksList.remove(at: index)
+                                        // getting the for block index
+                                        var listIndex = 0
+                                        for codeBlockSearched in codeBlocksList {
+                                            if codeBlockSearched.id == codeBlock.id {
                                                 break
                                             }
-                                            index += 1
+                                            listIndex += 1
+                                        }
+                                        
+                                        // searching for the inline block to be deleted and removing it from the for's inlineBlocks list
+                                        var inlineListIndex = 0
+                                        for inlineBlockSearched in codeBlocksList[listIndex].inlineBlocks {
+                                            if inlineBlockSearched.id == inlineBlock.id {
+                                                codeBlocksList[listIndex].inlineBlocks.remove(at: inlineListIndex)
+                                                break
+                                            }
+                                            inlineListIndex += 1
                                         }
                                     }
                                 }
@@ -130,6 +162,23 @@ struct ForBlockView: View {
                             }
                         }
                         
+                    }
+                    
+                    if !runningScene {
+                        HStack(spacing: 16) {
+                            Rectangle()
+                                .fill(Color(hex: "FF79B3"))
+                                .frame(width: 8, height: 80)
+                            
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(codeBlock.id == self.selectedBlock ? Color(hex: "BFAD5A") : .white.opacity(0.5))
+                                .frame(width: 48, height: 32)
+                                .onTapGesture {
+                                    withAnimation(.interactiveSpring) {
+                                        self.selectedBlock = codeBlock.id
+                                    }
+                                }
+                        }
                     }
                     
                     Rectangle()
