@@ -36,6 +36,8 @@ class SceneManager
         self.view.backgroundColor = .white
         self.view.scene = self.scene
     }
+    
+    
     @objc private func panHandler(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: sender.view!)
         let ratioWidth = Float(translation.x) / Float(sender.view!.frame.size.width)

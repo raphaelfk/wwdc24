@@ -24,5 +24,5 @@ class GameManager: ObservableObject {
     @Published var animateSecondLevelMessage = true
     
     let firstLevelMissionControlMessage = "Start with the first mission.\nOnce you complete it, others will become available!"
-    let secondLevelMissionControlMessage = "Ribbo is now on the Castle Planet.\nIt needs your help again in his second mission!"
+    let secondLevelMissionControlMessage = "Ribbo is now on the Castle Planet.\nIt needs your help again in it's second mission!"
 }

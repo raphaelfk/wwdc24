@@ -128,16 +128,16 @@ struct MissionControlTerminalView: View {
             
             currentMissionControlMessage = ""
             
-        } else if position == gameManager.firstLevelMissionControlMessage.count {
+        } else if position == missionControlMessage.count {
             withAnimation(.easeInOut(duration: 1)) {
                 liveBlinking = false
                 showLiveBadge = false
             }
         }
         
-        if position < gameManager.firstLevelMissionControlMessage.count {
+        if position < missionControlMessage.count {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.065) {
-                currentMissionControlMessage.append(gameManager.firstLevelMissionControlMessage[position])
+                currentMissionControlMessage.append(missionControlMessage[position])
                 typeWriter(at: position + 1)
             }
         }

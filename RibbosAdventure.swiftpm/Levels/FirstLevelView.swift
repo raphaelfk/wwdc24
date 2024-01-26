@@ -9,9 +9,6 @@ import SwiftUI
 import SceneKit
 
 struct FirstLevelView: View {
-    var cameraNode: SCNNode? {
-        scene?.rootNode.childNode(withName: "camera", recursively: false)
-    }
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
     @EnvironmentObject var gameManager: GameManager
@@ -20,7 +17,6 @@ struct FirstLevelView: View {
     @State var isSceneExpanded = false
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
-    var scene = SCNScene(named: "FirstLevelScene.scn")
     var sceneManager = SceneManager(sceneName: "FirstLevelScene.scn", cameraName: "camera")
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
@@ -108,8 +104,6 @@ struct FirstLevelView: View {
                     if showScene {
                         ZStack {
                             SceneKitView(sceneManager: sceneManager)
-                                
-//                            SceneView(scene: scene, pointOfView: cameraNode, options: [.autoenablesDefaultLighting])
                             
                             VStack {
                                 HStack {
@@ -250,67 +244,7 @@ struct FirstLevelView: View {
             .navigationTitle("First Mission")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
-                ZStack {
-                    if colorScheme == .light {
-                        LinearGradient(
-                            colors: [
-                                Color(red: 0.47, green: 0.76, blue: 0.7),
-                                .white,
-                                .white
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    } else {
-                        LinearGradient(
-                            colors: [
-                                Color(red: 0.47, green: 0.76, blue: 0.7),
-                                .black,
-                                .black
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        
-                    }
-                    
-                    VStack(alignment: .center, spacing: 16) {
-                        Spacer()
-                        
-                        Text("Congratulations!")
-                            .font(.largeTitle)
-                            .fontDesign(.monospaced)
-                            .fontWeight(.bold)
-                            .padding(.bottom, 80)
-                        
-                        Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet!\n\nIt is by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
-                            .multilineTextAlignment(.center)
-                            .lineSpacing(8)
-                            .padding(.horizontal, 32)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            gameManager.firstLevelComplete = true
-                            gameManager.secondLevelAvailable = true
-                            self.presentationMode.wrappedValue.dismiss()
-                            
-                        }, label: {
-                            Text("Back to Dashboard")
-                                .fontWeight(.semibold)
-                                .fontDesign(.monospaced)
-                                .padding()
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(.gray.opacity(0.25))
-                                }
-                                .padding(.bottom, 32)
-                        })
-                        .buttonStyle(.plain)
-                    }
-                    .padding(32)
-                }
-                
+                CongratulationSheetView()
             })
         }
     }
@@ -320,7 +254,7 @@ struct FirstLevelView: View {
             runningScene = true
         }
         
-        if let ribboNode = scene?.rootNode.childNode(withName: "ribbo", recursively: true) {
+        if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
             // move actions
             let moveFront = SCNAction.moveBy(x: -1.5, y: 0, z: 0, duration: 1)
             let moveBack = SCNAction.moveBy(x: 1.5, y: 0, z: 0, duration: 1)
@@ -409,25 +343,22 @@ struct FirstLevelView: View {
                     // wait between running commands
                     try await Task.sleep(nanoseconds: 500_000)
                     
-                    let xPosition = await ribboNode.position.x
-                    let zPosition = await ribboNode.position.z
-                    
                     // checking for allowed ribbo coordinates (to see if the code failed)
-                    if await ribboNode.position.z <= -1.4 {
+                    if ribboNode.position.z <= -1.4 {
                         showLevelFailedSheet = true
                         break
-                    } else if await ribboNode.position.z >= 2.8 {
+                    } else if ribboNode.position.z >= 2.8 {
                         showLevelFailedSheet = true
                         break
                     }
                     
-                    if await ribboNode.position.x  >= -1.4 {
-                        if await ribboNode.position.z >= 1.4 {
+                    if ribboNode.position.x  >= -1.4 {
+                        if ribboNode.position.z >= 1.4 {
                             showLevelFailedSheet = true
                             break
                         }
-                    } else if await ribboNode.position.x  < -3.2 {
-                        if await ribboNode.position.z < 1.2 {
+                    } else if ribboNode.position.x  < -3.2 {
+                        if ribboNode.position.z < 1.2 {
                             showLevelFailedSheet = true
                             break
                         }
@@ -438,7 +369,9 @@ struct FirstLevelView: View {
                     codeBlocksList[int].highlighted = false
                 }
                 
-                if await ribboNode.position.x < -4.75 {
+                if ribboNode.position.x < -4.75 {
+                    gameManager.firstLevelComplete = true
+                    gameManager.secondLevelAvailable = true
                     showLevelCompleteSheet = true
                 }
                 

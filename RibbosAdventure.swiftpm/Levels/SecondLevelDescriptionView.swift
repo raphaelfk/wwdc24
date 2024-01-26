@@ -1,15 +1,15 @@
 //
 //  SwiftUIView.swift
+//  
 //
-//
-//  Created by Raphael Ferezin Kitahara on 25/01/24.
+//  Created by Raphael Ferezin Kitahara on 26/01/24.
 //
 
 import SwiftUI
 
-struct FirstLevelDescriptionView: View {
+struct SecondLevelDescriptionView: View {
     var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
-    @Binding var descriptionVisibility: Bool
+    //@Binding var descriptionVisibility: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -21,7 +21,7 @@ struct FirstLevelDescriptionView: View {
                         .fontWeight(.bold)
                         .fontDesign(.monospaced)
                     
-                    Text("Grass Planet")
+                    Text("Castle Planet")
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundStyle(Color(hex: "A8D47B"))
@@ -31,7 +31,7 @@ struct FirstLevelDescriptionView: View {
                 Spacer()
                 
                 Button(action: {
-                    descriptionVisibility = false
+                    //descriptionVisibility = false
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.callout)
@@ -111,6 +111,6 @@ struct FirstLevelDescriptionView: View {
     }
 }
 
-//#Preview {
-//    FirstLevelDescriptionView()
-//}
+#Preview {
+    SecondLevelDescriptionView()
+}
