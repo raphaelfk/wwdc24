@@ -21,6 +21,7 @@ struct FirstLevelView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
     var scene = SCNScene(named: "FirstLevelScene.scn")
+    var sceneManager = SceneManager(sceneName: "FirstLevelScene.scn", cameraName: "camera")
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
@@ -106,7 +107,9 @@ struct FirstLevelView: View {
                     // Scene view
                     if showScene {
                         ZStack {
-                            SceneView(scene: scene, pointOfView: cameraNode, options: [.autoenablesDefaultLighting])
+                            SceneKitView(sceneManager: sceneManager)
+                                
+//                            SceneView(scene: scene, pointOfView: cameraNode, options: [.autoenablesDefaultLighting])
                             
                             VStack {
                                 HStack {

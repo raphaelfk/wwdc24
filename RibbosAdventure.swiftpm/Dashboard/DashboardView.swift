@@ -20,7 +20,7 @@ struct DashboardView: View {
             // header
             HStack {
                 Text("Dashboard")
-                    .font(.title3)
+                    .font(.title2)
                     .fontWeight(.bold)
                 
                 Spacer()
@@ -30,7 +30,7 @@ struct DashboardView: View {
                 } label: {
                     Image(systemName: "gearshape.circle")
                         .foregroundColor(.gray)
-                        .font(.title3)
+                        .font(.title2)
                         .fontWeight(.regular)
                 }
                 .buttonStyle(.plain)
@@ -119,7 +119,7 @@ struct DashboardView: View {
                                 } label: {
                                     HStack {
                                         Image(systemName: "play.fill")
-                                        Text("Play")
+                                        Text(gameManager.firstLevelComplete ? "Replay" : "Play")
                                     }
                                     .foregroundStyle(.white)
                                     .fontWeight(.semibold)
