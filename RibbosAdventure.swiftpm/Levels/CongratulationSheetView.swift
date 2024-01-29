@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CongratulationSheetView: View {
-    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
-    //@Binding var descriptionVisibility: Bool
+    @EnvironmentObject var gameManager: GameManager
+    @Binding var sheetVisibility: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             // header
             HStack(alignment: .top) {
                 HStack(alignment: .top, spacing: 6) {
@@ -32,17 +32,11 @@ struct CongratulationSheetView: View {
                 Spacer()
                 
                 Button(action: {
-                    //descriptionVisibility = false
+                    sheetVisibility = false
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.callout)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.gray)
-                        .padding(8)
-                        .background {
-                            Circle()
-                                .fill(.gray.opacity(0.15))
-                        }
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.gray.opacity(0.15))
                 })
                 .buttonStyle(.plain)
                 
@@ -66,7 +60,9 @@ struct CongratulationSheetView: View {
 
                     // command blocks
                     HStack(alignment: .top) {
-                        Text("This planet’s highlights were, mainly, it's nature formations.")
+                        Text("Throughout its exploration of Grass Planet, Ribbo collected samples of the planet's most abundant natural formation: Grass. This planet’s highlights were, mainly, it's nature formations, such as rocks, rivers and mountains.\nEverything was well preserved and there was harmony between nature and its habitants.")
+                            .lineLimit(3...3)
+                            .font(.subheadline)
                         
                         Spacer()
                         
@@ -79,6 +75,10 @@ struct CongratulationSheetView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             
             Button(action: {
+                withAnimation(.easeInOut(duration: 1)) {
+                    sheetVisibility = false
+                    gameManager.playingFirstLevel = false
+                }
                 
             }, label: {
                 Text("Go to Dashboard")
@@ -112,6 +112,6 @@ struct CongratulationSheetView: View {
     }
 }
 
-#Preview {
-    CongratulationSheetView()
-}
+//#Preview {
+//    CongratulationSheetView()
+//}

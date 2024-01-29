@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  SceneKitView.swift
+//
 //
 //  Created by Raphael Ferezin Kitahara on 26/01/24.
 //

@@ -15,6 +15,7 @@ struct FirstLevelView: View {
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
     @State var isSceneExpanded = false
+    @State var loadingLevel = true
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
     var sceneManager = SceneManager(sceneName: "FirstLevelScene.scn", cameraName: "camera")
@@ -23,11 +24,10 @@ struct FirstLevelView: View {
     @State var showIntroduction = true
     @State var showLevelCompleteSheet = false
     @State var showLevelFailedSheet = false
+    @State var showLevelWarningSheet = false
     @State var showScene = true
-    
-    
-    @State var loadingLevel = true
 
+    
     var body: some View {
         if loadingLevel {
             LoaderView()
@@ -84,10 +84,8 @@ struct FirstLevelView: View {
                     .background(colorScheme == .light ? .white : Color(hex: "212121"))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .sheet(isPresented: $showDescriptionSheet, content: {
-                        VStack(spacing: 16) {
-                            FirstLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
-                        }
-                        
+                        FirstLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
+
                     })
                 }
                 
@@ -105,7 +103,9 @@ struct FirstLevelView: View {
                         ZStack {
                             SceneKitView(sceneManager: sceneManager)
                             
-                            VStack {
+                            // overlays
+                            VStack(spacing: 0) {
+                                // top buttons
                                 HStack {
                                     // Run Code Button
                                     Button(action: {
@@ -121,6 +121,7 @@ struct FirstLevelView: View {
                                             }
                                         }
                                         .foregroundStyle(.white)
+                                        .fontWeight(.semibold)
                                         .padding(.vertical, 10)
                                         .padding(.horizontal, 12)
                                         .background {
@@ -154,6 +155,7 @@ struct FirstLevelView: View {
                                             Image(systemName: isSceneExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
                                         }
                                         .foregroundStyle(.white)
+                                        .fontWeight(.semibold)
                                         .padding(.vertical, 10)
                                         .padding(.horizontal, 12)
                                         .background {
@@ -165,7 +167,84 @@ struct FirstLevelView: View {
                                     .padding()
                                 }
                                 
-                                
+                                // warnings
+                                if showLevelWarningSheet{
+                                    // not reach goal destination warning
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "exclamationmark.triangle.fill")
+                                            Text("Look Out!")
+                                            
+                                            Spacer()
+                                            
+                                            Button {
+                                                withAnimation(.interactiveSpring) {
+                                                    showLevelWarningSheet = false
+                                                }
+                                            } label: {
+                                                Image(systemName: "xmark.circle.fill")
+                                                    .foregroundStyle(.white.opacity(0.5))
+                                            }
+                                            .buttonStyle(.plain)
+                                            
+                                        }
+                                        .fontWeight(.semibold)
+                                        
+                                        Text("It looks like Ribbo did not achieve his final destination.\nTry making a single algorithm which leads it to the green spot in a single run.")
+                                            .multilineTextAlignment(.leading)
+                                            .font(.subheadline)
+                                    }
+                                    .foregroundStyle(.white)
+                                    .padding(12)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(hex: "F7A03A").opacity(0.9))
+                                    }
+                                    .onTapGesture {
+                                        withAnimation(.interactiveSpring) {
+                                            showLevelWarningSheet = false
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                    
+                                } else if showLevelFailedSheet {
+                                    // fail warning
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "xmark.square.fill")
+                                            Text("Oh no!")
+                                            
+                                            Spacer()
+                                            
+                                            Button {
+                                                withAnimation(.interactiveSpring) {
+                                                    showLevelFailedSheet = false
+                                                }
+                                            } label: {
+                                                Image(systemName: "xmark.circle.fill")
+                                                    .foregroundStyle(.white.opacity(0.5))
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                        .fontWeight(.semibold)
+                                        
+                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
+                                            .multilineTextAlignment(.leading)
+                                            .font(.subheadline)
+                                    }
+                                    .foregroundStyle(.white)
+                                    .padding(12)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(hex: "F57F71").opacity(0.9))
+                                    }
+                                    .onTapGesture {
+                                        withAnimation(.interactiveSpring) {
+                                            showLevelFailedSheet = false
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
                                 
                                 Spacer()
                             }
@@ -174,77 +253,13 @@ struct FirstLevelView: View {
                         .padding(.leading, 8)
                     }
                 }
-                // fail sheet
-                .sheet(isPresented: $showLevelFailedSheet, content: {
-                    ZStack {
-                        if colorScheme == .light {
-                            LinearGradient(
-                                colors: [
-                                    Color(red: 0.88, green: 0.33, blue: 0.26),
-                                    .white,
-                                    .white
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        } else {
-                            LinearGradient(
-                                colors: [
-                                    Color(red: 0.88, green: 0.33, blue: 0.26),
-                                    .black,
-                                    .black
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                            
-                        }
-                        
-                        
-                        VStack(alignment: .center, spacing: 16) {
-                            Spacer()
-                            
-                            Text("On no!")
-                                .font(.largeTitle)
-                                .fontDesign(.monospaced)
-                                .fontWeight(.bold)
-                                .padding(.bottom, 80)
-                            
-                            Text("It looks like your code did not pass our test's safety requirements for Ribbo!\n\nBut don’t worry, this is just a simulator and nothing was actually sent, so Ribbo is fine!\n\nYou can try again, and if you need any help you can read the entire mission description by clicking on the ”Read More...” button.")
-                                .multilineTextAlignment(.center)
-                                .lineSpacing(8)
-                                .padding(.horizontal, 32)
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                self.presentationMode.wrappedValue.dismiss()
-                                
-                            }, label: {
-                                Text("Back to Dashboard")
-                                    .fontWeight(.semibold)
-                                    .fontDesign(.monospaced)
-                                    .padding()
-                                    .background {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .fill(.gray.opacity(0.25))
-                                    }
-                                    .padding(.bottom, 32)
-                            })
-                            .buttonStyle(.plain)
-                        }
-                        .padding(32)
-                        
-                    }
-                    
-                })
             }
             .padding()
             .background(Color(hex: colorScheme == .light ? "F2F1F6" : "131313").ignoresSafeArea())
             .navigationTitle("First Mission")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
-                CongratulationSheetView()
+                CongratulationSheetView(sheetVisibility: $showLevelCompleteSheet)
             })
         }
     }
@@ -252,6 +267,8 @@ struct FirstLevelView: View {
     func runFirstLevelCode() {
         withAnimation(.spring) {
             runningScene = true
+            showLevelWarningSheet = false
+            showLevelFailedSheet = false
         }
         
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
@@ -263,6 +280,13 @@ struct FirstLevelView: View {
 
             // running code on ribbo
             Task {
+                // placing ribbo on its starting position 
+                ribboNode.position.x = 0
+                ribboNode.position.z = 0
+                ribboNode.eulerAngles.x = 0
+                ribboNode.eulerAngles.y = 0
+                ribboNode.eulerAngles.z = 0
+                
                 var ribboDirection = 0 // 0 forward, 1 left, -1 right, 2 back (considering start position)
                 var currentAngle: Float = 0
                 
@@ -345,21 +369,29 @@ struct FirstLevelView: View {
                     
                     // checking for allowed ribbo coordinates (to see if the code failed)
                     if ribboNode.position.z <= -1.4 {
-                        showLevelFailedSheet = true
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                        }
                         break
                     } else if ribboNode.position.z >= 2.8 {
-                        showLevelFailedSheet = true
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                        }
                         break
                     }
                     
                     if ribboNode.position.x  >= -1.4 {
                         if ribboNode.position.z >= 1.4 {
-                            showLevelFailedSheet = true
+                            withAnimation(.spring) {
+                                showLevelFailedSheet = true
+                            }
                             break
                         }
                     } else if ribboNode.position.x  < -3.2 {
                         if ribboNode.position.z < 1.2 {
-                            showLevelFailedSheet = true
+                            withAnimation(.spring) {
+                                showLevelFailedSheet = true
+                            }
                             break
                         }
                     }
@@ -373,6 +405,19 @@ struct FirstLevelView: View {
                     gameManager.firstLevelComplete = true
                     gameManager.secondLevelAvailable = true
                     showLevelCompleteSheet = true
+                } else {
+                    withAnimation(.spring) {
+                        if !showLevelFailedSheet {
+                            showLevelWarningSheet = true
+                        }
+                        
+                        ribboNode.position.x = 0
+                        ribboNode.position.z = 0
+                        ribboNode.eulerAngles.x = 0
+                        ribboNode.eulerAngles.y = 0
+                        ribboNode.eulerAngles.z = 0
+                    }
+                    
                 }
                 
                 runningScene = false

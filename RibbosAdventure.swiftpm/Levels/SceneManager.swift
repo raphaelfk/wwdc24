@@ -11,7 +11,7 @@ import SwiftUI
 
 class SceneManager
 {
-    let scene: SCNScene
+    var scene: SCNScene
     let view: SCNView
     private let cameraOrbit: SCNNode
     private var maxWidthRatioRight: Float = 0.2

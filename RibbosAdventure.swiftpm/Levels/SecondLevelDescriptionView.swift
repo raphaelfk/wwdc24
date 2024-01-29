@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SecondLevelDescriptionView: View {
     var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
-    //@Binding var descriptionVisibility: Bool
+    @Binding var descriptionVisibility: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -24,7 +24,7 @@ struct SecondLevelDescriptionView: View {
                     Text("Castle Planet")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color(hex: "A8D47B"))
+                        .foregroundStyle(Color(hex: "5F79D4"))
                     
                 }
                 
@@ -49,11 +49,11 @@ struct SecondLevelDescriptionView: View {
             .padding(.bottom)
             
             // description
-            Text("Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it.")
+            Text("Ribbo is now on Castle Planet and needs to go through an area that seems dangerous.")
             
-            Text("It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help him.")
+            Text("There is too much fog where it's at, so it might need your help to go through this challenge!")
             
-            Text("The commands are presented on the Coding Console we provided to you:")
+            Text("Castle Planet is much further away from Earth than Grass Planet was, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times:")
             
             // Code blocks example
             HStack {
@@ -88,9 +88,7 @@ struct SecondLevelDescriptionView: View {
             .background(Color(hex: "292A2F"))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            Text("You can tap on each of them to add them to the console.")
-            
-            Text("After you create your algorithm, you can test it on our simulator. If it passes, we will send it to Ribbo, but if it fails, it's just a simulator! Ribbo will be fine!")
+            Text("You can now create your algorithm, but just be mindful about how many code blocks you are using!")
             
             Spacer()
             
@@ -111,6 +109,6 @@ struct SecondLevelDescriptionView: View {
     }
 }
 
-#Preview {
-    SecondLevelDescriptionView()
-}
+//#Preview {
+//    SecondLevelDescriptionView()
+//}
