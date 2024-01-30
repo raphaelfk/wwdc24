@@ -23,6 +23,7 @@ enum CodeBlockType: Equatable {
 }
 
 struct CodeEditorView: View {
+    @State var codeBlocksCount = 0
     var codeBlocksLimit: Int = 10
     @Binding var codeBlocksList: [CodeBlock]
     var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
@@ -143,6 +144,8 @@ struct CodeEditorView: View {
                                                             index += 1
                                                         }
                                                     }
+                                                    
+                                                    updateCodeBlocksCount()
                                                 }
                                                 
                                             }
@@ -217,7 +220,7 @@ struct CodeEditorView: View {
                     HStack {
                         Spacer()
                         
-                        Text("Blocks Limit: \(codeBlocksList.count) / \(codeBlocksLimit)")
+                        Text("Blocks Limit: \(codeBlocksCount) / \(codeBlocksLimit)")
                             .foregroundStyle(.white)
                             .font(.subheadline)
                             .fontWeight(.medium)
@@ -225,12 +228,12 @@ struct CodeEditorView: View {
                             .padding(.horizontal, 12)
                             .background {
                                 // no more code blocks allowed
-                                if codeBlocksList.count == codeBlocksLimit {
+                                if codeBlocksCount == codeBlocksLimit {
                                     RoundedRectangle(cornerRadius: 8)
                                         .fill(Color(hex: "F57F71").opacity(0.9))
                                     
                                     // almost out of code blocks
-                                } else if codeBlocksList.count >= codeBlocksLimit - 3 {
+                                } else if codeBlocksCount >= codeBlocksLimit - 3 {
                                     RoundedRectangle(cornerRadius: 12)
                                         .fill(Color(hex: "F7A03A").opacity(0.9))
                                     
@@ -257,7 +260,7 @@ struct CodeEditorView: View {
                 // Code blocks gallery
                 HStack {
                     // if the user can place more code blocks
-                    if codeBlocksList.count < codeBlocksLimit || !hasCodeBlocksLimit {
+                    if codeBlocksCount < codeBlocksLimit || !hasCodeBlocksLimit {
                         // ribbo commands
                         VStack(alignment: .leading) {
                             HStack(spacing: 4) {
@@ -295,12 +298,22 @@ struct CodeEditorView: View {
                                                 }
                                                 
                                                 self.codeBlocksList[listIndex].inlineBlocks.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                
+
                                             } else {
-                                                self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                if hasCodeBlocksLimit {
+                                                    if codeBlocksCount < codeBlocksLimit {
+                                                        self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                    }
+                                                } else {
+                                                    self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                }
+                                                
                                             }
                                         }
+                                        
+                                        updateCodeBlocksCount()
                                     }
-                                    .draggable(codeBlock.command ?? "")
                             }
                         }
                         
@@ -358,6 +371,7 @@ struct CodeEditorView: View {
                                 withAnimation(.interactiveSpring) {
                                     self.codeBlocksList.append(CodeBlock(highlighted: false, type: .forBlock))
                                 }
+                                updateCodeBlocksCount()
                             }
                             .draggable("forLoop")
                         }
@@ -436,6 +450,27 @@ struct CodeEditorView: View {
             withAnimation(.spring) {
                 self.selectedBlock = nil
             }
+        }
+    }
+    
+    func updateCodeBlocksCount() {
+        var updatedCount = 0
+        
+        for codeBlock in codeBlocksList {
+            if codeBlock.type == .forBlock || codeBlock.type == .ifBlock {
+                updatedCount += 1
+                
+                // counting all of the inline blocks
+                for _ in codeBlock.inlineBlocks {
+                    updatedCount += 1
+                }
+            } else {
+                updatedCount += 1
+            }
+        }
+        
+        withAnimation(.interactiveSpring) {
+            codeBlocksCount = updatedCount
         }
     }
 }

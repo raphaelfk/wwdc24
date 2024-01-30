@@ -51,7 +51,7 @@ struct SecondLevelView: View {
                 HStack {
                     Button {
                         withAnimation(.easeInOut(duration: 0.5)) {
-                            gameManager.playingFirstLevel = false
+                            gameManager.playingSecondLevel = false
                         }
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
@@ -268,7 +268,6 @@ struct SecondLevelView: View {
             }
             .padding()
             .background(Color(hex: colorScheme == .light ? "F2F1F6" : "131313").ignoresSafeArea())
-            .navigationTitle("First Mission")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
                 VStack(alignment: .center, spacing: 16) {
@@ -310,6 +309,8 @@ struct SecondLevelView: View {
     func runSecondLevelCode() {
         withAnimation(.spring) {
             runningScene = true
+            showLevelWarningSheet = false
+            showLevelFailedSheet = false
         }
         
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
@@ -487,7 +488,65 @@ struct SecondLevelView: View {
                                 }
 
                                 // wait between running commands
-                                try await Task.sleep(nanoseconds: 500_000)
+                                try await Task.sleep(nanoseconds: 1_000_000)
+                                
+                                // checking for allowed ribbo coordinates (to see if the code failed)
+                                if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
+                                    // if its left to the first bridge (from ribbo's start perspective)
+                                    if ribboNode.position.z >= 1.2 {
+                                        withAnimation(.spring) {
+                                            showLevelFailedSheet = true
+                                        }
+                                        break
+                                        
+                                        // if its more right than the second bridge (from ribbo's perspective)
+                                    } else if ribboNode.position.z < -6 {
+                                        withAnimation(.spring) {
+                                            showLevelFailedSheet = true
+                                        }
+                                        break
+                                    }
+                                    
+                                    // if ribbo is on the first bridge
+                                    if ribboNode.position.x > 10 {
+                                        // his left side is already taken care of
+                                        // if his z position is less than -1, it means he will fall to the right side of the bridge
+                                        if ribboNode.position.z < -1 {
+                                            withAnimation(.spring) {
+                                                showLevelFailedSheet = true
+                                            }
+                                            break
+                                        }
+                                        
+                                        // if ribbo is on the middle bridge
+                                    } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
+                                        // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
+                                        // if his x position is less than -11, it means he will fall to the left side of the bridge
+                                        if ribboNode.position.x < -11 {
+                                            withAnimation(.spring) {
+                                                showLevelFailedSheet = true
+                                            }
+                                            break
+                                        }
+                                        
+                                        // if ribbo is on the last bridge
+                                    } else {
+                                        if ribboNode.position.x < -11 {
+                                            // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
+                                            if ribboNode.position.z > -5 {
+                                                withAnimation(.spring) {
+                                                    showLevelFailedSheet = true
+                                                }
+                                                break
+                                            } else if ribboNode.position.x < 13 {
+                                                withAnimation(.spring) {
+                                                    showLevelCompleteSheet = true
+                                                }
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             
                         }
@@ -497,33 +556,60 @@ struct SecondLevelView: View {
                     try await Task.sleep(nanoseconds: 500_000)
                     
                     // checking for allowed ribbo coordinates (to see if the code failed)
-                    if ribboNode.position.z <= -1.2 {
-                        withAnimation(.spring) {
-                            showLevelFailedSheet = true
-                        }
-                        break
-                    }
-                    // if its left to ribbo's starting position
-                    if ribboNode.position.z >= 1.2 {
-                        withAnimation(.spring) {
-                            showLevelFailedSheet = true
-                        }
-                        break
-                    }
-                    
-                    if ribboNode.position.x  <= -11 { // if ribbo moves to front more than first bridge
-                        if ribboNode.position.z >= 1.4 {
+                    if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
+                        // if its left to the first bridge (from ribbo's start perspective)
+                        if ribboNode.position.z >= 1.2 {
+                            withAnimation(.spring) {
+                                showLevelFailedSheet = true
+                            }
+                            break
+                            
+                        // if its more right than the second bridge (from ribbo's perspective)
+                        } else if ribboNode.position.z < -6 {
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
                             }
                             break
                         }
-                    } else if ribboNode.position.x  < -3.2 {
-                        if ribboNode.position.z < 1.2 {
-                            withAnimation(.spring) {
-                                showLevelFailedSheet = true
+                        
+                        // if ribbo is on the first bridge
+                        if ribboNode.position.x > 10 {
+                            // his left side is already taken care of
+                            // if his z position is less than -1, it means he will fall to the right side of the bridge
+                            if ribboNode.position.z < -1 {
+                                withAnimation(.spring) {
+                                    showLevelFailedSheet = true
+                                }
+                                break
                             }
-                            break
+                            
+                        // if ribbo is on the middle bridge
+                        } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
+                            // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
+                            // if his x position is less than -11, it means he will fall to the left side of the bridge
+                            if ribboNode.position.x < -11 {
+                                withAnimation(.spring) {
+                                    showLevelFailedSheet = true
+                                }
+                                break
+                            }
+                            
+                        // if ribbo is on the last bridge
+                        } else {
+                            if ribboNode.position.x < -11 {
+                                // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
+                                if ribboNode.position.z > -5 {
+                                    withAnimation(.spring) {
+                                        showLevelFailedSheet = true
+                                    }
+                                    break
+                                } else if ribboNode.position.x < 13 {
+                                    withAnimation(.spring) {
+                                        showLevelCompleteSheet = true
+                                    }
+                                    break
+                                }
+                            }
                         }
                     }
                 }
