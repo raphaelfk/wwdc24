@@ -363,7 +363,11 @@ struct DashboardView: View {
                                 
                                 if gameManager.thirdLevelAvailable {
                                     Button(action: {
-                                        
+                                        withAnimation(.easeInOut(duration: 2)) {
+                                            gameManager.playingFirstLevel = false
+                                            gameManager.playingSecondLevel = false
+                                            gameManager.playingThirdLevel = true
+                                        }
                                     }, label: {
                                         HStack {
                                             Image(systemName: "play.fill")

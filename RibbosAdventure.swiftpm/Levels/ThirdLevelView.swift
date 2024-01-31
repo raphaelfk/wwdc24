@@ -18,7 +18,7 @@ struct ThirdLevelView: View {
     @State var loadingLevel = true
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
-    var sceneManager = SceneManager(sceneName: "SecondLevelScene.scn", cameraName: "camera")
+    var sceneManager = SceneManager(sceneName: "ThirdLevelScene.scn", cameraName: "camera")
     @State var sceneReady = false
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
@@ -27,6 +27,19 @@ struct ThirdLevelView: View {
     @State var showLevelFailedSheet = false
     @State var showLevelWarningSheet = false
     @State var showScene = true
+    
+    let testMap = [
+        ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+        ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+        ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+        ["x", "x", "x", "b", "y", "b", "p", "x", "x", "x"],
+        ["b", "b", "y", "x", "x", "x", "x", "y", "b", "b"],
+        ["x", "x", "b", "x", "y", "b", "b", "p", "x", "x"],
+        ["x", "x", "p", "b", "p", "x", "x", "x", "r", "r"],
+        ["x", "b", "x", "x", "x", "x", "g", "r", "g", "y"],
+        ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+        ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+    ]
     
     var body: some View {
         if loadingLevel {
@@ -51,7 +64,7 @@ struct ThirdLevelView: View {
                 HStack {
                     Button {
                         withAnimation(.easeInOut(duration: 0.5)) {
-                            gameManager.playingSecondLevel = false
+                            gameManager.playingThirdLevel = false
                         }
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
@@ -106,6 +119,9 @@ struct ThirdLevelView: View {
                     if showScene {
                         ZStack {
                             SceneKitView(sceneManager: sceneManager)
+                                .onAppear {
+                                    setupScene()
+                                }
                             
                             // overlays
                             VStack(spacing: 0) {
@@ -113,7 +129,7 @@ struct ThirdLevelView: View {
                                 HStack {
                                     // Run Code Button
                                     Button(action: {
-                                        runSecondLevelCode()
+                                        runThirdLevelCode()
                                     }, label: {
                                         HStack(spacing: 8) {
                                             if runningScene {
@@ -305,7 +321,40 @@ struct ThirdLevelView: View {
         }
     }
     
-    func runSecondLevelCode() {
+    func setupScene() {
+        for line in 0...9 {
+            for column in 0...9 {
+                if let tileNode = sceneManager.scene.rootNode.childNode(withName: "Tile\(line)\(column)", recursively: true) {
+                    tileNode.position.y = -0.432
+                    
+                    if line == 0 && column == 0 {
+                        
+                    }
+                    switch testMap[line][column] {
+                        case "b":
+                            // tileNode.geometry?.firstMaterial?.diffuse.contents = Color(hex: "5F79D4")
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "blueTile"))!)
+                         
+                        case "g":
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "greenTile"))!)
+                        case "p":
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "pinkTile"))!)
+                        case "r":
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "redTile"))!)
+                        case "x":
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "barrier"))!)
+                            tileNode.position.y = 0.35
+                        case "y":
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "yellowTile"))!)
+                        default:
+                            tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "blueTile"))!)
+                    }
+                }
+            }
+        }
+    }
+    
+    func runThirdLevelCode() {
         withAnimation(.spring) {
             runningScene = true
             showLevelWarningSheet = false

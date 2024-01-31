@@ -16,7 +16,7 @@ class GameManager: ObservableObject {
     @Published var playingThirdLevel = false
     @Published var secondLevelAvailable = false
     @Published var secondLevelComplete = false
-    @Published var thirdLevelAvailable = false
+    @Published var thirdLevelAvailable = true
     
     
     // Mission control terminal variables

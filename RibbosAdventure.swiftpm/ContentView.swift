@@ -1,7 +1,5 @@
 import SwiftUI
 
-
-
 struct ContentView: View {
     @State var finishedOnboarding = false
     @ObservedObject var gameManager = GameManager()
@@ -14,7 +12,7 @@ struct ContentView: View {
                 } else if gameManager.playingSecondLevel {
                     SecondLevelView()
                 } else if gameManager.playingThirdLevel {
-                    
+                    ThirdLevelView()
                 } else {
                     DashboardView()
                 }
