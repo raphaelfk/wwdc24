@@ -11,6 +11,7 @@ import SceneKit
 struct ThirdLevelView: View {
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
+    @State var currentMap: [[String]] = [[]]
     @EnvironmentObject var gameManager: GameManager
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
@@ -19,7 +20,7 @@ struct ThirdLevelView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
     var sceneManager = SceneManager(sceneName: "ThirdLevelScene.scn", cameraName: "camera")
-    @State var sceneReady = false
+    @State var sceneReady = true
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
@@ -28,15 +29,97 @@ struct ThirdLevelView: View {
     @State var showLevelWarningSheet = false
     @State var showScene = true
     
-    let testMap = [
+    let maps = [
+        // map 0
+        [
+            ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+            ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+            ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+            ["x", "x", "x", "b", "y", "b", "p", "x", "x", "x"],
+            ["b", "b", "y", "x", "x", "x", "x", "y", "b", "b"],
+            ["x", "x", "b", "x", "y", "b", "b", "p", "x", "x"],
+            ["x", "x", "p", "b", "p", "x", "x", "x", "r", "r"],
+            ["x", "b", "x", "x", "x", "x", "g", "r", "g", "y"],
+            ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+            ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ],
+        
+        // map 1
+        [
+            ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+            ["x", "g", "x", "x", "x", "x", "x", "p", "y", "b"],
+            ["x", "x", "y", "b", "b", "b", "y", "x", "x", "x"],
+            ["x", "x", "b", "x", "x", "x", "p", "b", "b", "b"],
+            ["b", "b", "p", "x", "r", "p", "x", "x", "x", "x"],
+            ["x", "x", "x", "r", "y", "b", "b", "p", "g", "p"],
+            ["x", "b", "p", "y", "p", "b", "r", "p", "r", "r"],
+            ["x", "b", "p", "g", "b", "y", "g", "r", "g", "y"],
+            ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+            ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ],
+        
+        // map 2
+        [
+            ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+            ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+            ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+            ["x", "x", "x", "b", "y", "b", "p", "b", "g", "p"],
+            ["b", "b", "y", "x", "x", "x", "y", "r", "y", "b"],
+            ["x", "x", "p", "b", "b", "y", "x", "p", "g", "p"],
+            ["x", "b", "x", "x", "x", "b", "x", "x", "x", "x"],
+            ["x", "b", "p", "g", "x", "p", "b", "b", "b", "b"],
+            ["x", "p", "y", "r", "g", "x", "x", "x", "x", "x"],
+            ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ]
+    ]
+    
+    let randomTiles = [
+        [  ["x", "y", "p", "r", "p", "g", "y", "g", "b", "y"],
+           ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+           ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+           ["x", "y", "p", "b", "y", "b", "p", "b", "g", "p"],
+           ["b", "b", "y", "p", "r", "p", "y", "r", "y", "b"],
+           ["x", "r", "b", "r", "y", "b", "b", "p", "g", "p"],
+           ["x", "b", "p", "y", "p", "b", "r", "p", "r", "r"],
+           ["x", "b", "p", "g", "b", "y", "g", "r", "g", "y"],
+           ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+           ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ],
+        
+        [  ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+           ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+           ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+           ["x", "y", "p", "b", "y", "b", "p", "b", "g", "p"],
+           ["b", "b", "y", "p", "r", "p", "y", "r", "y", "b"],
+           ["x", "r", "b", "r", "y", "b", "b", "p", "g", "p"],
+           ["x", "b", "p", "y", "p", "b", "r", "p", "r", "r"],
+           ["x", "b", "p", "g", "b", "y", "g", "r", "g", "y"],
+           ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+           ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ],
+        
+        [  ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
+           ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
+           ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
+           ["x", "y", "p", "b", "y", "b", "p", "b", "g", "p"],
+           ["b", "b", "y", "p", "r", "p", "y", "r", "y", "b"],
+           ["x", "r", "b", "r", "y", "b", "b", "p", "g", "p"],
+           ["x", "b", "p", "y", "p", "b", "r", "p", "r", "r"],
+           ["x", "b", "p", "g", "b", "y", "g", "r", "g", "y"],
+           ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
+           ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
+        ]
+    ]
+    
+    let mapWithNothing = [
         ["x", "y", "p", "g", "p", "g", "y", "g", "b", "y"],
         ["x", "g", "b", "y", "b", "y", "r", "p", "y", "b"],
         ["x", "p", "g", "r", "p", "g", "y", "g", "r", "y"],
-        ["x", "x", "x", "b", "y", "b", "p", "x", "x", "x"],
-        ["b", "b", "y", "x", "x", "x", "x", "y", "b", "b"],
-        ["x", "x", "b", "x", "y", "b", "b", "p", "x", "x"],
-        ["x", "x", "p", "b", "p", "x", "x", "x", "r", "r"],
-        ["x", "b", "x", "x", "x", "x", "g", "r", "g", "y"],
+        ["x", "y", "p", "b", "y", "b", "p", "b", "g", "p"],
+        ["b", "b", "y", "p", "r", "p", "y", "r", "y", "b"],
+        ["x", "r", "b", "r", "y", "b", "b", "p", "g", "p"],
+        ["x", "b", "p", "y", "p", "b", "r", "p", "r", "r"],
+        ["x", "b", "p", "g", "b", "y", "g", "r", "g", "y"],
         ["x", "p", "y", "r", "g", "r", "b", "p", "y", "b"],
         ["x", "g", "p", "b", "y", "p", "y", "g", "b", "p"]
     ]
@@ -46,7 +129,7 @@ struct ThirdLevelView: View {
             LoaderView()
                 .onAppear {
                     Task {
-                        try await Task.sleep(nanoseconds: 1_750_000_000)
+                        try await Task.sleep(nanoseconds: 1_000_000_000)
                         withAnimation(.easeInOut(duration: 0.5)) {
                             loadingLevel = false
                         }
@@ -69,7 +152,9 @@ struct ThirdLevelView: View {
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
                             .padding(4)
+                            .foregroundStyle(Color(hex: "A861D4"))
                     }
+                    .buttonStyle(.plain)
                     
                     Spacer()
                     
@@ -92,7 +177,9 @@ struct ThirdLevelView: View {
                                 showDescriptionSheet = true
                             }, label: {
                                 Text("Read More...")
+                                    .foregroundStyle(Color(hex: "A861D4"))
                             })
+                            .buttonStyle(.plain)
                             
                             Spacer()
                         }
@@ -110,7 +197,7 @@ struct ThirdLevelView: View {
                 HStack {
                     // Code editor
                     if showCodeEditor {
-                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 2, hasCodeBlocksLimit: true, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
+                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 3, hasCodeBlocksLimit: true, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.trailing, 8)
                     }
@@ -120,7 +207,10 @@ struct ThirdLevelView: View {
                         ZStack {
                             SceneKitView(sceneManager: sceneManager)
                                 .onAppear {
-                                    setupScene()
+                                    Task {
+                                        try await Task.sleep(nanoseconds: 1_500_000_000)
+                                        setupScene()
+                                    }
                                 }
                             
                             // overlays
@@ -286,67 +376,53 @@ struct ThirdLevelView: View {
             .background(Color(hex: colorScheme == .light ? "F2F1F6" : "131313").ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
-                VStack(alignment: .center, spacing: 16) {
-                    Spacer()
-                    
-                    Text("Congratulations!")
-                        .font(.title)
-                        .fontDesign(.monospaced)
-                        .fontWeight(.bold)
-                    
-                    Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet!\n\nIt is by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        gameManager.secondLevelComplete = true
-                        gameManager.thirdLevelAvailable = true
-                        self.presentationMode.wrappedValue.dismiss()
-                        
-                    }, label: {
-                        Text("Back to Dashboard")
-                            .fontWeight(.semibold)
-                            .fontDesign(.monospaced)
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.gray.opacity(0.25))
-                            }
-                            .padding(.bottom, 32)
-                    })
-                    .buttonStyle(.plain)
-                }
-                .padding(32)
+                ThirdLvlCongratulationSheetView(sheetVisibility: $showLevelCompleteSheet)
             })
         }
     }
     
     func setupScene() {
+        let previousMap = currentMap
+        
+        currentMap = maps[Int.random(in: 0...2)]
+        
+        
+        // changing colors
+        
+        // setting up map
         for line in 0...9 {
             for column in 0...9 {
                 if let tileNode = sceneManager.scene.rootNode.childNode(withName: "Tile\(line)\(column)", recursively: true) {
-                    tileNode.position.y = -0.432
-                    
-                    if line == 0 && column == 0 {
-                        
+                    if tileNode.position.y > 0 {
+                        let moveDown = SCNAction.moveBy(x: 0, y: -0.7, z: 0, duration: 0.5)
+                        tileNode.runAction(moveDown)
                     }
-                    switch testMap[line][column] {
+
+                    let moveUp = SCNAction.moveBy(x: 0, y: +0.7, z: 0, duration: 0.5)
+                    switch currentMap[line][column] {
                         case "b":
                             // tileNode.geometry?.firstMaterial?.diffuse.contents = Color(hex: "5F79D4")
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "blueTile"))!)
-                         
+                            
                         case "g":
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "greenTile"))!)
                         case "p":
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "pinkTile"))!)
                         case "r":
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "redTile"))!)
                         case "x":
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "barrier"))!)
-                            tileNode.position.y = 0.35
+                            tileNode.runAction(moveUp)
                         case "y":
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "yellowTile"))!)
                         default:
+                            tileNode.geometry?.materials.append((tileNode.geometry?.firstMaterial!)!)
                             tileNode.geometry?.replaceMaterial(at: 0, with: (tileNode.geometry?.material(named: "blueTile"))!)
                     }
                 }
@@ -361,7 +437,11 @@ struct ThirdLevelView: View {
             showLevelFailedSheet = false
         }
         
+        
+        
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
+            var ribboMatrixColPosition = 0
+            var ribboMatrixRowPosition = 4
             
             // move actions
             let moveFront = SCNAction.moveBy(x: -1.3, y: 0, z: 0, duration: 1)
@@ -381,306 +461,288 @@ struct ThirdLevelView: View {
                 var ribboDirection = 0 // 0 forward, 1 left, -1 right, 2 back (considering start position)
                 var currentAngle: Float = 0
                 
+                setupScene()
+                
+                await ribboNode.runAction(moveFront)
+                
                 // iterating over each code block placed on the code editor
-                for codeBlock in codeBlocksList {
-                    // highlighting the current running blocks
-                    var listIndex = 0
-                    var currentBlockIndex = 0
-                    for codeBlockFromList in codeBlocksList {
-                        if codeBlockFromList.id == codeBlock.id {
-                            codeBlocksList[listIndex].highlighted = true
-                            currentBlockIndex = listIndex
-                        } else {
-                            codeBlocksList[listIndex].highlighted = false
-                        }
-                        listIndex += 1
-                    }
+                while ribboMatrixColPosition < 10 && !showLevelFailedSheet && !showLevelWarningSheet { // run the code blocks while Ribbo is not on the green tiles or until it dies or stops
                     
-                    // running the blocks
-                    if codeBlock.type == .commandBlock {
-                        switch codeBlock.command {
-                            case "moveForward()":
-                                if ribboDirection == 0 {
-                                    await ribboNode.runAction(moveFront)
-                                } else if ribboDirection == 1 {
-                                    await ribboNode.runAction(moveLeft)
-                                } else if ribboDirection == 2 {
-                                    await ribboNode.runAction(moveBack)
-                                } else if ribboDirection == -1 {
-                                    await ribboNode.runAction(moveRight)
-                                }
-                                
-                                
-                            case "rotateLeft()":
-                                await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
-                                currentAngle += 1.57
-                                
-                                // facing forward, turn left
-                                if ribboDirection == 0 {
-                                    ribboDirection += 1
-                                    
-                                    // facing left, turn back
-                                } else if ribboDirection == 1 {
-                                    ribboDirection += 1
-                                    
-                                    // facing back, turn right
-                                } else if ribboDirection == 2 {
-                                    ribboDirection = -1
-                                    
-                                    // facing right, turn forward
-                                } else if ribboDirection == -1 {
-                                    ribboDirection += 1
-                                }
-                                
-                            case "rotateRight()":
-                                await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
-                                currentAngle -= 1.57
-                                
-                                // facing forward, turn to right
-                                if ribboDirection == 0 {
-                                    ribboDirection -= 1
-                                    
-                                    // facing left, turn to front
-                                } else if ribboDirection == 1 {
-                                    ribboDirection -= 1
-                                    
-                                    // facing back, turn to left
-                                } else if ribboDirection == 2 {
-                                    ribboDirection = 1
-                                    
-                                    // facing right, turn to back
-                                } else if ribboDirection == -1 {
-                                    ribboDirection = 2
-                                }
-                                
-                            default:
-                                print("No command (\(codeBlock.command ?? "Error") found!")
+                    // storing startPosition to see if any commands are being run. if not, Ribbo is stuck and the code should stop running
+                    let whileRibboStartPosition = (ribboMatrixRowPosition, ribboMatrixColPosition)
+                    
+                    for codeBlock in codeBlocksList {
+                        // highlighting the current running blocks
+                        var listIndex = 0
+                        var currentBlockIndex = 0
+                        for codeBlockFromList in codeBlocksList {
+                            if codeBlockFromList.id == codeBlock.id {
+                                codeBlocksList[listIndex].highlighted = true
+                                currentBlockIndex = listIndex
+                            } else {
+                                codeBlocksList[listIndex].highlighted = false
+                            }
+                            listIndex += 1
                         }
-                    } else { // if it is a for loop block
                         
-                        // iterating for the defined number of times
-                        for _ in 0 ..< (Int(codeBlock.command ?? "0") ?? 0) {
-                            
-                            // going through each inline block
-                            for inlineBlock in codeBlocksList[currentBlockIndex].inlineBlocks {
-                                var inlineListIndex = 0
-                                
-                                // highlighting the current inline running blocks
-                                for codeBlockFromInlineList in codeBlocksList[inlineListIndex].inlineBlocks {
-                                    if codeBlockFromInlineList.id == codeBlock.id {
-                                        codeBlocksList[inlineListIndex].highlighted = true
-                                    } else {
-                                        codeBlocksList[inlineListIndex].highlighted = false
+                        // running the blocks
+                        if codeBlock.type == .commandBlock {
+                            switch codeBlock.command {
+                                case "moveForward()":
+                                    if ribboDirection == 0 {
+                                        ribboMatrixColPosition += 1
+                                        await ribboNode.runAction(moveFront)
+                                    } else if ribboDirection == 1 {
+                                        ribboMatrixRowPosition -= 1
+                                        await ribboNode.runAction(moveLeft)
+                                    } else if ribboDirection == 2 {
+                                        ribboMatrixColPosition -= 1
+                                        await ribboNode.runAction(moveBack)
+                                    } else if ribboDirection == -1 {
+                                        ribboMatrixRowPosition += 1
+                                        await ribboNode.runAction(moveRight)
                                     }
-                                    inlineListIndex += 1
-                                }
-                                
-                                // running the commands
-                                switch inlineBlock.command {
-                                    case "moveForward()":
-                                        if ribboDirection == 0 {
-                                            await ribboNode.runAction(moveFront)
-                                        } else if ribboDirection == 1 {
-                                            await ribboNode.runAction(moveLeft)
-                                        } else if ribboDirection == 2 {
-                                            await ribboNode.runAction(moveBack)
-                                        } else if ribboDirection == -1 {
-                                            await ribboNode.runAction(moveRight)
+                                    
+                                    
+                                case "rotateLeft()":
+                                    await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
+                                    currentAngle += 1.57
+                                    
+                                    // facing forward, turn left
+                                    if ribboDirection == 0 {
+                                        ribboDirection += 1
+                                        
+                                        // facing left, turn back
+                                    } else if ribboDirection == 1 {
+                                        ribboDirection += 1
+                                        
+                                        // facing back, turn right
+                                    } else if ribboDirection == 2 {
+                                        ribboDirection = -1
+                                        
+                                        // facing right, turn forward
+                                    } else if ribboDirection == -1 {
+                                        ribboDirection += 1
+                                    }
+                                    
+                                case "rotateRight()":
+                                    await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
+                                    currentAngle -= 1.57
+                                    
+                                    // facing forward, turn to right
+                                    if ribboDirection == 0 {
+                                        ribboDirection -= 1
+                                        
+                                        // facing left, turn to front
+                                    } else if ribboDirection == 1 {
+                                        ribboDirection -= 1
+                                        
+                                        // facing back, turn to left
+                                    } else if ribboDirection == 2 {
+                                        ribboDirection = 1
+                                        
+                                        // facing right, turn to back
+                                    } else if ribboDirection == -1 {
+                                        ribboDirection = 2
+                                    }
+                                    
+                                default:
+                                    print("No command (\(codeBlock.command ?? "Error") found!")
+                            }
+                        } else { // if it is a if statement block
+                            var runCodeBlockCommands = false
+                            switch codeBlock.command {
+                                case "isOnBlueTile":
+                                    if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "b" {
+                                        runCodeBlockCommands = true
+                                    }
+                                case "isOnPinkTile":
+                                    if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "p" {
+                                        runCodeBlockCommands = true
+                                    }
+                                case "isOnYellowTile":
+                                    if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "y" {
+                                        runCodeBlockCommands = true
+                                    }
+                                default:
+                                    print("No condition identified for \(codeBlock.command ?? "")")
+                            }
+                            
+                            // if the if statement is true, run the inline blocks
+                            if runCodeBlockCommands {
+                                // going through each inline block
+                                for inlineBlock in codeBlocksList[currentBlockIndex].inlineBlocks {
+                                    var inlineListIndex = 0
+                                    
+                                    // highlighting the current inline running blocks
+                                    for codeBlockFromInlineList in codeBlocksList[inlineListIndex].inlineBlocks {
+                                        if codeBlockFromInlineList.id == codeBlock.id {
+                                            codeBlocksList[inlineListIndex].highlighted = true
+                                        } else {
+                                            codeBlocksList[inlineListIndex].highlighted = false
                                         }
-                                        
-                                        
-                                    case "rotateLeft()":
-                                        await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
-                                        currentAngle += 1.57
-                                        
-                                        // facing forward, turn left
-                                        if ribboDirection == 0 {
-                                            ribboDirection += 1
+                                        inlineListIndex += 1
+                                    }
+                                    
+                                    // running the commands
+                                    switch inlineBlock.command {
+                                        case "moveForward()":
+                                            if ribboDirection == 0 {
+                                                ribboMatrixColPosition += 1
+                                                await ribboNode.runAction(moveFront)
+                                            } else if ribboDirection == 1 {
+                                                ribboMatrixRowPosition -= 1
+                                                await ribboNode.runAction(moveLeft)
+                                            } else if ribboDirection == 2 {
+                                                ribboMatrixColPosition -= 1
+                                                await ribboNode.runAction(moveBack)
+                                            } else if ribboDirection == -1 {
+                                                ribboMatrixRowPosition += 1
+                                                await ribboNode.runAction(moveRight)
+                                            }
                                             
-                                            // facing left, turn back
-                                        } else if ribboDirection == 1 {
-                                            ribboDirection += 1
                                             
-                                            // facing back, turn right
-                                        } else if ribboDirection == 2 {
-                                            ribboDirection = -1
+                                        case "rotateLeft()":
+                                            await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle + 1.57)), duration: 1))
+                                            currentAngle += 1.57
                                             
-                                            // facing right, turn forward
-                                        } else if ribboDirection == -1 {
-                                            ribboDirection += 1
+                                            // facing forward, turn left
+                                            if ribboDirection == 0 {
+                                                ribboDirection += 1
+                                                
+                                                // facing left, turn back
+                                            } else if ribboDirection == 1 {
+                                                ribboDirection += 1
+                                                
+                                                // facing back, turn right
+                                            } else if ribboDirection == 2 {
+                                                ribboDirection = -1
+                                                
+                                                // facing right, turn forward
+                                            } else if ribboDirection == -1 {
+                                                ribboDirection += 1
+                                            }
+                                            
+                                        case "rotateRight()":
+                                            await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
+                                            currentAngle -= 1.57
+                                            
+                                            // facing forward, turn to right
+                                            if ribboDirection == 0 {
+                                                ribboDirection -= 1
+                                                
+                                                // facing left, turn to front
+                                            } else if ribboDirection == 1 {
+                                                ribboDirection -= 1
+                                                
+                                                // facing back, turn to left
+                                            } else if ribboDirection == 2 {
+                                                ribboDirection = 1
+                                                
+                                                // facing right, turn to back
+                                            } else if ribboDirection == -1 {
+                                                ribboDirection = 2
+                                            }
+                                            
+                                        default:
+                                            print("No command (\(inlineBlock.command ?? "Error") found!")
+                                    }
+                                    
+                                    // wait between running commands
+                                    try await Task.sleep(nanoseconds: 1_000_000)
+                                    
+                                    // checking for level completion
+                                    if ribboMatrixColPosition >= currentMap[0].count {
+                                        withAnimation(.spring) {
+                                            showLevelCompleteSheet = true
+                                            gameManager.thirdLevelComplete = true
+                                            gameManager.allLevelsComplete = true
                                         }
-                                        
-                                    case "rotateRight()":
-                                        await ribboNode.runAction(SCNAction.rotate(toAxisAngle: SCNVector4(x: 0, y: 1, z: 0, w: (currentAngle - 1.57)), duration: 1))
-                                        currentAngle -= 1.57
-                                        
-                                        // facing forward, turn to right
-                                        if ribboDirection == 0 {
-                                            ribboDirection -= 1
-                                            
-                                            // facing left, turn to front
-                                        } else if ribboDirection == 1 {
-                                            ribboDirection -= 1
-                                            
-                                            // facing back, turn to left
-                                        } else if ribboDirection == 2 {
-                                            ribboDirection = 1
-                                            
-                                            // facing right, turn to back
-                                        } else if ribboDirection == -1 {
-                                            ribboDirection = 2
-                                        }
-                                        
-                                    default:
-                                        print("No command (\(inlineBlock.command ?? "Error") found!")
-                                }
-                                
-                                // wait between running commands
-                                try await Task.sleep(nanoseconds: 1_000_000)
-                                
-                                // checking for allowed ribbo coordinates (to see if the code failed)
-                                if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
-                                    // if its left to the first bridge (from ribbo's start perspective)
-                                    if ribboNode.position.z >= 1.2 {
+                                        break
+                                    }
+                                    
+                                    // checking for allowed ribbo coordinates (to see if the code failed)
+                                    if ribboMatrixRowPosition >= currentMap.count || ribboMatrixRowPosition < 0 { // if its out of the map row wise
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
                                         }
                                         break
-                                        
-                                        // if its more right than the second bridge (from ribbo's perspective)
-                                    } else if ribboNode.position.z < -6 {
+                                    }
+                                    
+                                    if ribboMatrixColPosition < 0 { // if its out of the map column wise
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
                                         }
                                         break
                                     }
                                     
-                                    // if ribbo is on the first bridge
-                                    if ribboNode.position.x > 10 {
-                                        // his left side is already taken care of
-                                        // if his z position is less than -1, it means he will fall to the right side of the bridge
-                                        if ribboNode.position.z < -1 {
-                                            withAnimation(.spring) {
-                                                showLevelFailedSheet = true
-                                            }
-                                            break
+                                    if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if it hits a barrier
+                                        withAnimation(.spring) {
+                                            showLevelFailedSheet = true
                                         }
-                                        
-                                        // if ribbo is on the middle bridge
-                                    } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
-                                        // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
-                                        // if his x position is less than -11, it means he will fall to the left side of the bridge
-                                        if ribboNode.position.x < -11 {
-                                            withAnimation(.spring) {
-                                                showLevelFailedSheet = true
-                                            }
-                                            break
-                                        }
-                                        
-                                        // if ribbo is on the last bridge
-                                    } else {
-                                        if ribboNode.position.x < -11 {
-                                            // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
-                                            if ribboNode.position.z > -5 {
-                                                withAnimation(.spring) {
-                                                    showLevelFailedSheet = true
-                                                }
-                                                break
-                                            } else if ribboNode.position.x < 13 {
-                                                withAnimation(.spring) {
-                                                    showLevelCompleteSheet = true
-                                                }
-                                                break
-                                            }
-                                        }
+                                        break
                                     }
                                 }
+ 
                             }
                             
                         }
-                    }
-                    
-                    // wait between running commands
-                    try await Task.sleep(nanoseconds: 500_000)
-                    
-                    // checking for allowed ribbo coordinates (to see if the code failed)
-                    if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
-                        // if its left to the first bridge (from ribbo's start perspective)
-                        if ribboNode.position.z >= 1.2 {
+                        
+                        // wait between running commands
+                        try await Task.sleep(nanoseconds: 500_000)
+                        
+                        // checking for level completion
+                        if ribboMatrixColPosition >= currentMap[0].count {
                             withAnimation(.spring) {
-                                showLevelFailedSheet = true
+                                showLevelCompleteSheet = true
+                                gameManager.thirdLevelComplete = true
+                                gameManager.allLevelsComplete = true
                             }
                             break
-                            
-                            // if its more right than the second bridge (from ribbo's perspective)
-                        } else if ribboNode.position.z < -6 {
+                        }
+                        
+                        // checking for allowed ribbo coordinates (to see if the code failed)
+                        if ribboMatrixRowPosition >= currentMap.count || ribboMatrixRowPosition < 0 { // if its out of the map row wise
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
                             }
                             break
                         }
                         
-                        // if ribbo is on the first bridge
-                        if ribboNode.position.x > 10 {
-                            // his left side is already taken care of
-                            // if his z position is less than -1, it means he will fall to the right side of the bridge
-                            if ribboNode.position.z < -1 {
-                                withAnimation(.spring) {
-                                    showLevelFailedSheet = true
-                                }
-                                break
+                        if ribboMatrixColPosition < 0 { // if its out of the map column wise
+                            withAnimation(.spring) {
+                                showLevelFailedSheet = true
                             }
-                            
-                            // if ribbo is on the middle bridge
-                        } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
-                            // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
-                            // if his x position is less than -11, it means he will fall to the left side of the bridge
-                            if ribboNode.position.x < -11 {
-                                withAnimation(.spring) {
-                                    showLevelFailedSheet = true
-                                }
-                                break
-                            }
-                            
-                            // if ribbo is on the last bridge
-                        } else {
-                            if ribboNode.position.x < -11 {
-                                // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
-                                if ribboNode.position.z > -5 {
-                                    withAnimation(.spring) {
-                                        showLevelFailedSheet = true
-                                    }
-                                    break
-                                } else if ribboNode.position.x < 13 {
-                                    withAnimation(.spring) {
-                                        showLevelCompleteSheet = true
-                                    }
-                                    break
-                                }
-                            }
+                            break
                         }
+                        
+                        if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if it hits a barrier
+                            withAnimation(.spring) {
+                                showLevelFailedSheet = true
+                            }
+                            break
+                        }
+                    }
+                    
+                    // if ribbo is stuck, stop code
+                    if ribboMatrixRowPosition == whileRibboStartPosition.0 && ribboMatrixColPosition == whileRibboStartPosition.1 {
+                        break
                     }
                 }
-                
+
                 for int in 0 ..< codeBlocksList.count {
                     codeBlocksList[int].highlighted = false
                 }
                 
-                if ribboNode.position.x <= -14.3 {
-                    showLevelCompleteSheet = true
-                } else {
+                if !showLevelCompleteSheet && !showLevelFailedSheet { // if ribbo did not die and did not win (stopped in the middle of the way)
                     withAnimation(.spring) {
-                        if !showLevelFailedSheet {
-                            showLevelWarningSheet = true
-                        }
-                        
+                        showLevelWarningSheet = true
                         ribboNode.position.x = 0
                         ribboNode.position.z = 0
                         ribboNode.eulerAngles.x = 0
                         ribboNode.eulerAngles.y = 0
                         ribboNode.eulerAngles.z = 0
                     }
-                    
                 }
                 
                 runningScene = false

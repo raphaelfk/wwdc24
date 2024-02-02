@@ -56,7 +56,9 @@ struct SecondLevelView: View {
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
                             .padding(4)
+                            .foregroundStyle(Color(hex: "5F79D4"))
                     }
+                    .buttonStyle(.plain)
                     
                     Spacer()
                     
@@ -79,7 +81,9 @@ struct SecondLevelView: View {
                                 showDescriptionSheet = true
                             }, label: {
                                 Text("Read More...")
+                                    .foregroundStyle(Color(hex: "5F79D4"))
                             })
+                            .buttonStyle(.plain)
                             
                             Spacer()
                         }
@@ -270,37 +274,7 @@ struct SecondLevelView: View {
             .background(Color(hex: colorScheme == .light ? "F2F1F6" : "131313").ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
-                VStack(alignment: .center, spacing: 16) {
-                    Spacer()
-                    
-                    Text("Congratulations!")
-                        .font(.title)
-                        .fontDesign(.monospaced)
-                        .fontWeight(.bold)
-                    
-                    Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet!\n\nIt is by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        gameManager.secondLevelComplete = true
-                        gameManager.thirdLevelAvailable = true
-                        self.presentationMode.wrappedValue.dismiss()
-                        
-                    }, label: {
-                        Text("Back to Dashboard")
-                            .fontWeight(.semibold)
-                            .fontDesign(.monospaced)
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.gray.opacity(0.25))
-                            }
-                            .padding(.bottom, 32)
-                    })
-                    .buttonStyle(.plain)
-                }
-                .padding(32)
+                SecondLvlCongratulationSheetView(sheetVisibility: $showLevelCompleteSheet)
             })
         }
         
@@ -541,6 +515,8 @@ struct SecondLevelView: View {
                                             } else if ribboNode.position.x < 13 {
                                                 withAnimation(.spring) {
                                                     showLevelCompleteSheet = true
+                                                    gameManager.thirdLevelAvailable = true
+                                                    gameManager.secondLevelComplete = true
                                                 }
                                                 break
                                             }
@@ -606,6 +582,8 @@ struct SecondLevelView: View {
                                 } else if ribboNode.position.x < 13 {
                                     withAnimation(.spring) {
                                         showLevelCompleteSheet = true
+                                        gameManager.thirdLevelAvailable = true
+                                        gameManager.secondLevelComplete = true
                                     }
                                     break
                                 }
@@ -620,6 +598,8 @@ struct SecondLevelView: View {
                 
                 if ribboNode.position.x <= -14.3 {
                     showLevelCompleteSheet = true
+                    gameManager.thirdLevelAvailable = true
+                    gameManager.secondLevelComplete = true
                 } else {
                     withAnimation(.spring) {
                         if !showLevelFailedSheet {

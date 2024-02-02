@@ -39,7 +39,7 @@ struct CodeEditorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Top bar
-            HStack(alignment: .center) {
+            HStack(alignment: .center, spacing: 12) {
                 Image(systemName: "chevron.left.forwardslash.chevron.right")
                     .font(.subheadline)
                     .fontWeight(.semibold)
@@ -51,6 +51,49 @@ struct CodeEditorView: View {
                     .foregroundStyle(.white)
                 
                 Spacer()
+                
+                Button {
+                    withAnimation(.spring) {
+                        if currentMission == 1 {
+                            codeBlocksList = [
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)
+                            ]
+                        } else if currentMission == 2 {
+                            codeBlocksList = [
+                                CodeBlock(command: "8", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock),
+                                CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "4", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock),
+                                CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock),
+                                CodeBlock(command: "4", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock)
+                            ]
+                        } else {
+                            codeBlocksList = [
+                                CodeBlock(command: "isOnBlueTile", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
+                                CodeBlock(command: "isOnPinkTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
+                                CodeBlock(command: "isOnYellowTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock)
+                            ]
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("Show Solution")
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 10)
+                    .background {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.gray.opacity(0.25))
+                    }
+                }
+                .buttonStyle(.plain)
                 
                 Button {
                     withAnimation(.spring) {
@@ -101,111 +144,224 @@ struct CodeEditorView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 12) {
                             // Empty state
-                            if codeBlocksList.isEmpty {
+                            if codeBlocksList.isEmpty && currentMission != 3 {
                                 Text("Click on blocks to compose your code!")
                                     .foregroundStyle(.gray)
                                 
-                                // Code blocks
+                            // Code blocks
                             } else {
-                                ForEach(codeBlocksList) { codeBlock in
-                                    switch codeBlock.type {
-                                        case .commandBlock:
-                                            HStack(alignment: .center) {
-                                                Text(codeBlock.command ?? "Error")
-                                                    .fontDesign(.monospaced)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.white)
-                                                
-                                                if !runningScene {
-                                                    Divider()
-                                                    
-                                                    Image(systemName: "xmark")
-                                                        .fontWeight(.medium)
-                                                        .foregroundStyle(.white)
-                                                        .font(.footnote)
+                                if currentMission == 3 {
+                                    // static move forward command
+                                    HStack(alignment: .center) {
+                                        Text("moveForward()")
+                                            .fontDesign(.monospaced)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.white)
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background {
+                                        Color(hex: "7E8C98")
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    // while block
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        HStack(spacing: 16) {
+                                            Text("while")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            // condition
+                                            Text("isNotOnGreenTile")
+                                                .foregroundStyle(.white)
+                                                .multilineTextAlignment(.center)
+                                                .keyboardType(.numberPad)
+                                                .frame(height: 28)
+                                                .padding(.horizontal, 8)
+                                                .background {
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(.white.opacity(0.5))
+                                                        .frame(height: 28)
                                                 }
-                                            }
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 8)
-                                            .background {
-                                                Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
-                                            }
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            .onTapGesture {
-                                                // go through list and delete the tapped code block
-                                                if !runningScene {
-                                                    withAnimation(.interactiveSpring) {
-                                                        var index = 0
-                                                        for codeBlockSearched in codeBlocksList {
-                                                            if codeBlockSearched.id == codeBlock.id {
-                                                                codeBlocksList.remove(at: index)
-                                                                break
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "7E8C98")
+                                        }
+                                        .clipShape(
+                                            .rect(
+                                                topLeadingRadius: 8,
+                                                bottomLeadingRadius: 0,
+                                                bottomTrailingRadius: 8,
+                                                topTrailingRadius: 8
+                                            )
+                                        )
+
+                                        // place for commands to be added
+                                        VStack(alignment: .leading, spacing: 0) {
+                                            if codeBlocksList.isEmpty {
+                                                HStack(spacing: 16) {
+                                                    Rectangle()
+                                                        .fill(Color(hex: "7E8C98"))
+                                                        .frame(width: 8, height: 80)
+                                                    
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(Color(hex: "BFAD5A"))
+                                                        .frame(width: 48, height: 32)
+                                                }
+                                                
+                                            } else {
+                                                HStack {
+                                                    // left rectangle
+                                                    Rectangle()
+                                                        .fill(Color(hex: "7E8C98"))
+                                                        .frame(width: 8)
+                                                    
+                                                    // code blocks
+                                                    VStack(alignment: .leading) {
+                                                        ForEach(codeBlocksList) { codeBlock in
+                                                            switch codeBlock.type {
+                                                                case .commandBlock:
+                                                                    HStack(alignment: .center) {
+                                                                        Text(codeBlock.command ?? "Error")
+                                                                            .fontDesign(.monospaced)
+                                                                            .fontWeight(.medium)
+                                                                            .foregroundStyle(.white)
+                                                                        
+                                                                        if !runningScene {
+                                                                            Divider()
+                                                                            
+                                                                            Image(systemName: "xmark")
+                                                                                .fontWeight(.medium)
+                                                                                .foregroundStyle(.white)
+                                                                                .font(.footnote)
+                                                                        }
+                                                                    }
+                                                                    .padding(.horizontal, 12)
+                                                                    .padding(.vertical, 8)
+                                                                    .background {
+                                                                        Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
+                                                                    }
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                    .onTapGesture {
+                                                                        // go through list and delete the tapped code block
+                                                                        if !runningScene {
+                                                                            withAnimation(.interactiveSpring) {
+                                                                                var index = 0
+                                                                                for codeBlockSearched in codeBlocksList {
+                                                                                    if codeBlockSearched.id == codeBlock.id {
+                                                                                        codeBlocksList.remove(at: index)
+                                                                                        break
+                                                                                    }
+                                                                                    index += 1
+                                                                                }
+                                                                            }
+                                                                            
+                                                                            updateCodeBlocksCount()
+                                                                        }
+                                                                        
+                                                                    }
+                                                                case .ifBlock:
+                                                                    IfBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                                    
+                                                                case .forBlock:
+                                                                    ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                             }
-                                                            index += 1
+                                                            
+                                                        }
+                                                        
+                                                        if selectedBlock == nil {
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(Color(hex: "BFAD5A"))
+                                                                .frame(width: 48, height: 32)
+                                                        } else {
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(.white.opacity(0.5))
+                                                                .frame(width: 48, height: 32)
+                                                                .onTapGesture {
+                                                                    selectedBlock = nil
+                                                                }
                                                         }
                                                     }
-                                                    
-                                                    updateCodeBlocksCount()
+                                                    .padding(.vertical, 12)
                                                 }
-                                                
                                             }
-                                        case .ifBlock:
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                HStack(spacing: 16) {
-                                                    Text("if")
+                                        }
+                                        
+                                        
+                                        // while end rectangle
+                                        Rectangle()
+                                            .fill(Color(hex: "7E8C98"))
+                                            .frame(width: 32, height: 16)
+                                            .clipShape(
+                                                .rect(
+                                                    topLeadingRadius: 0,
+                                                    bottomLeadingRadius: 4,
+                                                    bottomTrailingRadius: 4,
+                                                    topTrailingRadius: 4
+                                                )
+                                            )
+                                        
+                                    }
+                                    
+                                } else {
+                                    ForEach(codeBlocksList) { codeBlock in
+                                        switch codeBlock.type {
+                                            case .commandBlock:
+                                                HStack(alignment: .center) {
+                                                    Text(codeBlock.command ?? "Error")
                                                         .fontDesign(.monospaced)
                                                         .fontWeight(.medium)
                                                         .foregroundStyle(.white)
                                                     
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .fill(.white.opacity(0.5))
-                                                        .frame(width: 48, height: 32)
+                                                    if !runningScene {
+                                                        Divider()
+                                                        
+                                                        Image(systemName: "xmark")
+                                                            .fontWeight(.medium)
+                                                            .foregroundStyle(.white)
+                                                            .font(.footnote)
+                                                    }
                                                 }
                                                 .padding(.horizontal, 12)
                                                 .padding(.vertical, 8)
                                                 .background {
-                                                    Color(hex: "FF79B3")
+                                                    Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
                                                 }
                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                
-                                                if codeBlock.inlineBlocks.isEmpty {
-                                                    HStack(spacing: 16) {
-                                                        Rectangle()
-                                                            .fill(Color(hex: "FF79B3"))
-                                                            .frame(width: 8, height: 80)
-                                                        
-                                                        RoundedRectangle(cornerRadius: 8)
-                                                            .fill(.white.opacity(0.5))
-                                                            .frame(width: 48, height: 32)
-                                                        
-                                                    }
-                                                    
-                                                    
-                                                } else {
-                                                    ForEach(codeBlock.inlineBlocks) { inlineBlock in
-                                                        HStack {
-                                                            Rectangle()
-                                                                .fill(Color(hex: "FF79B3"))
-                                                                .frame(width: 8)
-                                                            
-                                                            VStack {
-                                                                
+                                                .onTapGesture {
+                                                    // go through list and delete the tapped code block
+                                                    if !runningScene {
+                                                        withAnimation(.interactiveSpring) {
+                                                            var index = 0
+                                                            for codeBlockSearched in codeBlocksList {
+                                                                if codeBlockSearched.id == codeBlock.id {
+                                                                    codeBlocksList.remove(at: index)
+                                                                    break
+                                                                }
+                                                                index += 1
                                                             }
                                                         }
+                                                        
+                                                        updateCodeBlocksCount()
                                                     }
+                                                    
                                                 }
+                                            case .ifBlock:
+                                                IfBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                 
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .fill(Color(hex: "FF79B3"))
-                                                    .frame(width: 48, height: 32)
-                                                
-                                            }
-                                            
-                                        case .forBlock:
-                                            ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                            case .forBlock:
+                                                ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                        }
+                                        
                                     }
-                                    
                                 }
+                                
+                                
+                                
                                 
                                 Spacer()
                             }
@@ -318,7 +474,7 @@ struct CodeEditorView: View {
                         }
                         
                         // for loop
-                        if currentMission > 1 && selectedBlock == nil {
+                        if currentMission == 2 && selectedBlock == nil {
                             VStack(alignment: .leading) {
                                 // section title
                                 HStack(spacing: 4) {
@@ -373,11 +529,10 @@ struct CodeEditorView: View {
                                 }
                                 updateCodeBlocksCount()
                             }
-                            .draggable("forLoop")
                         }
                         
                         // if statements
-                        if currentMission > 2 && selectedBlock == nil {
+                        if currentMission == 3 && selectedBlock == nil {
                             VStack(alignment: .leading) {
                                 // section title
                                 HStack(spacing: 4) {
@@ -400,18 +555,18 @@ struct CodeEditorView: View {
                                         
                                         RoundedRectangle(cornerRadius: 8)
                                             .fill(.white.opacity(0.5))
-                                            .frame(width: 48, height: 32)
+                                            .frame(width: 36, height: 28)
                                     }
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 8)
                                     .background {
-                                        Color(hex: "FF79B3")
+                                        Color(hex: "906EBC")
                                     }
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                     
                                     HStack(spacing: 16) {
                                         Rectangle()
-                                            .fill(Color(hex: "FF79B3"))
+                                            .fill(Color(hex: "906EBC"))
                                             .frame(width: 8, height: 80)
                                         
                                         RoundedRectangle(cornerRadius: 8)
@@ -420,13 +575,18 @@ struct CodeEditorView: View {
                                         
                                     }
                                     
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color(hex: "FF79B3"))
-                                        .frame(width: 48, height: 32)
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(Color(hex: "906EBC"))
+                                        .frame(width: 32, height: 16)
                                     
                                 }
                             }
-                            .draggable("ifStatement")
+                            .onTapGesture {
+                                withAnimation(.interactiveSpring) {
+                                    self.codeBlocksList.append(CodeBlock(highlighted: false, type: .ifBlock))
+                                }
+                                updateCodeBlocksCount()
+                            }
                         }
                         
                     // no code blocks left

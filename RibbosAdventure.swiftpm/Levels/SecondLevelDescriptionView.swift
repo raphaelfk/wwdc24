@@ -31,7 +31,7 @@ struct SecondLevelDescriptionView: View {
                 Spacer()
                 
                 Button(action: {
-                    //descriptionVisibility = false
+                    descriptionVisibility = false
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.callout)

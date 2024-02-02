@@ -1,13 +1,14 @@
 //
-//  SwiftUIView.swift
+//  File 2.swift
 //  
 //
-//  Created by Raphael Ferezin Kitahara on 26/01/24.
+//  Created by Raphael Ferezin Kitahara on 01/02/24.
 //
 
+import Foundation
 import SwiftUI
 
-struct CongratulationSheetView: View {
+struct ThirdLvlCongratulationSheetView: View {
     @EnvironmentObject var gameManager: GameManager
     @Binding var sheetVisibility: Bool
     
@@ -25,14 +26,15 @@ struct CongratulationSheetView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(height: 28)
-                        .foregroundStyle(Color(hex: "A8D47B"))
-                        
+                        .foregroundStyle(Color(hex: "A861D4"))
+                    
                 }
                 
                 Spacer()
                 
                 Button(action: {
                     sheetVisibility = false
+                    
                 }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title2)
@@ -44,20 +46,20 @@ struct CongratulationSheetView: View {
             .padding(.bottom)
             
             // description
-            Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Grass Planet.")
+            Text("Your code was sent and helped Ribbo overcome this challenge and continue his successful mission on Party Planet.")
             
-            Text("It’s by building code blocks like this that scientists send actual robots to explore other planets in our universe!")
+            Text("You have now mastered some of the core principles of programming, great job!")
             
-            Text("You can now take a look at the Grass Planet Mission log on your dashboard and try to complete other missions!")
+            Text("Now you have access to all of the mission logs from Ribbo. If he goes on another adventure we'll surely let you know!")
             
             // Code blocks example
             HStack {
                 // ribbo commands
                 VStack(alignment: .leading) {
-                    Text("Grass Planet")
-                        .foregroundStyle(Color(hex: "A8D47B"))
+                    Text("Party Planet")
+                        .foregroundStyle(Color(hex: "A861D4"))
                         .fontWeight(.semibold)
-
+                    
                     // command blocks
                     HStack(alignment: .top) {
                         Text("Throughout its exploration of Grass Planet, Ribbo collected samples of the planet's most abundant natural formation: Grass. This planet’s highlights were, mainly, it's nature formations, such as rocks, rivers and mountains.\nEverything was well preserved and there was harmony between nature and its habitants.")
@@ -77,7 +79,7 @@ struct CongratulationSheetView: View {
             Button(action: {
                 withAnimation(.easeInOut(duration: 1)) {
                     sheetVisibility = false
-                    gameManager.playingFirstLevel = false
+                    gameManager.playingThirdLevel = false
                 }
                 
             }, label: {
@@ -87,7 +89,7 @@ struct CongratulationSheetView: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background {
-                        Color(hex: "A8D47B")
+                        Color(hex: "A861D4")
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             })
@@ -111,7 +113,3 @@ struct CongratulationSheetView: View {
         .padding(32)
     }
 }
-
-//#Preview {
-//    CongratulationSheetView()
-//}

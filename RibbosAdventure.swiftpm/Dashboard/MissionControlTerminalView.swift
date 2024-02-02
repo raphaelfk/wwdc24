@@ -89,15 +89,28 @@ struct MissionControlTerminalView: View {
                         }
                         
                     } else if gameManager.thirdLevelAvailable {
-//                        Text("Your help is needed in one last mission!\nThis one might be harder than the others.")
-//                            .font(.subheadline)
-//                            .fontDesign(.monospaced)
-//                            .foregroundStyle(.gray)
+                        // check if the message was already typewritten
+                        if gameManager.animateThirdLevelMessage {
+                            gameManager.animateThirdLevelMessage = false
+                            missionControlMessage = gameManager.thirdLevelMissionControlMessage
+                            typeWriter()
+                            
+                        } else {
+                            missionControlMessage = gameManager.thirdLevelMissionControlMessage
+                            currentMissionControlMessage = gameManager.thirdLevelMissionControlMessage
+                        }
+
                     } else if gameManager.allLevelsComplete {
-//                        Text("The RSC really appreciates all of the help you provided!\nYou are now entitled a Certified Space Explorer!")
-//                            .font(.subheadline)
-//                            .fontDesign(.monospaced)
-//                            .foregroundStyle(.gray)
+                        // check if the message was already typewritten
+                        if gameManager.animateFinalMessage {
+                            gameManager.animateFinalMessage = false
+                            missionControlMessage = gameManager.allLevelsCompleteMissionControlMessage
+                            typeWriter()
+                            
+                        } else {
+                            missionControlMessage = gameManager.allLevelsCompleteMissionControlMessage
+                            currentMissionControlMessage = gameManager.allLevelsCompleteMissionControlMessage
+                        }
                     }
                 }
             

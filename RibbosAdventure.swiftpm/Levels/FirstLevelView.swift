@@ -51,7 +51,10 @@ struct FirstLevelView: View {
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
                             .padding(4)
+                            .foregroundStyle(Color(hex: "A8D47B"))
+                        
                     }
+                    .buttonStyle(.plain)
                     
                     Spacer()
                     
@@ -74,7 +77,9 @@ struct FirstLevelView: View {
                                 showDescriptionSheet = true
                             }, label: {
                                 Text("Read More...")
+                                    .foregroundStyle(Color(hex: "A8D47B"))
                             })
+                            .buttonStyle(.plain)
                             
                             Spacer()
                         }
@@ -259,7 +264,7 @@ struct FirstLevelView: View {
             .navigationTitle("First Mission")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showLevelCompleteSheet, content: {
-                CongratulationSheetView(sheetVisibility: $showLevelCompleteSheet)
+                FirstLvlCongratulationSheetView(sheetVisibility: $showLevelCompleteSheet)
             })
         }
     }
