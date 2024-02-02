@@ -126,21 +126,7 @@ struct ThirdLevelView: View {
     
     var body: some View {
         if loadingLevel {
-            LoaderView()
-                .onAppear {
-                    Task {
-                        try await Task.sleep(nanoseconds: 1_000_000_000)
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            loadingLevel = false
-                        }
-                        
-                        try await Task.sleep(nanoseconds: 3_750_000_000)
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            sceneReady = true
-                        }
-                        
-                    }
-                }
+            LoaderView(currentMission: 3, showLoaderView: $loadingLevel)
         } else {
             VStack(spacing: 16) {
                 // back to dashboard button
@@ -168,7 +154,7 @@ struct ThirdLevelView: View {
                             .fontWeight(.semibold)
                             .padding(.bottom, 8)
                         
-                        Text("Ribbo is on Castle Planet, but this one is too far away from Earth, so we can send at max 10 command blocks to it.\nWith that in mind, we provided a \"for\" block to your coding interface. The for block repeats all of the commands inside of it a defined number of times. We think this might help you create a concise algorithm for Ribbo to follow!")
+                        Text("Ribbo is now on his last mission, all thanks to you!\nUnfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use")
                             .foregroundStyle(.gray)
                             .lineLimit(3)
                         
@@ -176,7 +162,7 @@ struct ThirdLevelView: View {
                             Button(action: {
                                 showDescriptionSheet = true
                             }, label: {
-                                Text("Read More...")
+                                Text("Full Description and Tips...")
                                     .foregroundStyle(Color(hex: "A861D4"))
                             })
                             .buttonStyle(.plain)

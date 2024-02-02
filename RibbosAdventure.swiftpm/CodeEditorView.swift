@@ -11,6 +11,7 @@ struct CodeBlock: Identifiable, Equatable {
     var id = UUID()
     var command: String?
     var condition: String?
+    var explanation: String?
     var highlighted: Bool
     var inlineBlocks: [CodeBlock] = []
     let type: CodeBlockType

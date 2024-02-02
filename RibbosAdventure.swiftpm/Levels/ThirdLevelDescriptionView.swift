@@ -1,13 +1,13 @@
 //
-//  SwiftUIView.swift
-//  
+//  ThirdLevelDescriptionView.swift
+//
 //
 //  Created by Raphael Ferezin Kitahara on 26/01/24.
 //
 
 import SwiftUI
 
-struct SecondLevelDescriptionView: View {
+struct ThirdLevelDescriptionView: View {
     var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
     @Binding var descriptionVisibility: Bool
     
@@ -21,10 +21,10 @@ struct SecondLevelDescriptionView: View {
                         .fontWeight(.bold)
                         .fontDesign(.monospaced)
                     
-                    Text("Castle Planet")
+                    Text("Party Planet")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color("blue"))
+                        .foregroundStyle(Color("purple"))
                     
                 }
                 
@@ -49,9 +49,9 @@ struct SecondLevelDescriptionView: View {
             .padding(.bottom)
             
             // description
-            Text("Ribbo is now on Castle Planet and needs to go through a foggy area that seems dangerous.")
+            Text("Ribbo is now on his last mission, all thanks to you!")
             
-            Text("Castle Planet is much further away from Earth than Grass Planet was, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times:")
+            Text("Unfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use:")
             
             // Code blocks example
             HStack {
@@ -66,35 +66,34 @@ struct SecondLevelDescriptionView: View {
                     .foregroundStyle(.white)
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .padding(.bottom, 4)
                     
-                    // for block
+                    // if block
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 16) {
-                            // for head
                             HStack(spacing: 16) {
-                                Text("for")
+                                Text("if")
                                     .fontDesign(.monospaced)
                                     .fontWeight(.medium)
                                     .foregroundStyle(.white)
                                 
-                                // place for number to be added
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(.white.opacity(0.5))
-                                        .frame(width: 36, height: 28)
-                                    
-                                    Text("0")
-                                        .foregroundStyle(.white)
-                                        .multilineTextAlignment(.center)
-                                        .keyboardType(.numberPad)
-                                        .frame(width: 36, height: 28)
-                                    
-                                }
+                                // place condition selection
+                                Text("condition")
+                                    .foregroundStyle(.white)
+                                    .multilineTextAlignment(.center)
+                                    .keyboardType(.numberPad)
+                                    .frame(height: 28)
+                                    .padding(.horizontal, 8)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .fill(.white.opacity(0.5))
+                                            .frame(height: 28)
+                                    }
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background {
-                                Color(hex: "FF79B3")
+                                Color(hex: "906EBC")
                             }
                             .clipShape(
                                 .rect(
@@ -105,8 +104,7 @@ struct SecondLevelDescriptionView: View {
                                 )
                             )
                             
-                            // comments
-                            Text("// select how many times all of the inline blocks will run")
+                            Text("// select the condition for the inline blocks to run")
                                 .font(.subheadline)
                                 .fontDesign(.monospaced)
                                 .fontWeight(.medium)
@@ -120,15 +118,14 @@ struct SecondLevelDescriptionView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             HStack(spacing: 16) {
                                 Rectangle()
-                                    .fill(Color(hex: "FF79B3"))
+                                    .fill(Color(hex: "906EBC"))
                                     .frame(width: 8, height: 80)
                                 
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(.white.opacity(0.5))
                                     .frame(width: 48, height: 32)
                                 
-                                // comments
-                                Text("// place to add blocks inside the for loop")
+                                Text("// place to add blocks that will be run if the statement is true")
                                     .font(.subheadline)
                                     .fontDesign(.monospaced)
                                     .fontWeight(.medium)
@@ -136,8 +133,9 @@ struct SecondLevelDescriptionView: View {
                             }
                         }
                         
+                        // end rectangle
                         Rectangle()
-                            .fill(Color(hex: "FF79B3"))
+                            .fill(Color(hex: "906EBC"))
                             .frame(width: 32, height: 16)
                             .clipShape(
                                 .rect(
@@ -155,7 +153,7 @@ struct SecondLevelDescriptionView: View {
             .background(Color(hex: "292A2F"))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            Text("You can now create your algorithm, but just be mindful about how many code blocks you are using!")
+            Text("This one is more challenging than the others, but we know you can do it!")
             
             Spacer()
             

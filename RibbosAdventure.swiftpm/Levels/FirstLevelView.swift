@@ -30,17 +30,8 @@ struct FirstLevelView: View {
     
     var body: some View {
         if loadingLevel {
-            LoaderView()
-                .onAppear {
-                    Task {
-                        try await Task.sleep(nanoseconds: 1_500_000_000)
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            loadingLevel = false
-                        }
-                        
-                    }
-                }
-            
+            LoaderView(currentMission: 1, showLoaderView: $loadingLevel)
+
         } else {
             VStack(spacing: 16) {
                 HStack {
@@ -76,7 +67,7 @@ struct FirstLevelView: View {
                             Button(action: {
                                 showDescriptionSheet = true
                             }, label: {
-                                Text("Read More...")
+                                Text("Full Description...")
                                     .foregroundStyle(Color(hex: "A8D47B"))
                             })
                             .buttonStyle(.plain)

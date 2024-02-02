@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct FirstLevelDescriptionView: View {
-    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
+    var commandBlocksGallery: [CodeBlock] = [
+        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward only one time", highlighted: false, type: .commandBlock),
+        CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
+        CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
+    ]
     @Binding var descriptionVisibility: Bool
     
     var body: some View {
@@ -24,7 +28,7 @@ struct FirstLevelDescriptionView: View {
                     Text("Grass Planet")
                         .font(.title3)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color(hex: "A8D47B"))
+                        .foregroundStyle(Color("green"))
                     
                 }
                 
@@ -49,11 +53,9 @@ struct FirstLevelDescriptionView: View {
             .padding(.bottom)
             
             // description
-            Text("Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it.")
+            Text("On his first mission, Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help it!")
             
-            Text("It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help him.")
-            
-            Text("The commands are presented on the Coding Console we provided to you:")
+            Text("You'll need to create an algorithm for it to follow, so here's a sneak peek of what you will have to use:")
             
             // Code blocks example
             HStack {
@@ -68,25 +70,39 @@ struct FirstLevelDescriptionView: View {
                     .foregroundStyle(.white)
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .padding(.bottom, 4)
                     
                     // command blocks
                     ForEach(commandBlocksGallery) { codeBlock in
-                        Text(codeBlock.command ?? "Error")
-                            .fontDesign(.monospaced)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background {
-                                Color(hex: "78C1B3")
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        HStack(alignment: .center, spacing: 16) {
+                            Text(codeBlock.command ?? "Error")
+                                .fontDesign(.monospaced)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background {
+                                    Color(.white).opacity(0.2)
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                            
+                            Text(codeBlock.explanation ?? "")
+                                .font(.subheadline)
+                                .fontDesign(.monospaced)
+                                .fontWeight(.medium)
+                                .foregroundStyle(.white)
+                            
+                        }
+                        
                     }
                 }
             }
             .padding()
-            .background(Color(hex: "292A2F"))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(lineWidth: 1)
+                    .foregroundStyle(.white)
+            }
             
             Text("You can tap on each of them to add them to the console.")
             

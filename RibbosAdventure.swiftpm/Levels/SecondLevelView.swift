@@ -19,7 +19,7 @@ struct SecondLevelView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
     var sceneManager = SceneManager(sceneName: "SecondLevelScene.scn", cameraName: "camera")
-    @State var sceneReady = false
+    @State var sceneReady = true
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
@@ -30,21 +30,8 @@ struct SecondLevelView: View {
     
     var body: some View {
         if loadingLevel {
-            LoaderView()
-                .onAppear {
-                    Task {
-                        try await Task.sleep(nanoseconds: 1_750_000_000)
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            loadingLevel = false
-                        }
-                        
-                        try await Task.sleep(nanoseconds: 3_750_000_000)
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            sceneReady = true
-                        }
-                        
-                    }
-                }
+            LoaderView(currentMission: 2, showLoaderView: $loadingLevel)
+
         } else {
             VStack(spacing: 16) {
                 // back to dashboard button
@@ -56,7 +43,7 @@ struct SecondLevelView: View {
                     } label: {
                         Label("Back to Dashboard", systemImage: "chevron.left")
                             .padding(4)
-                            .foregroundStyle(Color(hex: "5F79D4"))
+                            .foregroundStyle(Color("blue"))
                     }
                     .buttonStyle(.plain)
                     
@@ -80,8 +67,8 @@ struct SecondLevelView: View {
                             Button(action: {
                                 showDescriptionSheet = true
                             }, label: {
-                                Text("Read More...")
-                                    .foregroundStyle(Color(hex: "5F79D4"))
+                                Text("Full Description...")
+                                    .foregroundStyle(Color("blue"))
                             })
                             .buttonStyle(.plain)
                             

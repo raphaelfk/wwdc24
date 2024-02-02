@@ -353,13 +353,13 @@
             filePath = "Levels/SecondLevelView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "568"
-            endingLineNumber = "568"
+            startingLineNumber = "555"
+            endingLineNumber = "555"
             landmarkName = "runSecondLevelCode()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "53472B89-FF59-4E81-A02B-3A1C93B4C4B0 - 9c88844c33ddf85"
+                  uuid = "53472B89-FF59-4E81-A02B-3A1C93B4C4B0 - 9c88844c33dddd8"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -369,12 +369,12 @@
                   urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/Levels/SecondLevelView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "568"
-                  endingLineNumber = "568"
-                  offsetFromSymbolStart = "13228">
+                  startingLineNumber = "555"
+                  endingLineNumber = "555"
+                  offsetFromSymbolStart = "13636">
                </Location>
                <Location
-                  uuid = "53472B89-FF59-4E81-A02B-3A1C93B4C4B0 - 83bce46a570b4d1d"
+                  uuid = "53472B89-FF59-4E81-A02B-3A1C93B4C4B0 - 83bce46a570b4f86"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -384,23 +384,8 @@
                   urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/Levels/SecondLevelView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "566"
-                  endingLineNumber = "566"
-                  offsetFromSymbolStart = "108">
-               </Location>
-               <Location
-                  uuid = "53472B89-FF59-4E81-A02B-3A1C93B4C4B0 - 83bce46a570b4ddb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #10 () -&gt; () in closure #2 @Sendable () async throws -&gt; () in Ribbo_s_Adventure.SecondLevelView.runSecondLevelCode() -&gt; ()"
-                  moduleName = "Ribbo&#x2019;s Adventure"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rapha/Git/wwdc24/RibbosAdventure.swiftpm/Levels/SecondLevelView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "568"
-                  endingLineNumber = "568"
+                  startingLineNumber = "555"
+                  endingLineNumber = "555"
                   offsetFromSymbolStart = "108">
                </Location>
             </Locations>
