@@ -34,6 +34,7 @@ struct FirstLevelView: View {
 
         } else {
             VStack(spacing: 16) {
+                // toolbar
                 HStack {
                     Button {
                         withAnimation(.easeInOut(duration: 0.5)) {
@@ -51,41 +52,7 @@ struct FirstLevelView: View {
                     
                 }
                 
-                // description
-                if showIntroduction {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("Mission Description")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 8)
-                        
-                        Text("Ribbo found a river on his journey, but it doesn't know how to go through it.\nIt has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help him.\n\nThe commands are presented on the Coding console, you can tap them or drag them to the console to add them. After you create an algorithm you can test it on our simulator. If it passes, we will send it to Ribbo, but if it fails, it's just a simulator! Ribbo will be fine!")
-                            .foregroundStyle(.gray)
-                            .lineLimit(3)
-                        
-                        HStack {
-                            Button(action: {
-                                showDescriptionSheet = true
-                            }, label: {
-                                Text("Full Description...")
-                                    .foregroundStyle(Color(hex: "A8D47B"))
-                            })
-                            .buttonStyle(.plain)
-                            
-                            Spacer()
-                        }
-                        
-                    }
-                    .padding()
-                    .background(colorScheme == .light ? .white : Color(hex: "212121"))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .sheet(isPresented: $showDescriptionSheet, content: {
-                        FirstLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
-
-                    })
-                }
-                
-                
+                // page content
                 HStack {
                     // Code editor
                     if showCodeEditor {
@@ -94,160 +61,199 @@ struct FirstLevelView: View {
                             .padding(.trailing, 8)
                     }
                     
-                    // Scene view
-                    if showScene {
-                        ZStack {
-                            SceneKitView(sceneManager: sceneManager)
-                            
-                            // overlays
-                            VStack(spacing: 0) {
-                                // top buttons
+                    // mission description and scene
+                    VStack(spacing: 16) {
+                        // mission description
+                        if showIntroduction {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Mission Description")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .padding(.bottom, 4)
+                                
+                                Text("Ribbo found a river on his journey, but it doesn't know how to go through it.\nIt has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help him.\n\nThe commands are presented on the Coding console, you can tap them or drag them to the console to add them. After you create an algorithm you can test it on our simulator. If it passes, we will send it to Ribbo, but if it fails, it's just a simulator! Ribbo will be fine!")
+                                    .font(.footnote)
+                                    .foregroundStyle(.gray)
+                                    .lineLimit(3)
+                                
                                 HStack {
-                                    // Run Code Button
                                     Button(action: {
-                                        runFirstLevelCode()
+                                        showDescriptionSheet = true
                                     }, label: {
-                                        HStack(spacing: 8) {
-                                            if runningScene {
-                                                Text("Runing")
-                                                ProgressView()
-                                            } else {
-                                                Text("Run Code")
-                                                Image(systemName: "play.fill")
-                                            }
-                                        }
-                                        .foregroundStyle(.white)
-                                        .fontWeight(.semibold)
-                                        .padding(.vertical, 10)
-                                        .padding(.horizontal, 12)
-                                        .background {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(.gray.opacity(0.5))
-                                        }
+                                        Text("Full Description...")
+                                            .foregroundStyle(Color(hex: "A8D47B"))
+                                            .font(.subheadline)
                                     })
                                     .buttonStyle(.plain)
-                                    .disabled(runningScene)
-                                    .padding()
                                     
                                     Spacer()
-                                    
-                                    // Expand Scene Button
-                                    Button(action: {
-                                        withAnimation(.spring) {
-                                            // if the scene is already expanded, reduce it
-                                            if isSceneExpanded {
-                                                showIntroduction = true
-                                                showCodeEditor = true
-                                                isSceneExpanded = false
-                                                // if scene is not expanded, expand it
-                                            } else {
-                                                showIntroduction = false
-                                                showCodeEditor = false
-                                                isSceneExpanded = true
+                                }
+                                
+                            }
+                            .padding()
+                            .background(colorScheme == .light ? .white : Color(hex: "212121"))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .sheet(isPresented: $showDescriptionSheet, content: {
+                                FirstLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
+                                
+                            })
+                        }
+                        
+                        // Scene view
+                        if showScene {
+                            ZStack {
+                                SceneKitView(sceneManager: sceneManager)
+                                
+                                // overlays
+                                VStack(spacing: 0) {
+                                    // top buttons
+                                    HStack {
+                                        // Run Code Button
+                                        Button(action: {
+                                            runFirstLevelCode()
+                                        }, label: {
+                                            HStack(spacing: 8) {
+                                                if runningScene {
+                                                    Text("Runing")
+                                                    ProgressView()
+                                                } else {
+                                                    Text("Run Code")
+                                                    Image(systemName: "play.fill")
+                                                }
                                             }
-                                        }
-                                    }, label: {
-                                        HStack(spacing: 8) {
-                                            Image(systemName: isSceneExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                                            .foregroundStyle(.white)
+                                            .fontWeight(.semibold)
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 12)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(.gray.opacity(0.5))
+                                            }
+                                        })
+                                        .buttonStyle(.plain)
+                                        .disabled(runningScene)
+                                        .padding()
+                                        
+                                        Spacer()
+                                        
+                                        // Expand Scene Button
+                                        Button(action: {
+                                            withAnimation(.spring) {
+                                                // if the scene is already expanded, reduce it
+                                                if isSceneExpanded {
+                                                    showIntroduction = true
+                                                    showCodeEditor = true
+                                                    isSceneExpanded = false
+                                                    // if scene is not expanded, expand it
+                                                } else {
+                                                    showIntroduction = false
+                                                    showCodeEditor = false
+                                                    isSceneExpanded = true
+                                                }
+                                            }
+                                        }, label: {
+                                            HStack(spacing: 8) {
+                                                Image(systemName: isSceneExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                                            }
+                                            .foregroundStyle(.white)
+                                            .fontWeight(.semibold)
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 12)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(.gray.opacity(0.5))
+                                            }
+                                        })
+                                        .buttonStyle(.plain)
+                                        .padding()
+                                    }
+                                    
+                                    // warnings
+                                    if showLevelWarningSheet{
+                                        // not reach goal destination warning
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "exclamationmark.triangle.fill")
+                                                Text("Look Out!")
+                                                
+                                                Spacer()
+                                                
+                                                Button {
+                                                    withAnimation(.interactiveSpring) {
+                                                        showLevelWarningSheet = false
+                                                    }
+                                                } label: {
+                                                    Image(systemName: "xmark.circle.fill")
+                                                        .foregroundStyle(.white.opacity(0.5))
+                                                }
+                                                .buttonStyle(.plain)
+                                                
+                                            }
+                                            .fontWeight(.semibold)
+                                            
+                                            Text("It looks like Ribbo did not achieve his final destination.\nTry making a single algorithm which leads it to the green spot in a single run.")
+                                                .multilineTextAlignment(.leading)
+                                                .font(.subheadline)
                                         }
                                         .foregroundStyle(.white)
-                                        .fontWeight(.semibold)
-                                        .padding(.vertical, 10)
-                                        .padding(.horizontal, 12)
+                                        .padding(12)
                                         .background {
                                             RoundedRectangle(cornerRadius: 12)
-                                                .fill(.gray.opacity(0.5))
+                                                .fill(Color(hex: "F7A03A").opacity(0.9))
                                         }
-                                    })
-                                    .buttonStyle(.plain)
-                                    .padding()
-                                }
-                                
-                                // warnings
-                                if showLevelWarningSheet{
-                                    // not reach goal destination warning
-                                    VStack(alignment: .leading, spacing: 10) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "exclamationmark.triangle.fill")
-                                            Text("Look Out!")
-                                            
-                                            Spacer()
-                                            
-                                            Button {
-                                                withAnimation(.interactiveSpring) {
-                                                    showLevelWarningSheet = false
-                                                }
-                                            } label: {
-                                                Image(systemName: "xmark.circle.fill")
-                                                    .foregroundStyle(.white.opacity(0.5))
+                                        .onTapGesture {
+                                            withAnimation(.interactiveSpring) {
+                                                showLevelWarningSheet = false
                                             }
-                                            .buttonStyle(.plain)
-                                            
                                         }
-                                        .fontWeight(.semibold)
+                                        .padding(.horizontal)
                                         
-                                        Text("It looks like Ribbo did not achieve his final destination.\nTry making a single algorithm which leads it to the green spot in a single run.")
-                                            .multilineTextAlignment(.leading)
-                                            .font(.subheadline)
-                                    }
-                                    .foregroundStyle(.white)
-                                    .padding(12)
-                                    .background {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color(hex: "F7A03A").opacity(0.9))
-                                    }
-                                    .onTapGesture {
-                                        withAnimation(.interactiveSpring) {
-                                            showLevelWarningSheet = false
+                                    } else if showLevelFailedSheet {
+                                        // fail warning
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "xmark.square.fill")
+                                                Text("Oh no!")
+                                                
+                                                Spacer()
+                                                
+                                                Button {
+                                                    withAnimation(.interactiveSpring) {
+                                                        showLevelFailedSheet = false
+                                                    }
+                                                } label: {
+                                                    Image(systemName: "xmark.circle.fill")
+                                                        .foregroundStyle(.white.opacity(0.5))
+                                                }
+                                                .buttonStyle(.plain)
+                                            }
+                                            .fontWeight(.semibold)
+                                            
+                                            Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
+                                                .multilineTextAlignment(.leading)
+                                                .font(.subheadline)
                                         }
+                                        .foregroundStyle(.white)
+                                        .padding(12)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(Color(hex: "F57F71").opacity(0.9))
+                                        }
+                                        .onTapGesture {
+                                            withAnimation(.interactiveSpring) {
+                                                showLevelFailedSheet = false
+                                            }
+                                        }
+                                        .padding(.horizontal)
                                     }
-                                    .padding(.horizontal)
                                     
-                                } else if showLevelFailedSheet {
-                                    // fail warning
-                                    VStack(alignment: .leading, spacing: 10) {
-                                        HStack(spacing: 4) {
-                                            Image(systemName: "xmark.square.fill")
-                                            Text("Oh no!")
-                                            
-                                            Spacer()
-                                            
-                                            Button {
-                                                withAnimation(.interactiveSpring) {
-                                                    showLevelFailedSheet = false
-                                                }
-                                            } label: {
-                                                Image(systemName: "xmark.circle.fill")
-                                                    .foregroundStyle(.white.opacity(0.5))
-                                            }
-                                            .buttonStyle(.plain)
-                                        }
-                                        .fontWeight(.semibold)
-                                        
-                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
-                                            .multilineTextAlignment(.leading)
-                                            .font(.subheadline)
-                                    }
-                                    .foregroundStyle(.white)
-                                    .padding(12)
-                                    .background {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color(hex: "F57F71").opacity(0.9))
-                                    }
-                                    .onTapGesture {
-                                        withAnimation(.interactiveSpring) {
-                                            showLevelFailedSheet = false
-                                        }
-                                    }
-                                    .padding(.horizontal)
+                                    Spacer()
                                 }
-                                
-                                Spacer()
                             }
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .padding(.leading, 8)
                     }
+                    
                 }
             }
             .padding()

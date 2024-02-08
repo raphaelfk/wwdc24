@@ -40,6 +40,7 @@ struct LoaderView: View {
                 // first mission description
                 if currentMission == 1 {
                     HStack(alignment: .center) {
+                        // description text
                         VStack(alignment: .leading, spacing: 24) {
                             
                             // header
@@ -67,55 +68,9 @@ struct LoaderView: View {
                             Text("On his first mission, Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help it!")
                                 .foregroundStyle(.white)
                             
-                            Text("You'll need to create an algorithm for it to follow, so here's a sneak peek of what you will have to use:")
+                            Text("You'll need to create an algorithm for it to follow, so we've gathered a sneak peek of what you will have to use on the panel to your right.")
                                 .foregroundStyle(.white)
-                            
-                            // Code blocks example
-                            HStack {
-                                // ribbo commands
-                                VStack(alignment: .leading) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "command")
-                                        Text("Commands")
-                                        
-                                        Spacer()
-                                    }
-                                    .foregroundStyle(.white)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .padding(.bottom, 4)
-                                    
-                                    // command blocks
-                                    ForEach(firstLevelCodeBlocks) { codeBlock in
-                                        HStack(alignment: .center, spacing: 16) {
-                                            Text(codeBlock.command ?? "Error")
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                                .padding(.horizontal, 12)
-                                                .padding(.vertical, 8)
-                                                .background {
-                                                    Color(.white).opacity(0.2)
-                                                }
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            
-                                            Text(codeBlock.explanation ?? "")
-                                                .font(.subheadline)
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                            
-                                        }
-                                        
-                                    }
-                                }
-                            }
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(lineWidth: 1)
-                                    .foregroundStyle(.white)
-                            }
+
                             
                             Text("(You can always take a look at the description from inside the mission)")
                                 .foregroundStyle(.gray)
@@ -130,11 +85,59 @@ struct LoaderView: View {
                         .padding(.bottom, 64)
                         
                         Spacer()
+                        
+                        // Code blocks example
+                        VStack(alignment: .leading, spacing: 20) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "command")
+                                Text("Commands")
+                                
+                                Spacer()
+                            }
+                            .foregroundStyle(.white)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding(.bottom, 4)
+                            
+                            // command blocks
+                            ForEach(firstLevelCodeBlocks) { codeBlock in
+                                HStack(alignment: .center, spacing: 16) {
+                                    Text(codeBlock.command ?? "Error")
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "78C1B3")
+                                        }
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    Text(codeBlock.explanation ?? "")
+                                        .font(.subheadline)
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                    
+                                }
+                                
+                            }
+                        }
+                        .padding()
+                        .padding(.bottom)
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(lineWidth: 1)
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.bottom, 40)
+                        .padding(.trailing, 32)
                     }
                     
                 // second mission description
                 } else if currentMission == 2 {
                     HStack(alignment: .center) {
+                        // description text
                         VStack(alignment: .leading, spacing: 24) {
                             
                             // header
@@ -162,114 +165,8 @@ struct LoaderView: View {
                             Text("Ribbo is now on Castle Planet and needs to go through a foggy area that seems dangerous.")
                                 .foregroundStyle(.white)
                             
-                            Text("Castle Planet is much further away from Earth than Grass Planet was, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times:")
+                            Text("Castle Planet is much further away from Earth, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times.")
                                 .foregroundStyle(.white)
-                            
-                            // Code blocks example
-                            HStack {
-                                // ribbo commands
-                                VStack(alignment: .leading) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "arrow.triangle.2.circlepath")
-                                        Text("For Loops")
-                                        
-                                        Spacer()
-                                    }
-                                    .foregroundStyle(.white)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .padding(.bottom, 4)
-                                    
-                                    // for block
-                                    VStack(alignment: .leading, spacing: 0) {
-                                        HStack(spacing: 16) {
-                                            // for head
-                                            HStack(spacing: 16) {
-                                                Text("for")
-                                                    .fontDesign(.monospaced)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.white)
-                                                
-                                                // place for number to be added
-                                                ZStack {
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .fill(.white.opacity(0.5))
-                                                        .frame(width: 36, height: 28)
-                                                    
-                                                    Text("0")
-                                                        .foregroundStyle(.white)
-                                                        .multilineTextAlignment(.center)
-                                                        .keyboardType(.numberPad)
-                                                        .frame(width: 36, height: 28)
-                                                    
-                                                }
-                                            }
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 8)
-                                            .background {
-                                                Color(hex: "FF79B3")
-                                            }
-                                            .clipShape(
-                                                .rect(
-                                                    topLeadingRadius: 8,
-                                                    bottomLeadingRadius: 0,
-                                                    bottomTrailingRadius: 8,
-                                                    topTrailingRadius: 8
-                                                )
-                                            )
-                                            
-                                            // comments
-                                            Text("// select how many times all of the inline blocks will run")
-                                                .font(.subheadline)
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                        }
-                                        
-                                        
-                                        
-                                        
-                                        // place for commands to be added
-                                        VStack(alignment: .leading, spacing: 0) {
-                                            HStack(spacing: 16) {
-                                                Rectangle()
-                                                    .fill(Color(hex: "FF79B3"))
-                                                    .frame(width: 8, height: 80)
-                                                
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .fill(.white.opacity(0.5))
-                                                    .frame(width: 48, height: 32)
-                                                
-                                                // comments
-                                                Text("// place to add blocks inside the for loop")
-                                                    .font(.subheadline)
-                                                    .fontDesign(.monospaced)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.white)
-                                            }
-                                        }
-                                        
-                                        Rectangle()
-                                            .fill(Color(hex: "FF79B3"))
-                                            .frame(width: 32, height: 16)
-                                            .clipShape(
-                                                .rect(
-                                                    topLeadingRadius: 0,
-                                                    bottomLeadingRadius: 4,
-                                                    bottomTrailingRadius: 4,
-                                                    topTrailingRadius: 4
-                                                )
-                                            )
-                                        
-                                    }
-                                }
-                            }
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(lineWidth: 1)
-                                    .foregroundStyle(.white)
-                            }
                             
                             Text("(You can always take a look at the description from inside the mission)")
                                 .foregroundStyle(.gray)
@@ -284,9 +181,153 @@ struct LoaderView: View {
                         .padding(.bottom, 64)
                         
                         Spacer()
+                        
+                        // Code blocks example
+                        HStack {
+                            // ribbo commands
+                            VStack(alignment: .leading) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                    Text("For Loops")
+                                    
+                                    Spacer()
+                                }
+                                .foregroundStyle(.white)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.bottom, 4)
+                                
+                                // for block
+                                VStack(alignment: .leading, spacing: 0) {
+                                    HStack(spacing: 16) {
+                                        // for head
+                                        HStack(spacing: 16) {
+                                            Text("for")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            // place for number to be added
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(.white.opacity(0.5))
+                                                    .frame(width: 36, height: 28)
+                                                
+                                                Text("5")
+                                                    .foregroundStyle(.white)
+                                                    .multilineTextAlignment(.center)
+                                                    .keyboardType(.numberPad)
+                                                    .frame(width: 36, height: 28)
+                                                
+                                            }
+                                            
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "FF79B3")
+                                        }
+                                        .clipShape(
+                                            .rect(
+                                                topLeadingRadius: 8,
+                                                bottomLeadingRadius: 0,
+                                                bottomTrailingRadius: 8,
+                                                topTrailingRadius: 8
+                                            )
+                                        )
+                                        
+                                        // comments
+                                        Text("// select how many times the inline commands will run")
+                                            .font(.subheadline)
+                                            .fontDesign(.monospaced)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.white)
+                                    }
+
+                                    // inline commands
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Rectangle()
+                                            .fill(Color(hex: "FF79B3"))
+                                            .frame(width: 8, height: 4)
+                                        
+                                        // move forward command
+                                        HStack(alignment: .center, spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "FF79B3"))
+                                                .frame(width: 8, height: 48)
+                                            
+                                            HStack(alignment: .center) {
+                                                Text("moveForward()")
+                                                    .fontDesign(.monospaced)
+                                                    .fontWeight(.medium)
+                                                    .foregroundStyle(.white)
+                                                
+                                            }
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 8)
+                                            .background {
+                                                Color(hex: "78C1B3")
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                            .frame(height: 36)
+                                        }
+
+                                        Rectangle()
+                                            .fill(Color(hex: "FF79B3"))
+                                            .frame(width: 8, height: 4)
+                                        
+                                        // place to add more commands
+                                        HStack(spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "FF79B3"))
+                                                .frame(width: 8, height: 48)
+                                            
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                            
+                                            // comments
+                                            Text("// place to add blocks inside the for loop")
+                                                .font(.subheadline)
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                    
+                                    Rectangle()
+                                        .fill(Color(hex: "FF79B3"))
+                                        .frame(width: 32, height: 16)
+                                        .clipShape(
+                                            .rect(
+                                                topLeadingRadius: 0,
+                                                bottomLeadingRadius: 4,
+                                                bottomTrailingRadius: 4,
+                                                topTrailingRadius: 4
+                                            )
+                                        )
+                                }
+
+                            }
+                        }
+                        .padding()
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(lineWidth: 1)
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.bottom, 40)
+                        .padding(.trailing, 32)
+                        
+                        
                     }
                 } else if currentMission == 3 {
                     HStack(alignment: .center) {
+                        // description text
                         VStack(alignment: .leading, spacing: 24) {
                             
                             // header
@@ -314,111 +355,9 @@ struct LoaderView: View {
                             Text("Ribbo is now on his last mission, all thanks to you!")
                                 .foregroundStyle(.white)
                             
-                            Text("Unfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use:")
+                            Text("Unfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use.")
                                 .foregroundStyle(.white)
                             
-                            // Code blocks example
-                            HStack {
-                                // ribbo commands
-                                VStack(alignment: .leading) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "arrow.triangle.2.circlepath")
-                                        Text("For Loops")
-                                        
-                                        Spacer()
-                                    }
-                                    .foregroundStyle(.white)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .padding(.bottom, 4)
-                                    
-                                    // if block
-                                    VStack(alignment: .leading, spacing: 0) {
-                                        HStack(spacing: 16) {
-                                            HStack(spacing: 16) {
-                                                Text("if")
-                                                    .fontDesign(.monospaced)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.white)
-                                                
-                                                // place condition selection
-                                                Text("condition")
-                                                    .foregroundStyle(.white)
-                                                    .multilineTextAlignment(.center)
-                                                    .keyboardType(.numberPad)
-                                                    .frame(height: 28)
-                                                    .padding(.horizontal, 8)
-                                                    .background {
-                                                        RoundedRectangle(cornerRadius: 8)
-                                                            .fill(.white.opacity(0.5))
-                                                            .frame(height: 28)
-                                                    }
-                                            }
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 8)
-                                            .background {
-                                                Color(hex: "906EBC")
-                                            }
-                                            .clipShape(
-                                                .rect(
-                                                    topLeadingRadius: 8,
-                                                    bottomLeadingRadius: 0,
-                                                    bottomTrailingRadius: 8,
-                                                    topTrailingRadius: 8
-                                                )
-                                            )
-                                            
-                                            Text("// select the condition for the inline blocks to run")
-                                                .font(.subheadline)
-                                                .fontDesign(.monospaced)
-                                                .fontWeight(.medium)
-                                                .foregroundStyle(.white)
-                                        }
-                                        
-                                        
-                                        
-                                        
-                                        // place for commands to be added
-                                        VStack(alignment: .leading, spacing: 0) {
-                                            HStack(spacing: 16) {
-                                                Rectangle()
-                                                    .fill(Color(hex: "906EBC"))
-                                                    .frame(width: 8, height: 80)
-                                                
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .fill(.white.opacity(0.5))
-                                                    .frame(width: 48, height: 32)
-
-                                                Text("// place to add blocks that will be run if the statement is true")
-                                                    .font(.subheadline)
-                                                    .fontDesign(.monospaced)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.white)
-                                            }
-                                        }
-
-                                        // end rectangle
-                                        Rectangle()
-                                            .fill(Color(hex: "906EBC"))
-                                            .frame(width: 32, height: 16)
-                                            .clipShape(
-                                                .rect(
-                                                    topLeadingRadius: 0,
-                                                    bottomLeadingRadius: 4,
-                                                    bottomTrailingRadius: 4,
-                                                    topTrailingRadius: 4
-                                                )
-                                            )
-                                        
-                                    }
-                                }
-                            }
-                            .padding()
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(lineWidth: 1)
-                                    .foregroundStyle(.white)
-                            }
                             
                             Text("(You can always take a look at the description and get tips from inside the mission)")
                                 .foregroundStyle(.gray)
@@ -433,6 +372,145 @@ struct LoaderView: View {
                         .padding(.bottom, 64)
                         
                         Spacer()
+                        
+                        // Code blocks example
+                        HStack {
+                            // ribbo commands
+                            VStack(alignment: .leading) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "arrow.triangle.branch")
+                                    Text("If Statements")
+                                    
+                                    Spacer()
+                                }
+                                .foregroundStyle(.white)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.bottom, 4)
+                                
+                                // if block
+                                VStack(alignment: .leading, spacing: 0) {
+                                    // for head and comment
+                                    HStack(spacing: 16) {
+                                        HStack(spacing: 16) {
+                                            Text("if")
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                            // place condition selection
+                                            Text("isOnPinkTile")
+                                                .foregroundStyle(.white)
+                                                .multilineTextAlignment(.center)
+                                                .keyboardType(.numberPad)
+                                                .frame(height: 28)
+                                                .padding(.horizontal, 8)
+                                                .background {
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .fill(.white.opacity(0.5))
+                                                        .frame(height: 28)
+                                                }
+                                            
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 8)
+                                        .background {
+                                            Color(hex: "906EBC")
+                                        }
+                                        .clipShape(
+                                            .rect(
+                                                topLeadingRadius: 8,
+                                                bottomLeadingRadius: 0,
+                                                bottomTrailingRadius: 8,
+                                                topTrailingRadius: 8
+                                            )
+                                        )
+                                        
+                                        // comment
+                                        Text("// select the condition for the inline blocks to run")
+                                            .font(.subheadline)
+                                            .fontDesign(.monospaced)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.white)
+                                    }
+                                    
+                                    // place for commands to be added
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        // if side detail
+                                        Rectangle()
+                                            .fill(Color(hex: "906EBC"))
+                                            .frame(width: 8, height: 4)
+                                        
+                                        // rotate left command
+                                        HStack(alignment: .center, spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "906EBC"))
+                                                .frame(width: 8, height: 48)
+                                            
+                                            HStack(alignment: .center) {
+                                                Text("rotateLeft()")
+                                                    .fontDesign(.monospaced)
+                                                    .fontWeight(.medium)
+                                                    .foregroundStyle(.white)
+                                                
+                                            }
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 8)
+                                            .background {
+                                                Color(hex: "78C1B3")
+                                            }
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                            .frame(height: 36)
+
+                                        }
+                                        
+                                        // space to add more commands
+                                        HStack(spacing: 16) {
+                                            Rectangle()
+                                                .fill(Color(hex: "906EBC"))
+                                                .frame(width: 8, height: 48)
+                                            
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                            
+                                            // comment
+                                            Text("// place to add more commands")
+                                                .font(.subheadline)
+                                                .fontDesign(.monospaced)
+                                                .fontWeight(.medium)
+                                                .foregroundStyle(.white)
+                                            
+                                        }
+                                        
+                                        Rectangle()
+                                            .fill(Color(hex: "906EBC"))
+                                            .frame(width: 8, height: 4)
+                                        
+                                    }
+                                    Rectangle()
+                                        .fill(Color(hex: "906EBC"))
+                                        .frame(width: 32, height: 16)
+                                        .clipShape(
+                                            .rect(
+                                                topLeadingRadius: 0,
+                                                bottomLeadingRadius: 4,
+                                                bottomTrailingRadius: 4,
+                                                topTrailingRadius: 4
+                                            )
+                                        )
+                                    
+                                }
+                            }
+                        }
+                        .padding()
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(lineWidth: 1)
+                                .foregroundStyle(.white)
+                        }
+                        .padding(.bottom, 40)
+                        .padding(.trailing, 32)
                     }
                 }
                 

@@ -238,7 +238,7 @@ struct DashboardView: View {
                                     } label: {
                                         HStack {
                                             Image(systemName: "play.fill")
-                                            Text("Play")
+                                            Text(gameManager.secondLevelComplete ? "Replay" : "Play")
                                         }
                                         .foregroundStyle(.white)
                                         .fontWeight(.semibold)
@@ -361,6 +361,18 @@ struct DashboardView: View {
                             HStack {
                                 Spacer()
                                 
+                                if gameManager.thirdLevelComplete {
+                                    Image(systemName: "checkmark.circle")
+                                        .foregroundStyle(.white)
+                                        .fontWeight(.semibold)
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal, 12)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(.gray.opacity(0.25))
+                                        }
+                                }
+                                
                                 if gameManager.thirdLevelAvailable {
                                     Button(action: {
                                         withAnimation(.easeInOut(duration: 2)) {
@@ -371,7 +383,7 @@ struct DashboardView: View {
                                     }, label: {
                                         HStack {
                                             Image(systemName: "play.fill")
-                                            Text("Play")
+                                            Text(gameManager.thirdLevelComplete ? "Replay" : "Play")
                                         }
                                         .foregroundStyle(.white)
                                         .fontWeight(.semibold)

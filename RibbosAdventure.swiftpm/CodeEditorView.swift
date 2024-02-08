@@ -53,6 +53,7 @@ struct CodeEditorView: View {
                 
                 Spacer()
                 
+                // show solution button
                 Button {
                     withAnimation(.spring) {
                         if currentMission == 1 {
@@ -146,7 +147,7 @@ struct CodeEditorView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             // Empty state
                             if codeBlocksList.isEmpty && currentMission != 3 {
-                                Text("Click on blocks to compose your code!")
+                                Text("Click on the command blocks below to compose your code!")
                                     .foregroundStyle(.gray)
                                 
                             // Code blocks
@@ -359,13 +360,29 @@ struct CodeEditorView: View {
                                         }
                                         
                                     }
+                                    
+                                    // add command block indicator
+                                    if !runningScene {
+                                        if selectedBlock == nil {
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color(hex: "BFAD5A"))
+                                                .frame(width: 48, height: 32)
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white.opacity(0.5))
+                                                .frame(width: 48, height: 32)
+                                                .onTapGesture {
+                                                    selectedBlock = nil
+                                                }
+                                        }
+                                    }
                                 }
-                                
-                                
+ 
                                 
                                 
                                 Spacer()
                             }
+  
                         }
                         Spacer()
                     }

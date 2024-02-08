@@ -10,9 +10,13 @@ import SwiftUI
 struct OnboardingView: View {
     @Binding var finishedOnboarding: Bool
     @State var onboardingStage = 0
+    @State var rotateStar = false
+    @State var showTitle = false
     @State var showStars1 = true
     @State var showStars2 = false
     @State var showStars3 = false
+    @State var showStartButton = false
+    @State var titleDetailWidth = 0.0
     
     var body: some View {
         ZStack {
@@ -56,24 +60,71 @@ struct OnboardingView: View {
                 }
             }
             
+            // images
             if onboardingStage == 1 {
                 // ribboBlueprint
                 HStack {
                     Image("ribboBlueprint")
                     Spacer()
                 }
+            } else if onboardingStage == 2 {
+                // console blueprint
+                HStack {
+                    Spacer()
+                    Image("consoleBlueprint")
+                        .padding(.trailing, 60)
+                }
             }
             
             // text
             HStack {
                 if onboardingStage == 0 {
-                    Text("Ribbo's Adventure")
-                        .foregroundStyle(.white)
-                        .font(.title)
-                        .fontDesign(.monospaced)
-                        .frame(width: 500)
-                        .lineSpacing(16.0)
-                        .padding(.trailing, 32)
+                    Spacer()
+                    
+                    if showTitle {
+                        VStack(spacing: 24) {
+                            Text("RIBBO'S")
+                                .foregroundStyle(.white)
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .fontDesign(.monospaced)
+                            
+                            
+                            HStack(alignment: .center, spacing: 16) {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .frame(width: titleDetailWidth, height: 2)
+                                    .foregroundStyle(.white)
+                                
+                                Image("titleStar")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20)
+                                    .rotationEffect(Angle.degrees(rotateStar ? 360 : 0))
+                                
+                                RoundedRectangle(cornerRadius: 16)
+                                    .frame(width: titleDetailWidth, height: 2)
+                                    .foregroundStyle(.white)
+                                
+                            }
+                            
+                            Text("ADVENTURE")
+                                .foregroundStyle(.white)
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .fontDesign(.monospaced)
+                            
+                        }
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 2.5)) {
+                                titleDetailWidth = 100
+                                showStartButton = true
+                                rotateStar.toggle()
+                            }
+                        }
+                    }
+                    
+                    Spacer()
+                    
                     
                 } else if onboardingStage == 1 {
                     Spacer()
@@ -88,18 +139,25 @@ struct OnboardingView: View {
                     
                 } else if onboardingStage == 2 {
                     
-                    Text("Your job is to help Ribbo overcome these challenges by creating algorithms, a set of steps, for him to follow.\n\nFor each mission, there will always be a job description that the control center provided to you, in case you need any help along the way!")
+                    Text("Your job is to help Ribbo overcome these challenges by creating algorithms, a set of steps, for him to follow.\n\nRCS is counting on you!")
                         .foregroundStyle(.white)
                         .font(.headline)
                         .fontDesign(.monospaced)
                         .frame(width: 500)
                         .lineSpacing(16.0)
-                        .padding(.trailing, 32)
-                        .multilineTextAlignment(.center)
+                        .padding(.leading, 72)
+                        .multilineTextAlignment(.leading)
+                    
+                    Spacer()
                 }
                 
             }
             .padding()
+            .onAppear {
+                withAnimation(.easeInOut(duration: 1.5)) {
+                    showTitle = true
+                }
+            }
             
             // button
             VStack {
