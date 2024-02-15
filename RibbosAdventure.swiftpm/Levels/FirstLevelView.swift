@@ -26,6 +26,7 @@ struct FirstLevelView: View {
     @State var showLevelFailedSheet = false
     @State var showLevelWarningSheet = false
     @State var showScene = true
+    @State var stopRunningScene = false
 
     
     var body: some View {
@@ -107,7 +108,7 @@ struct FirstLevelView: View {
                                 // overlays
                                 VStack(spacing: 0) {
                                     // top buttons
-                                    HStack {
+                                    HStack(spacing: 8) {
                                         // Run Code Button
                                         Button(action: {
                                             runFirstLevelCode()
@@ -116,6 +117,7 @@ struct FirstLevelView: View {
                                                 if runningScene {
                                                     Text("Runing")
                                                     ProgressView()
+                                                        .tint(.white)
                                                 } else {
                                                     Text("Run Code")
                                                     Image(systemName: "play.fill")
@@ -132,7 +134,32 @@ struct FirstLevelView: View {
                                         })
                                         .buttonStyle(.plain)
                                         .disabled(runningScene)
-                                        .padding()
+                                        .padding(.vertical)
+                                        .padding(.leading)
+                                        
+                                        // Stop Run Button
+                                        if runningScene {
+                                            Button(action: {
+                                                stopRunningScene = true
+                                            }, label: {
+                                                HStack(spacing: 8) {
+                                                    Text("Stop")
+                                                    Image(systemName: "stop.fill")
+                   
+                                                }
+                                                .foregroundStyle(.white)
+                                                .fontWeight(.semibold)
+                                                .padding(.vertical, 10)
+                                                .padding(.horizontal, 12)
+                                                .background {
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .fill(.gray.opacity(0.5))
+                                                }
+                                            })
+                                            .buttonStyle(.plain)
+                                            .padding(.vertical)
+                                            .padding(.trailing)
+                                        }
                                         
                                         Spacer()
                                         
@@ -294,11 +321,15 @@ struct FirstLevelView: View {
                 
                 // iterating over each code block placed on the code editor
                 for codeBlock in codeBlocksList {
+                    // if stop button is pressed, stop the execution
+                    if stopRunningScene {
+                        break
+                    }
+                    
                     var listIndex = 0
                     for codeBlockFromList in codeBlocksList {
                         withAnimation(.spring) {
                             if codeBlockFromList.id == codeBlock.id {
-                                
                                 codeBlocksList[listIndex].highlighted = true
                             } else {
                                 codeBlocksList[listIndex].highlighted = false
@@ -423,6 +454,7 @@ struct FirstLevelView: View {
                 }
                 
                 runningScene = false
+                stopRunningScene = false
             }
         }
         

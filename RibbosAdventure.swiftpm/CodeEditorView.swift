@@ -67,6 +67,7 @@ struct CodeEditorView: View {
                                 CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
                                 CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)
                             ]
+                            
                         } else if currentMission == 2 {
                             codeBlocksList = [
                                 CodeBlock(command: "8", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock),
@@ -75,12 +76,16 @@ struct CodeEditorView: View {
                                 CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock),
                                 CodeBlock(command: "4", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock)
                             ]
+                            updateCodeBlocksCount()
+                            
                         } else {
                             codeBlocksList = [
                                 CodeBlock(command: "isOnBlueTile", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
                                 CodeBlock(command: "isOnPinkTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
                                 CodeBlock(command: "isOnYellowTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock)
                             ]
+                            updateCodeBlocksCount()
+                            
                         }
                     }
                 } label: {
@@ -147,7 +152,7 @@ struct CodeEditorView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             // Empty state
                             if codeBlocksList.isEmpty && currentMission != 3 {
-                                Text("Click on the command blocks below to compose your code!")
+                                Text("Click on the command blocks below\nto compose your code!")
                                     .foregroundStyle(.gray)
                                 
                             // Code blocks
@@ -260,17 +265,15 @@ struct CodeEditorView: View {
                                                                                     }
                                                                                     index += 1
                                                                                 }
+                                                                                updateCodeBlocksCount()
                                                                             }
-                                                                            
-                                                                            updateCodeBlocksCount()
                                                                         }
-                                                                        
                                                                     }
                                                                 case .ifBlock:
-                                                                    IfBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                                    IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                                     
                                                                 case .forBlock:
-                                                                    ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                                    ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                             }
                                                             
                                                         }
@@ -353,10 +356,10 @@ struct CodeEditorView: View {
                                                     
                                                 }
                                             case .ifBlock:
-                                                IfBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                 
                                             case .forBlock:
-                                                ForBlockView(codeBlock: codeBlock, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                         }
                                         
                                     }

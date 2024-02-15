@@ -70,14 +70,13 @@ struct LoaderView: View {
                             
                             Text("You'll need to create an algorithm for it to follow, so we've gathered a sneak peek of what you will have to use on the panel to your right.")
                                 .foregroundStyle(.white)
-
-                            
-                            Text("(You can always take a look at the description from inside the mission)")
-                                .foregroundStyle(.gray)
-                                .fontWeight(.medium)
                             
                             Text("Good luck!")
                                 .foregroundStyle(.white)
+                                .fontWeight(.medium)
+                            
+                            Text("(You can always take a look at the description from inside the mission)")
+                                .foregroundStyle(.gray)
                                 .fontWeight(.medium)
                         }
                         .frame(maxWidth: geo.size.width / 1.6)
@@ -168,12 +167,12 @@ struct LoaderView: View {
                             Text("Castle Planet is much further away from Earth, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times.")
                                 .foregroundStyle(.white)
                             
-                            Text("(You can always take a look at the description from inside the mission)")
-                                .foregroundStyle(.gray)
-                                .fontWeight(.medium)
-                            
                             Text("We're counting on you!")
                                 .foregroundStyle(.white)
+                                .fontWeight(.medium)
+                            
+                            Text("(You can always take a look at the description from inside the mission)")
+                                .foregroundStyle(.gray)
                                 .fontWeight(.medium)
                         }
                         .frame(maxWidth: geo.size.width / 1.6)
@@ -536,7 +535,7 @@ struct LoaderView: View {
                                 }
                         } else {
                             Button {
-                                withAnimation(.easeInOut(duration: 0.5)) {
+                                withAnimation(.easeInOut(duration: 1)) {
                                     showLoaderView = false
                                 }
                             } label: {

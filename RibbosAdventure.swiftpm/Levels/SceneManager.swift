@@ -14,10 +14,13 @@ class SceneManager
     var scene: SCNScene
     let view: SCNView
     private let cameraOrbit: SCNNode
+    // let grassPlanetSoundtrack: SCNAudioSource
+    
     private var maxWidthRatioRight: Float = 0.2
     private var maxWidthRatioLeft: Float = -0.2
     private var maxHeightRatioXDown: Float = 0.02
     private var maxHeightRatioXUp: Float = 0.4
+    
     init(sceneName: String, cameraName: String) {
         self.view = SCNView()
         self.scene = SCNScene(named: (sceneName))!
@@ -28,6 +31,15 @@ class SceneManager
         }
         self.cameraOrbit = SCNNode()
         self.cameraOrbit.addChildNode(self.view.pointOfView!)
+        
+        // background music
+//        self.grassPlanetSoundtrack = SCNAudioSource(fileNamed: "grassPlanetSoundtrack.m4a")!
+//        grassPlanetSoundtrack.loops = true
+//        grassPlanetSoundtrack.load()
+//        
+//        let musicPlayer = SCNAudioPlayer(source: grassPlanetSoundtrack)
+//        self.scene.rootNode.childNode(withName: "ribbo", recursively: true)?.addAudioPlayer(musicPlayer)
+        
         self.scene.rootNode.addChildNode(self.cameraOrbit)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler))
         panGesture.maximumNumberOfTouches = 1

@@ -28,6 +28,7 @@ struct ThirdLevelView: View {
     @State var showLevelFailedSheet = false
     @State var showLevelWarningSheet = false
     @State var showScene = true
+    @State var stopRunningScene = false
     
     let maps = [
         // map 0
@@ -227,7 +228,32 @@ struct ThirdLevelView: View {
                                     })
                                     .buttonStyle(.plain)
                                     .disabled(runningScene)
-                                    .padding()
+                                    .padding(.vertical)
+                                    .padding(.leading)
+                                    
+                                    // Stop Run Button
+                                    if runningScene {
+                                        Button(action: {
+                                            stopRunningScene = true
+                                        }, label: {
+                                            HStack(spacing: 8) {
+                                                Text("Stop")
+                                                Image(systemName: "stop.fill")
+                                                
+                                            }
+                                            .foregroundStyle(.white)
+                                            .fontWeight(.semibold)
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 12)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(.gray.opacity(0.5))
+                                            }
+                                        })
+                                        .buttonStyle(.plain)
+                                        .padding(.vertical)
+                                        .padding(.trailing)
+                                    }
                                     
                                     Spacer()
                                     
@@ -374,6 +400,9 @@ struct ThirdLevelView: View {
         
         
         // changing colors
+        while currentMap == previousMap {
+            currentMap = maps[Int.random(in: 0...2)]
+        }
         
         // setting up map
         for line in 0...9 {
@@ -458,6 +487,11 @@ struct ThirdLevelView: View {
                     let whileRibboStartPosition = (ribboMatrixRowPosition, ribboMatrixColPosition)
                     
                     for codeBlock in codeBlocksList {
+                        // if stop button is pressed, stop the execution
+                        if stopRunningScene {
+                            break
+                        }
+                        
                         // highlighting the current running blocks
                         var listIndex = 0
                         var currentBlockIndex = 0
@@ -536,6 +570,11 @@ struct ThirdLevelView: View {
                                     print("No command (\(codeBlock.command ?? "Error") found!")
                             }
                         } else { // if it is a if statement block
+                            // if stop button is pressed, stop the execution
+                            if stopRunningScene {
+                                break
+                            }
+                            
                             var runCodeBlockCommands = false
                             switch codeBlock.command {
                                 case "isOnBlueTile":

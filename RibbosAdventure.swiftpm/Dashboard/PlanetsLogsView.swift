@@ -10,6 +10,7 @@ import SwiftUI
 struct PlanetsLogsView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var gameManager: GameManager
+    @State var showGrassPlanetLog = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -37,6 +38,7 @@ struct PlanetsLogsView: View {
                 // log cards
                 GeometryReader { geo in
                     if gameManager.firstLevelComplete {
+                        // grass planet log card
                         VStack(alignment: .center) {
                             Text("Grass Planet")
                                 .font(.headline)
@@ -55,8 +57,14 @@ struct PlanetsLogsView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(.white)
                         }
+                        .onTapGesture {
+                            showGrassPlanetLog = true
+                        }
                         .padding(.top, 8)
                         .padding(.bottom)
+                        .sheet(isPresented: $showGrassPlanetLog) {
+                            GrassPlanetLogView(sheetVisibility: $showGrassPlanetLog)
+                        }
                         
                     } else {
                         Text("You still have no logs. Try completing a mission to get your first one.")

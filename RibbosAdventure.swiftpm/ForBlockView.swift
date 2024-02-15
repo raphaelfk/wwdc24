@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ForBlockView: View {
     let codeBlock: CodeBlock
+    @Binding var codeBlocksCount: Int
     @Binding var codeBlocksList: [CodeBlock]
     @Binding var runningScene: Bool
     @Binding var selectedBlock: UUID?
@@ -63,6 +64,8 @@ struct ForBlockView: View {
                                 }
                                 listIndex += 1
                             }
+                            
+                            updateCodeBlocksCount()
                         }
                     }
                 }
@@ -156,6 +159,8 @@ struct ForBlockView: View {
                                             }
                                             inlineListIndex += 1
                                         }
+                                        
+                                        updateCodeBlocksCount()
                                     }
                                 }
                                 
@@ -201,6 +206,27 @@ struct ForBlockView: View {
                     )
                 )
             
+        }
+    }
+    
+    func updateCodeBlocksCount() {
+        var updatedCount = 0
+        
+        for codeBlock in codeBlocksList {
+            if codeBlock.type == .forBlock || codeBlock.type == .ifBlock {
+                updatedCount += 1
+                
+                // counting all of the inline blocks
+                for _ in codeBlock.inlineBlocks {
+                    updatedCount += 1
+                }
+            } else {
+                updatedCount += 1
+            }
+        }
+        
+        withAnimation(.interactiveSpring) {
+            codeBlocksCount = updatedCount
         }
     }
 }
