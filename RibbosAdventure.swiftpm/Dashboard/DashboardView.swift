@@ -24,16 +24,6 @@ struct DashboardView: View {
                     .fontWeight(.bold)
                 
                 Spacer()
-                
-                Button {
-                    #warning("make settings sheet")
-                } label: {
-                    Image(systemName: "gearshape.circle")
-                        .foregroundColor(.gray)
-                        .font(.title2)
-                        .fontWeight(.regular)
-                }
-                .buttonStyle(.plain)
             }
             
             // page content
