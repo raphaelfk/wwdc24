@@ -54,7 +54,7 @@ struct FirstLevelView: View {
                     Button {
                         showDescriptionSheet = true
                     } label: {
-                        Image(systemName: "questionmark.app")
+                        Image(systemName: "questionmark.circle")
                             .font(.title2)
                             .foregroundStyle(Color("green"))
                     }

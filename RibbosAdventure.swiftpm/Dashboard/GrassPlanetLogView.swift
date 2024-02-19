@@ -34,7 +34,7 @@ struct GrassPlanetLogView: View {
                 }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title2)
-                        .foregroundStyle(.gray.opacity(0.15))
+                        .foregroundStyle(.gray.opacity(0.25))
                 })
                 .buttonStyle(.plain)
                 

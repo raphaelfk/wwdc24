@@ -42,20 +42,40 @@ struct PlanetsLogsView: View {
                         VStack(alignment: .center) {
                             Text("Grass Planet")
                                 .font(.headline)
-                                .foregroundStyle(Color(red: 0.65, green: 0.76, blue: 0.29))
+                                .foregroundStyle(Color("green"))
                                 .padding(.top)
                             
-                            Image("grassSample")
+                            Spacer()
+                            
+                            Image(colorScheme == .light ? "grassPlanetLight" : "grassPlanetDark")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(height: geo.size.height / 2)
+                                .frame(height: geo.size.height / 3)
                             
                             Spacer()
+                            
+                            Button {
+                                showGrassPlanetLog = true
+                            } label: {
+                                Text("Learn More...")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 12)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color("green").opacity(0.75))
+                                    }
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.bottom, 8)
+
                         }
                         .frame(width: (geo.size.width - 32) / 3)
                         .background {
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(.white)
+                                .fill(colorScheme == .light ? .white : Color(hex: "29292B"))
                         }
                         .onTapGesture {
                             showGrassPlanetLog = true

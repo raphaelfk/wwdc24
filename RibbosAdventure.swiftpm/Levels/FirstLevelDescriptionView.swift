@@ -37,15 +37,10 @@ struct FirstLevelDescriptionView: View {
                 Button(action: {
                     descriptionVisibility = false
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.callout)
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.gray)
-                        .padding(8)
-                        .background {
-                            Circle()
-                                .fill(.gray.opacity(0.15))
-                        }
+                        .foregroundStyle(.gray.opacity(0.25))
                 })
                 .buttonStyle(.plain)
                 
@@ -53,60 +48,62 @@ struct FirstLevelDescriptionView: View {
             .padding(.bottom)
             
             // description
-            Text("On his first mission, Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help it!")
+            Text("Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. Maybe you can use some of his commands to help it!")
             
-            Text("You'll need to create an algorithm for it to follow, so here's a sneak peek of what you will have to use:")
+            Text("We've gathered the commands available to you:")
             
             // Code blocks example
-            HStack {
-                // ribbo commands
-                VStack(alignment: .leading) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "command")
-                        Text("Commands")
-                        
-                        Spacer()
-                    }
-                    .foregroundStyle(.white)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .padding(.bottom, 4)
+            VStack(alignment: .leading, spacing: 20) {
+                HStack(spacing: 4) {
+                    Image(systemName: "command")
+                    Text("Commands")
                     
-                    // command blocks
-                    ForEach(commandBlocksGallery) { codeBlock in
-                        HStack(alignment: .center, spacing: 16) {
-                            Text(codeBlock.command ?? "Error")
-                                .fontDesign(.monospaced)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background {
-                                    Color(.white).opacity(0.2)
-                                }
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            
-                            Text(codeBlock.explanation ?? "")
-                                .font(.subheadline)
-                                .fontDesign(.monospaced)
-                                .fontWeight(.medium)
-                                .foregroundStyle(.white)
-                            
-                        }
+                    Spacer()
+                }
+                .foregroundStyle(.white)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding(.bottom, 4)
+                
+                let firstLevelCodeBlocks = [
+                    CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", highlighted: false, type: .commandBlock),
+                    CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
+                    CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
+                ]
+                
+                // command blocks
+                ForEach(firstLevelCodeBlocks) { codeBlock in
+                    HStack(alignment: .center, spacing: 16) {
+                        Text(codeBlock.command ?? "Error")
+                            .fontDesign(.monospaced)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background {
+                                Color(hex: "78C1B3")
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         
+                        Text(codeBlock.explanation ?? "")
+                            .font(.subheadline)
+                            .fontDesign(.monospaced)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.white)
                     }
                 }
             }
             .padding()
+            .padding(.bottom)
             .background {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(lineWidth: 1)
-                    .foregroundStyle(.white)
+                    .fill(Color(hex: "292A2F"))
             }
+            .padding(.vertical, 8)
             
             Text("You can tap on each of them to add them to the console.")
             
-            Text("After you create your algorithm, you can test it on our simulator. If it passes, we will send it to Ribbo, but if it fails, it's just a simulator! Ribbo will be fine!")
+            Text("Good luck!")
             
             Spacer()
             

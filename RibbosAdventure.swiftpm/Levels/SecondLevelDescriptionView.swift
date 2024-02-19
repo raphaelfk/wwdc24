@@ -33,15 +33,10 @@ struct SecondLevelDescriptionView: View {
                 Button(action: {
                     descriptionVisibility = false
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.callout)
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.gray)
-                        .padding(8)
-                        .background {
-                            Circle()
-                                .fill(.gray.opacity(0.15))
-                        }
+                        .foregroundStyle(.gray.opacity(0.25))
                 })
                 .buttonStyle(.plain)
                 
@@ -51,7 +46,7 @@ struct SecondLevelDescriptionView: View {
             // description
             Text("Ribbo is now on Castle Planet and needs to go through a foggy area that seems dangerous.")
             
-            Text("Castle Planet is much further away from Earth than Grass Planet was, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times:")
+            Text("Castle Planet is much further away from Earth, so we can only send 10 blocks to Ribbo. Because of this, we have provided you with For Loop blocks, which run all of the commands inside of it a predetermined number of times.")
             
             // Code blocks example
             HStack {
@@ -66,6 +61,7 @@ struct SecondLevelDescriptionView: View {
                     .foregroundStyle(.white)
                     .font(.subheadline)
                     .fontWeight(.medium)
+                    .padding(.bottom, 4)
                     
                     // for block
                     VStack(alignment: .leading, spacing: 0) {
@@ -83,13 +79,14 @@ struct SecondLevelDescriptionView: View {
                                         .fill(.white.opacity(0.5))
                                         .frame(width: 36, height: 28)
                                     
-                                    Text("0")
+                                    Text("5")
                                         .foregroundStyle(.white)
                                         .multilineTextAlignment(.center)
                                         .keyboardType(.numberPad)
                                         .frame(width: 36, height: 28)
                                     
                                 }
+                                
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
@@ -106,22 +103,50 @@ struct SecondLevelDescriptionView: View {
                             )
                             
                             // comments
-                            Text("// select how many times all of the inline blocks will run")
+                            Text("// select how many times the inline commands will run")
                                 .font(.subheadline)
                                 .fontDesign(.monospaced)
                                 .fontWeight(.medium)
                                 .foregroundStyle(.white)
                         }
                         
-                        
-                        
-                        
-                        // place for commands to be added
+                        // inline commands
                         VStack(alignment: .leading, spacing: 0) {
+                            Rectangle()
+                                .fill(Color(hex: "FF79B3"))
+                                .frame(width: 8, height: 4)
+                            
+                            // move forward command
+                            HStack(alignment: .center, spacing: 16) {
+                                Rectangle()
+                                    .fill(Color(hex: "FF79B3"))
+                                    .frame(width: 8, height: 48)
+                                
+                                HStack(alignment: .center) {
+                                    Text("moveForward()")
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                    
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background {
+                                    Color(hex: "78C1B3")
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .frame(height: 36)
+                            }
+                            
+                            Rectangle()
+                                .fill(Color(hex: "FF79B3"))
+                                .frame(width: 8, height: 4)
+                            
+                            // place to add more commands
                             HStack(spacing: 16) {
                                 Rectangle()
                                     .fill(Color(hex: "FF79B3"))
-                                    .frame(width: 8, height: 80)
+                                    .frame(width: 8, height: 48)
                                 
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(.white.opacity(0.5))
@@ -133,8 +158,12 @@ struct SecondLevelDescriptionView: View {
                                     .fontDesign(.monospaced)
                                     .fontWeight(.medium)
                                     .foregroundStyle(.white)
+                                
+                                
                             }
+                            
                         }
+                        
                         
                         Rectangle()
                             .fill(Color(hex: "FF79B3"))
@@ -147,15 +176,18 @@ struct SecondLevelDescriptionView: View {
                                     topTrailingRadius: 4
                                 )
                             )
-                        
                     }
+                    
                 }
             }
             .padding()
-            .background(Color(hex: "292A2F"))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(hex: "292A2F"))
+            }
+            .padding(.vertical, 8)
             
-            Text("You can now create your algorithm, but just be mindful about how many code blocks you are using!")
+            Text("We're counting on you!")
             
             Spacer()
             

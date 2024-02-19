@@ -130,7 +130,7 @@ struct ThirdLevelView: View {
             LoaderView(currentMission: 3, showLoaderView: $loadingLevel)
         } else {
             VStack(spacing: 16) {
-                // back to dashboard button
+                // toolbar
                 HStack {
                     Button {
                         withAnimation(.easeInOut(duration: 0.5)) {
@@ -145,39 +145,19 @@ struct ThirdLevelView: View {
                     
                     Spacer()
                     
-                }
-                
-                // description
-                if showIntroduction {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("Mission Description")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 8)
-                        
-                        Text("Ribbo is now on his last mission, all thanks to you!\nUnfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use")
-                            .foregroundStyle(.gray)
-                            .lineLimit(3)
-                        
-                        HStack {
-                            Button(action: {
-                                showDescriptionSheet = true
-                            }, label: {
-                                Text("Full Description and Tips...")
-                                    .foregroundStyle(Color(hex: "A861D4"))
-                            })
-                            .buttonStyle(.plain)
-                            
-                            Spacer()
-                        }
-                        
+                    Button {
+                        showDescriptionSheet = true
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                            .font(.title2)
+                            .foregroundStyle(Color("green"))
                     }
-                    .padding()
-                    .background(colorScheme == .light ? .white : Color(hex: "212121"))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .buttonStyle(.plain)
                     .sheet(isPresented: $showDescriptionSheet, content: {
-                        SecondLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
+                        ThirdLevelDescriptionView(descriptionVisibility: $showDescriptionSheet)
+                        
                     })
+                    
                 }
                 
                 

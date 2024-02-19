@@ -33,15 +33,10 @@ struct ThirdLevelDescriptionView: View {
                 Button(action: {
                     descriptionVisibility = false
                 }, label: {
-                    Image(systemName: "xmark")
-                        .font(.callout)
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.gray)
-                        .padding(8)
-                        .background {
-                            Circle()
-                                .fill(.gray.opacity(0.15))
-                        }
+                        .foregroundStyle(.gray.opacity(0.25))
                 })
                 .buttonStyle(.plain)
                 
@@ -51,15 +46,15 @@ struct ThirdLevelDescriptionView: View {
             // description
             Text("Ribbo is now on his last mission, all thanks to you!")
             
-            Text("Unfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use:")
+            Text("The 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use.")
             
             // Code blocks example
             HStack {
                 // ribbo commands
                 VStack(alignment: .leading) {
                     HStack(spacing: 4) {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                        Text("For Loops")
+                        Image(systemName: "arrow.triangle.branch")
+                        Text("If Statements")
                         
                         Spacer()
                     }
@@ -70,6 +65,7 @@ struct ThirdLevelDescriptionView: View {
                     
                     // if block
                     VStack(alignment: .leading, spacing: 0) {
+                        // for head and comment
                         HStack(spacing: 16) {
                             HStack(spacing: 16) {
                                 Text("if")
@@ -78,7 +74,7 @@ struct ThirdLevelDescriptionView: View {
                                     .foregroundStyle(.white)
                                 
                                 // place condition selection
-                                Text("condition")
+                                Text("isOnPinkTile")
                                     .foregroundStyle(.white)
                                     .multilineTextAlignment(.center)
                                     .keyboardType(.numberPad)
@@ -89,6 +85,7 @@ struct ThirdLevelDescriptionView: View {
                                             .fill(.white.opacity(0.5))
                                             .frame(height: 28)
                                     }
+                                
                             }
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
@@ -104,6 +101,7 @@ struct ThirdLevelDescriptionView: View {
                                 )
                             )
                             
+                            // comment
                             Text("// select the condition for the inline blocks to run")
                                 .font(.subheadline)
                                 .fontDesign(.monospaced)
@@ -111,29 +109,60 @@ struct ThirdLevelDescriptionView: View {
                                 .foregroundStyle(.white)
                         }
                         
-                        
-                        
-                        
                         // place for commands to be added
                         VStack(alignment: .leading, spacing: 0) {
+                            // if side detail
+                            Rectangle()
+                                .fill(Color(hex: "906EBC"))
+                                .frame(width: 8, height: 4)
+                            
+                            // rotate left command
+                            HStack(alignment: .center, spacing: 16) {
+                                Rectangle()
+                                    .fill(Color(hex: "906EBC"))
+                                    .frame(width: 8, height: 48)
+                                
+                                HStack(alignment: .center) {
+                                    Text("rotateLeft()")
+                                        .fontDesign(.monospaced)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                    
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background {
+                                    Color(hex: "78C1B3")
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .frame(height: 36)
+                                
+                            }
+                            
+                            // space to add more commands
                             HStack(spacing: 16) {
                                 Rectangle()
                                     .fill(Color(hex: "906EBC"))
-                                    .frame(width: 8, height: 80)
+                                    .frame(width: 8, height: 48)
                                 
                                 RoundedRectangle(cornerRadius: 8)
                                     .fill(.white.opacity(0.5))
                                     .frame(width: 48, height: 32)
                                 
-                                Text("// place to add blocks that will be run if the statement is true")
+                                // comment
+                                Text("// place to add more commands")
                                     .font(.subheadline)
                                     .fontDesign(.monospaced)
                                     .fontWeight(.medium)
                                     .foregroundStyle(.white)
+                                
                             }
+                            
+                            Rectangle()
+                                .fill(Color(hex: "906EBC"))
+                                .frame(width: 8, height: 4)
+                            
                         }
-                        
-                        // end rectangle
                         Rectangle()
                             .fill(Color(hex: "906EBC"))
                             .frame(width: 32, height: 16)
@@ -150,10 +179,13 @@ struct ThirdLevelDescriptionView: View {
                 }
             }
             .padding()
-            .background(Color(hex: "292A2F"))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(hex: "292A2F"))
+            }
+            .padding(.vertical, 8)
             
-            Text("This one is more challenging than the others, but we know you can do it!")
+            Text("We count on you to solve this last one!")
             
             Spacer()
             

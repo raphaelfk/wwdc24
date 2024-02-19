@@ -181,7 +181,7 @@ struct CodeEditorView: View {
                                                 .foregroundStyle(.white)
                                             
                                             // condition
-                                            Text("isNotOnGreenTile")
+                                            Text("isOnDanceFloor")
                                                 .foregroundStyle(.white)
                                                 .multilineTextAlignment(.center)
                                                 .keyboardType(.numberPad)
@@ -189,7 +189,7 @@ struct CodeEditorView: View {
                                                 .padding(.horizontal, 8)
                                                 .background {
                                                     RoundedRectangle(cornerRadius: 8)
-                                                        .fill(.white.opacity(0.5))
+                                                        .fill(.white.opacity(0.25))
                                                         .frame(height: 28)
                                                 }
                                         }

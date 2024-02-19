@@ -13,7 +13,7 @@ struct LoaderView: View {
     @Binding var showLoaderView: Bool
     @State var showRocketLoader = true
     let firstLevelCodeBlocks = [
-        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward only one time", highlighted: false, type: .commandBlock),
+        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", highlighted: false, type: .commandBlock),
         CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
         CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
     ]
@@ -65,10 +65,10 @@ struct LoaderView: View {
                             .padding(.bottom)
                             
                             // description
-                            Text("On his first mission, Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. It has sent a 3D model of his surroundings to us, so maybe you can use some of his commands to help it!")
+                            Text("Ribbo found a river on his journey in Grass Planet, but it does not know how to go through it. Maybe you can use some of his commands to help it!")
                                 .foregroundStyle(.white)
                             
-                            Text("You'll need to create an algorithm for it to follow, so we've gathered a sneak peek of what you will have to use on the panel to your right.")
+                            Text("We've gathered the commands available to you on the panel to your right.")
                                 .foregroundStyle(.white)
                             
                             Text("Good luck!")
@@ -354,16 +354,15 @@ struct LoaderView: View {
                             Text("Ribbo is now on his last mission, all thanks to you!")
                                 .foregroundStyle(.white)
                             
-                            Text("Unfortunately, the 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use.")
+                            Text("The 10 blocks limit remains, but now Ribbo is challenged by a color changing dancefloor. Our scientists have started an algorithm that you can complete and have provided if statements that you can use.")
                                 .foregroundStyle(.white)
-                            
-                            
-                            Text("(You can always take a look at the description and get tips from inside the mission)")
-                                .foregroundStyle(.gray)
-                                .fontWeight(.medium)
                             
                             Text("We count on you to solve this last one!")
                                 .foregroundStyle(.white)
+                                .fontWeight(.medium)
+                            
+                            Text("(You can always take a look at the description and get tips from inside the mission)")
+                                .foregroundStyle(.gray)
                                 .fontWeight(.medium)
                         }
                         .frame(maxWidth: geo.size.width / 1.6)
