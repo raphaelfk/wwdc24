@@ -13,9 +13,9 @@ struct LoaderView: View {
     @Binding var showLoaderView: Bool
     @State var showRocketLoader = true
     let firstLevelCodeBlocks = [
-        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", highlighted: false, type: .commandBlock),
-        CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
-        CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
+        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", type: .commandBlock),
+        CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", type: .commandBlock),
+        CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", type: .commandBlock)
     ]
     
     var body: some View {
@@ -201,7 +201,7 @@ struct LoaderView: View {
                                     HStack(spacing: 16) {
                                         // for head
                                         HStack(spacing: 16) {
-                                            Text("for")
+                                            Text("repeat for")
                                                 .fontDesign(.monospaced)
                                                 .fontWeight(.medium)
                                                 .foregroundStyle(.white)

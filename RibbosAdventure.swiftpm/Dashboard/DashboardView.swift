@@ -334,22 +334,24 @@ struct DashboardView: View {
                                             .resizable()
                                             .scaledToFit()
                                         
-                                        if showStars3 {
-                                            Image("cardStars1")
-                                                .resizable()
-                                                .scaledToFit()
-                                        }
-                                        
-                                        if showStars1 {
-                                            Image("cardStars2")
-                                                .resizable()
-                                                .scaledToFit()
-                                        }
-                                        
-                                        if showStars2 {
-                                            Image("cardStars3")
-                                                .resizable()
-                                                .scaledToFit()
+                                        if !gameManager.allLevelsComplete {
+                                            if showStars3 {
+                                                Image("cardStars1")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                            }
+                                            
+                                            if showStars1 {
+                                                Image("cardStars2")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                            }
+                                            
+                                            if showStars2 {
+                                                Image("cardStars3")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                            }
                                         }
                                     }
                                 }
@@ -391,10 +393,12 @@ struct DashboardView: View {
                                     
                                     if gameManager.thirdLevelAvailable {
                                         Button(action: {
-                                            withAnimation(.easeInOut(duration: 2)) {
-                                                gameManager.playingFirstLevel = false
-                                                gameManager.playingSecondLevel = false
-                                                gameManager.playingThirdLevel = true
+                                            if gameManager.thirdLevelAvailable {
+                                                withAnimation(.easeInOut(duration: 2)) {
+                                                    gameManager.playingFirstLevel = false
+                                                    gameManager.playingSecondLevel = false
+                                                    gameManager.playingThirdLevel = true
+                                                }
                                             }
                                         }, label: {
                                             HStack {

@@ -14,6 +14,9 @@ struct MissionControlTerminalView: View {
     @State var liveBlinking = true
     @State var showLiveBadge = false
     @State var missionControlMessage = ""
+    @State var showStars1 = true
+    @State var showStars2 = false
+    @State var showStars3 = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -88,7 +91,7 @@ struct MissionControlTerminalView: View {
                             currentMissionControlMessage = gameManager.secondLevelMissionControlMessage
                         }
                         
-                    } else if gameManager.thirdLevelAvailable {
+                    } else if gameManager.thirdLevelAvailable && !gameManager.allLevelsComplete {
                         // check if the message was already typewritten
                         if gameManager.animateThirdLevelMessage {
                             gameManager.animateThirdLevelMessage = false
@@ -113,6 +116,63 @@ struct MissionControlTerminalView: View {
                         }
                     }
                 }
+            
+            if gameManager.allLevelsComplete && !showLiveBadge {
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    ZStack {
+                        Image(colorScheme == .light ? "badgeLight" : "badgeDark")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 180)
+                        
+                        if showStars1 {
+                            Image("badgeStars1")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxHeight: 180)
+                                .opacity(colorScheme == .light ? 1 : 0.5)
+                        }
+                        
+                        if showStars2 {
+                            Image("badgeStars2")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxHeight: 180)
+                                .opacity(colorScheme == .light ? 1 : 0.5)
+                        }
+                        
+                        if showStars3 {
+                            Image("badgeStars3")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxHeight: 180)
+                                .opacity(colorScheme == .light ? 1 : 0.5)
+                        }
+                    }
+                    .onAppear {
+                        // setup for the cards' stars animations
+                        withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                            showStars1.toggle()
+                        }
+                        
+                        withAnimation(.easeInOut(duration: 1.25).repeatForever(autoreverses: true)) {
+                            showStars2.toggle()
+                        }
+                        
+                        withAnimation(.easeInOut(duration: 1.75).repeatForever(autoreverses: true)) {
+                            showStars3.toggle()
+                        }
+                    }
+                    
+                    
+                    Spacer()
+                    
+                }
+                
+            }
             
             
             Spacer()

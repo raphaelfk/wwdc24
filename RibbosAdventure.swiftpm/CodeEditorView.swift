@@ -12,7 +12,6 @@ struct CodeBlock: Identifiable, Equatable {
     var command: String?
     var condition: String?
     var explanation: String?
-    var highlighted: Bool
     var inlineBlocks: [CodeBlock] = []
     let type: CodeBlockType
 }
@@ -27,9 +26,13 @@ struct CodeEditorView: View {
     @State var codeBlocksCount = 0
     var codeBlocksLimit: Int = 10
     @Binding var codeBlocksList: [CodeBlock]
-    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
+    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", type: .commandBlock), CodeBlock(command: "rotateLeft()", type: .commandBlock), CodeBlock(command: "rotateRight()", type: .commandBlock)]
     var currentMission: Int
+    @Binding var errorCount: Int
     var hasCodeBlocksLimit = false
+    @Binding var highlightedBlock: UUID
+    @Binding var highlightedInlineBlock: UUID
+    @State var highlightShowSolutionButton: Bool = false
     @Binding var isCodeEditorExpanded: Bool
     @Binding var runningScene: Bool
     @State var selectedBlock: UUID?
@@ -58,31 +61,31 @@ struct CodeEditorView: View {
                     withAnimation(.spring) {
                         if currentMission == 1 {
                             codeBlocksList = [
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)
+                                CodeBlock(command: "moveForward()", type: .commandBlock),
+                                CodeBlock(command: "moveForward()", type: .commandBlock),
+                                CodeBlock(command: "rotateLeft()", type: .commandBlock),
+                                CodeBlock(command: "moveForward()", type: .commandBlock),
+                                CodeBlock(command: "rotateRight()", type: .commandBlock),
+                                CodeBlock(command: "moveForward()", type: .commandBlock),
+                                CodeBlock(command: "moveForward()", type: .commandBlock),
+                                CodeBlock(command: "moveForward()", type: .commandBlock)
                             ]
                             
                         } else if currentMission == 2 {
                             codeBlocksList = [
-                                CodeBlock(command: "8", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock),
-                                CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "4", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock),
-                                CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock),
-                                CodeBlock(command: "4", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .forBlock)
+                                CodeBlock(command: "8", inlineBlocks: [CodeBlock(command: "moveForward()", type: .commandBlock)], type: .forBlock),
+                                CodeBlock(command: "rotateRight()", type: .commandBlock),
+                                CodeBlock(command: "4", inlineBlocks: [CodeBlock(command: "moveForward()", type: .commandBlock)], type: .forBlock),
+                                CodeBlock(command: "rotateLeft()", type: .commandBlock),
+                                CodeBlock(command: "4", inlineBlocks: [CodeBlock(command: "moveForward()", type: .commandBlock)], type: .forBlock)
                             ]
                             updateCodeBlocksCount()
                             
                         } else {
                             codeBlocksList = [
-                                CodeBlock(command: "isOnBlueTile", highlighted: false, inlineBlocks: [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
-                                CodeBlock(command: "isOnPinkTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock),
-                                CodeBlock(command: "isOnYellowTile", highlighted: false, inlineBlocks: [CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock), CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock)], type: .ifBlock)
+                                CodeBlock(command: "isOnBlueTile", inlineBlocks: [CodeBlock(command: "moveForward()", type: .commandBlock)], type: .ifBlock),
+                                CodeBlock(command: "isOnPinkTile", inlineBlocks: [CodeBlock(command: "rotateLeft()", type: .commandBlock), CodeBlock(command: "moveForward()", type: .commandBlock)], type: .ifBlock),
+                                CodeBlock(command: "isOnYellowTile", inlineBlocks: [CodeBlock(command: "rotateRight()", type: .commandBlock), CodeBlock(command: "moveForward()", type: .commandBlock)], type: .ifBlock)
                             ]
                             updateCodeBlocksCount()
                             
@@ -96,8 +99,20 @@ struct CodeEditorView: View {
                     .padding(.vertical, 8)
                     .padding(.horizontal, 10)
                     .background {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.gray.opacity(0.25))
+                        if errorCount < 3 {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.gray.opacity(0.25))
+                        } else {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color("highlighted").opacity(highlightShowSolutionButton ? 1 : 0), lineWidth: 2)
+                                .fill(.gray.opacity(0.25))
+                                .onAppear {
+                                    withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+                                        highlightShowSolutionButton.toggle()
+                                    }
+                                }
+                        }
+                        
                     }
                 }
                 .buttonStyle(.plain)
@@ -250,7 +265,7 @@ struct CodeEditorView: View {
                                                                     .padding(.horizontal, 12)
                                                                     .padding(.vertical, 8)
                                                                     .background {
-                                                                        Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
+                                                                        Color(hex: codeBlock.id == highlightedInlineBlock ? "BFAD5A" : "78C1B3")
                                                                     }
                                                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                     .onTapGesture {
@@ -270,10 +285,10 @@ struct CodeEditorView: View {
                                                                         }
                                                                     }
                                                                 case .ifBlock:
-                                                                    IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                                    IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                                     
                                                                 case .forBlock:
-                                                                    ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                                    ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                             }
                                                             
                                                         }
@@ -334,7 +349,7 @@ struct CodeEditorView: View {
                                                 .padding(.horizontal, 12)
                                                 .padding(.vertical, 8)
                                                 .background {
-                                                    Color(hex: codeBlock.highlighted ? "BFAD5A" : "78C1B3")
+                                                    Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "78C1B3")
                                                 }
                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                                 .onTapGesture {
@@ -356,10 +371,10 @@ struct CodeEditorView: View {
                                                     
                                                 }
                                             case .ifBlock:
-                                                IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                IfBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                                 
                                             case .forBlock:
-                                                ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, runningScene: $runningScene, selectedBlock: $selectedBlock)
+                                                ForBlockView(codeBlock: codeBlock, codeBlocksCount: $codeBlocksCount, codeBlocksList: $codeBlocksList, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, runningScene: $runningScene, selectedBlock: $selectedBlock)
                                         }
                                         
                                     }
@@ -474,16 +489,19 @@ struct CodeEditorView: View {
                                                     listIndex += 1
                                                 }
                                                 
-                                                self.codeBlocksList[listIndex].inlineBlocks.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                if listIndex >= 0 && listIndex < codeBlocksList.count {
+                                                    self.codeBlocksList[listIndex].inlineBlocks.append(CodeBlock(command: codeBlock.command, type: .commandBlock))
+                                                }
+                                                
                                                 
 
                                             } else {
                                                 if hasCodeBlocksLimit {
                                                     if codeBlocksCount < codeBlocksLimit {
-                                                        self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                        self.codeBlocksList.append(CodeBlock(command: codeBlock.command, type: .commandBlock))
                                                     }
                                                 } else {
-                                                    self.codeBlocksList.append(CodeBlock(command: codeBlock.command, highlighted: false, type: .commandBlock))
+                                                    self.codeBlocksList.append(CodeBlock(command: codeBlock.command, type: .commandBlock))
                                                 }
                                                 
                                             }
@@ -511,7 +529,7 @@ struct CodeEditorView: View {
                                 // for block
                                 VStack(alignment: .leading, spacing: -8) {
                                     HStack(spacing: 16) {
-                                        Text("for")
+                                        Text("repeat for")
                                             .fontDesign(.monospaced)
                                             .fontWeight(.medium)
                                             .foregroundStyle(.white)
@@ -545,10 +563,12 @@ struct CodeEditorView: View {
                                 }
                             }
                             .onTapGesture {
-                                withAnimation(.interactiveSpring) {
-                                    self.codeBlocksList.append(CodeBlock(highlighted: false, type: .forBlock))
+                                if codeBlocksCount < codeBlocksLimit {
+                                    withAnimation(.interactiveSpring) {
+                                        self.codeBlocksList.append(CodeBlock(type: .forBlock))
+                                    }
+                                    updateCodeBlocksCount()
                                 }
-                                updateCodeBlocksCount()
                             }
                         }
                         
@@ -604,7 +624,7 @@ struct CodeEditorView: View {
                             }
                             .onTapGesture {
                                 withAnimation(.interactiveSpring) {
-                                    self.codeBlocksList.append(CodeBlock(highlighted: false, type: .ifBlock))
+                                    self.codeBlocksList.append(CodeBlock(type: .ifBlock))
                                 }
                                 updateCodeBlocksCount()
                             }

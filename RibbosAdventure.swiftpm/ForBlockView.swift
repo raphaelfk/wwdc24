@@ -11,6 +11,8 @@ struct ForBlockView: View {
     let codeBlock: CodeBlock
     @Binding var codeBlocksCount: Int
     @Binding var codeBlocksList: [CodeBlock]
+    @Binding var highlightedBlock: UUID
+    @Binding var highlightedInlineBlock: UUID
     @Binding var runningScene: Bool
     @Binding var selectedBlock: UUID?
     @State var showNumberPad = false
@@ -18,7 +20,7 @@ struct ForBlockView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 16) {
-                Text("for")
+                Text("repeat for")
                     .fontDesign(.monospaced)
                     .fontWeight(.medium)
                     .foregroundStyle(.white)
@@ -73,7 +75,7 @@ struct ForBlockView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background {
-                Color(hex: "FF79B3")
+                Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3")
             }
             .clipShape(
                 .rect(
@@ -91,7 +93,7 @@ struct ForBlockView: View {
                 if codeBlock.inlineBlocks.isEmpty {
                     HStack(spacing: 16) {
                         Rectangle()
-                            .fill(Color(hex: "FF79B3"))
+                            .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                             .frame(width: 8, height: 80)
                         
                         RoundedRectangle(cornerRadius: 8)
@@ -106,13 +108,13 @@ struct ForBlockView: View {
                     
                 } else {
                     Rectangle()
-                        .fill(Color(hex: "FF79B3"))
+                        .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                         .frame(width: 8, height: 4)
                     
                     ForEach(codeBlock.inlineBlocks) { inlineBlock in
                         HStack(alignment: .center, spacing: 16) {
                             Rectangle()
-                                .fill(Color(hex: "FF79B3"))
+                                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                                 .frame(width: 8, height: 44)
                             
                             HStack(alignment: .center) {
@@ -133,7 +135,7 @@ struct ForBlockView: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background {
-                                Color(hex: inlineBlock.highlighted ? "BFAD5A" : "78C1B3")
+                                Color(hex: inlineBlock.id == highlightedInlineBlock ? "highlighted" : "78C1B3")
                             }
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .frame(height: 36)
@@ -172,7 +174,7 @@ struct ForBlockView: View {
                     if !runningScene {
                         HStack(spacing: 16) {
                             Rectangle()
-                                .fill(Color(hex: "FF79B3"))
+                                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                                 .frame(width: 8, height: 80)
                             
                             RoundedRectangle(cornerRadius: 8)
@@ -187,7 +189,7 @@ struct ForBlockView: View {
                     }
                     
                     Rectangle()
-                        .fill(Color(hex: "FF79B3"))
+                        .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                         .frame(width: 8, height: 4)
                 }
             }
@@ -195,7 +197,7 @@ struct ForBlockView: View {
             
             
             Rectangle()
-                .fill(Color(hex: "FF79B3"))
+                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "FF79B3"))
                 .frame(width: 32, height: 16)
                 .clipShape(
                     .rect(

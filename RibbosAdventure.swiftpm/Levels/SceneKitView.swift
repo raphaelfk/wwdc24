@@ -10,7 +10,7 @@ import SceneKit
 import SwiftUI
 
 struct SceneKitView : UIViewRepresentable {
-    let sceneManager: SceneManager
+    @ObservedObject var sceneManager: SceneManager
     
     func makeUIView(context: Context) -> SCNView {
         return sceneManager.view

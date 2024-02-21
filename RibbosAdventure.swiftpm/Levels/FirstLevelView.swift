@@ -11,14 +11,17 @@ import SceneKit
 struct FirstLevelView: View {
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
+    @State var errorCount = 0
     @EnvironmentObject var gameManager: GameManager
+    @State var highlightedBlock: UUID = UUID()
+    @State var highlightedInlineBlock: UUID = UUID()
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
     @State var isSceneExpanded = false
     @State var loadingLevel = true
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var runningScene = false
-    var sceneManager = SceneManager(sceneName: "FirstLevelScene.scn", cameraName: "camera")
+    @StateObject var sceneManager = SceneManager(sceneName: "FirstLevelScene.scn", cameraName: "camera")
     @State var showCodeEditor = true
     @State var showDescriptionSheet = false
     @State var showIntroduction = true
@@ -26,6 +29,7 @@ struct FirstLevelView: View {
     @State var showLevelFailedSheet = false
     @State var showLevelWarningSheet = false
     @State var showScene = true
+    @State var showRotateTip = true
     @State var stopRunningScene = false
 
     
@@ -69,7 +73,7 @@ struct FirstLevelView: View {
                 HStack {
                     // Code editor
                     if showCodeEditor {
-                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 1, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
+                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 1, errorCount: $errorCount, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.trailing, 8)
                     }
@@ -197,7 +201,7 @@ struct FirstLevelView: View {
                                             .font(.subheadline)
                                     }
                                     .foregroundStyle(.white)
-                                    .padding(12)
+                                    .padding()
                                     .background {
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(Color(hex: "F7A03A").opacity(0.9))
@@ -230,12 +234,12 @@ struct FirstLevelView: View {
                                         }
                                         .fontWeight(.semibold)
                                         
-                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
+                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on the \"?\" symbol.")
                                             .multilineTextAlignment(.leading)
                                             .font(.subheadline)
                                     }
                                     .foregroundStyle(.white)
-                                    .padding(12)
+                                    .padding(16)
                                     .background {
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(Color(hex: "F57F71").opacity(0.9))
@@ -248,7 +252,50 @@ struct FirstLevelView: View {
                                     .padding(.horizontal)
                                 }
                                 
+                                // rotate simulator tip
+                                if showRotateTip {
+                                    HStack(alignment: .center) {
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            HStack(spacing: 4) {
+                                                Text("Tip:")
+                                                
+                                            }
+                                            .fontWeight(.semibold)
+                                            
+                                            Text("You can rotate the simulator to get other points of view.")
+                                                .multilineTextAlignment(.leading)
+                                                .font(.subheadline)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Image("rotationIcon")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 36)
+                                    }
+                                    .foregroundStyle(.white)
+                                    .padding(16)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(hex: "highlighted").opacity(0.9))
+                                    }
+                                    .onTapGesture {
+                                        withAnimation(.interactiveSpring) {
+                                            showRotateTip = false
+                                        }
+                                    }
+                                    .onChange(of: sceneManager.hasRotatedCamera) {
+                                        withAnimation(.interactiveSpring) {
+                                            showRotateTip = false
+                                        }
+                                    }
+                                    .padding()
+                                }
+                                
                                 Spacer()
+                                
+                                
                             }
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -299,17 +346,8 @@ struct FirstLevelView: View {
                         break
                     }
                     
-                    var listIndex = 0
-                    for codeBlockFromList in codeBlocksList {
-                        withAnimation(.spring) {
-                            if codeBlockFromList.id == codeBlock.id {
-                                codeBlocksList[listIndex].highlighted = true
-                            } else {
-                                codeBlocksList[listIndex].highlighted = false
-                            }
-                            listIndex += 1
-                        }
-                    }
+                    // highlighting blocks
+                    highlightedBlock = codeBlock.id
                     
                     switch codeBlock.command {
                         case "moveForward()":
@@ -377,11 +415,13 @@ struct FirstLevelView: View {
                     if ribboNode.position.z <= -1.4 {
                         withAnimation(.spring) {
                             showLevelFailedSheet = true
+                            errorCount += 1
                         }
                         break
                     } else if ribboNode.position.z >= 2.8 {
                         withAnimation(.spring) {
                             showLevelFailedSheet = true
+                            errorCount += 1
                         }
                         break
                     }
@@ -390,6 +430,7 @@ struct FirstLevelView: View {
                         if ribboNode.position.z >= 1.4 {
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
+                                errorCount += 1
                             }
                             break
                         }
@@ -397,15 +438,15 @@ struct FirstLevelView: View {
                         if ribboNode.position.z < 1.2 {
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
+                                errorCount += 1
                             }
                             break
                         }
                     }
                 }
 
-                for int in 0 ..< codeBlocksList.count {
-                    codeBlocksList[int].highlighted = false
-                }
+                // removing highlights
+                highlightedBlock = UUID()
                 
                 if ribboNode.position.x < -4.75 {
                     gameManager.firstLevelComplete = true
@@ -415,6 +456,7 @@ struct FirstLevelView: View {
                     withAnimation(.spring) {
                         if !showLevelFailedSheet {
                             showLevelWarningSheet = true
+                            errorCount += 1
                         }
                         
                         ribboNode.position.x = 0

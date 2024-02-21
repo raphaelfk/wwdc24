@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ThirdLevelDescriptionView: View {
-    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateLeft()", highlighted: false, type: .commandBlock), CodeBlock(command: "rotateRight()", highlighted: false, type: .commandBlock)]
+    var commandBlocksGallery: [CodeBlock] = [CodeBlock(command: "moveForward()", type: .commandBlock), CodeBlock(command: "rotateLeft()", type: .commandBlock), CodeBlock(command: "rotateRight()", type: .commandBlock)]
     @Binding var descriptionVisibility: Bool
     
     var body: some View {

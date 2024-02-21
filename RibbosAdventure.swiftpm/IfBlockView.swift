@@ -11,6 +11,8 @@ struct IfBlockView: View {
     let codeBlock: CodeBlock
     @Binding var codeBlocksCount: Int
     @Binding var codeBlocksList: [CodeBlock]
+    @Binding var highlightedBlock: UUID
+    @Binding var highlightedInlineBlock: UUID
     @Binding var runningScene: Bool
     @Binding var selectedBlock: UUID?
     @State var showConditionPad = false
@@ -55,7 +57,7 @@ struct IfBlockView: View {
                                     .onTapGesture {
                                         var listIndex = 0
                                         for codeBlockFromList in self.codeBlocksList {
-                                            if codeBlockFromList.id == codeBlock.id {
+                                            if codeBlockFromList.id == codeBlock.id && listIndex < codeBlocksList.count {
                                                 codeBlocksList[listIndex].command = condition
                                                 break
                                             }
@@ -83,7 +85,7 @@ struct IfBlockView: View {
                         withAnimation(.interactiveSpring) {
                             var listIndex = 0
                             for codeBlockSearched in codeBlocksList {
-                                if codeBlockSearched.id == codeBlock.id {
+                                if codeBlockSearched.id == codeBlock.id && listIndex < codeBlocksList.count {
                                     codeBlocksList.remove(at: listIndex)
                                     break
                                 }
@@ -99,7 +101,7 @@ struct IfBlockView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background {
-                Color(hex: "906EBC")
+                Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC")
             }
             .clipShape(
                 .rect(
@@ -117,7 +119,7 @@ struct IfBlockView: View {
                 if codeBlock.inlineBlocks.isEmpty {
                     HStack(spacing: 16) {
                         Rectangle()
-                            .fill(Color(hex: "906EBC"))
+                            .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                             .frame(width: 8, height: 80)
                         
                         RoundedRectangle(cornerRadius: 8)
@@ -132,15 +134,18 @@ struct IfBlockView: View {
                     
                 } else {
                     Rectangle()
-                        .fill(Color(hex: "906EBC"))
+                        .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                         .frame(width: 8, height: 4)
-                    
+                
+                    // inline blocks
                     ForEach(codeBlock.inlineBlocks) { inlineBlock in
                         HStack(alignment: .center, spacing: 16) {
+                            // if detail
                             Rectangle()
-                                .fill(Color(hex: "906EBC"))
+                                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                                 .frame(width: 8, height: 44)
                             
+                            // command block
                             HStack(alignment: .center) {
                                 Text(inlineBlock.command ?? "Error")
                                     .fontDesign(.monospaced)
@@ -159,7 +164,7 @@ struct IfBlockView: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                             .background {
-                                Color(hex: inlineBlock.highlighted ? "BFAD5A" : "78C1B3")
+                                Color(hex: inlineBlock.id == highlightedInlineBlock ? "highlighted" : "78C1B3")
                             }
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                             .frame(height: 36)
@@ -179,26 +184,25 @@ struct IfBlockView: View {
                                         // searching for the inline block to be deleted and removing it from the for's inlineBlocks list
                                         var inlineListIndex = 0
                                         for inlineBlockSearched in codeBlocksList[listIndex].inlineBlocks {
-                                            if inlineBlockSearched.id == inlineBlock.id {
+                                            if inlineBlockSearched.id == inlineBlock.id && listIndex < codeBlocksList.count && inlineListIndex < codeBlocksList[listIndex].inlineBlocks.count {
                                                 codeBlocksList[listIndex].inlineBlocks.remove(at: inlineListIndex)
                                                 break
                                             }
+                                            
                                             inlineListIndex += 1
                                         }
                                         
                                         updateCodeBlocksCount()
                                     }
                                 }
-                                
                             }
                         }
-                        
                     }
                     
                     if !runningScene {
                         HStack(spacing: 16) {
                             Rectangle()
-                                .fill(Color(hex: "906EBC"))
+                                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                                 .frame(width: 8, height: 80)
                             
                             RoundedRectangle(cornerRadius: 8)
@@ -213,7 +217,7 @@ struct IfBlockView: View {
                     }
                     
                     Rectangle()
-                        .fill(Color(hex: "906EBC"))
+                        .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                         .frame(width: 8, height: 4)
                 }
             }
@@ -221,7 +225,7 @@ struct IfBlockView: View {
             
             
             Rectangle()
-                .fill(Color(hex: "906EBC"))
+                .fill(Color(hex: codeBlock.id == highlightedBlock ? "highlighted" : "906EBC"))
                 .frame(width: 32, height: 16)
                 .clipShape(
                     .rect(

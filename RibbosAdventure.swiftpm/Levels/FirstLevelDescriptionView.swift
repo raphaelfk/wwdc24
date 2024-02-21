@@ -9,9 +9,9 @@ import SwiftUI
 
 struct FirstLevelDescriptionView: View {
     var commandBlocksGallery: [CodeBlock] = [
-        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward only one time", highlighted: false, type: .commandBlock),
-        CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
-        CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
+        CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward only one time", type: .commandBlock),
+        CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", type: .commandBlock),
+        CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", type: .commandBlock)
     ]
     @Binding var descriptionVisibility: Bool
     
@@ -66,9 +66,9 @@ struct FirstLevelDescriptionView: View {
                 .padding(.bottom, 4)
                 
                 let firstLevelCodeBlocks = [
-                    CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", highlighted: false, type: .commandBlock),
-                    CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", highlighted: false, type: .commandBlock),
-                    CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", highlighted: false, type: .commandBlock)
+                    CodeBlock(command: "moveForward()", explanation: "// makes Ribbo move forward by only one tile", type: .commandBlock),
+                    CodeBlock(command: "rotateLeft()", explanation: "// makes Ribbo rotate to it's left direction", type: .commandBlock),
+                    CodeBlock(command: "rotateRight()", explanation: "// makes Ribbo rotate to it's right direction", type: .commandBlock)
                 ]
                 
                 // command blocks

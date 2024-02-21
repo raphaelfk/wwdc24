@@ -11,7 +11,10 @@ import SceneKit
 struct SecondLevelView: View {
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
+    @State var errorCount = 0
     @EnvironmentObject var gameManager: GameManager
+    @State var highlightedBlock: UUID = UUID()
+    @State var highlightedInlineBlock: UUID = UUID()
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
     @State var isSceneExpanded = false
@@ -55,7 +58,7 @@ struct SecondLevelView: View {
                     } label: {
                         Image(systemName: "questionmark.circle")
                             .font(.title2)
-                            .foregroundStyle(Color("green"))
+                            .foregroundStyle(Color("blue"))
                     }
                     .buttonStyle(.plain)
                     .sheet(isPresented: $showDescriptionSheet, content: {
@@ -69,7 +72,7 @@ struct SecondLevelView: View {
                 HStack {
                     // Code editor
                     if showCodeEditor {
-                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 2, hasCodeBlocksLimit: true, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
+                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 2, errorCount: $errorCount, hasCodeBlocksLimit: true, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.trailing, 8)
                     }
@@ -181,6 +184,7 @@ struct SecondLevelView: View {
                                             Button {
                                                 withAnimation(.interactiveSpring) {
                                                     showLevelWarningSheet = false
+                                                    errorCount += 1
                                                 }
                                             } label: {
                                                 Image(systemName: "xmark.circle.fill")
@@ -229,7 +233,7 @@ struct SecondLevelView: View {
                                         }
                                         .fontWeight(.semibold)
                                         
-                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
+                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on 􀁜.")
                                             .multilineTextAlignment(.leading)
                                             .font(.subheadline)
                                     }
@@ -242,6 +246,7 @@ struct SecondLevelView: View {
                                     .onTapGesture {
                                         withAnimation(.interactiveSpring) {
                                             showLevelFailedSheet = false
+                                            errorCount += 1
                                         }
                                     }
                                     .padding(.horizontal)
@@ -300,6 +305,8 @@ struct SecondLevelView: View {
                 var currentAngle: Float = 0
                 
                 // iterating over each code block placed on the code editor
+                var currentBlockIndex = 0
+                
                 for codeBlock in codeBlocksList {
                     // if stop button is pressed, stop the execution
                     if stopRunningScene {
@@ -307,16 +314,9 @@ struct SecondLevelView: View {
                     }
                     
                     // highlighting the current running blocks
-                    var listIndex = 0
-                    var currentBlockIndex = 0
-                    for codeBlockFromList in codeBlocksList {
-                        if codeBlockFromList.id == codeBlock.id {
-                            codeBlocksList[listIndex].highlighted = true
-                            currentBlockIndex = listIndex
-                        } else {
-                            codeBlocksList[listIndex].highlighted = false
-                        }
-                        listIndex += 1
+                    withAnimation(.interactiveSpring) {
+                        highlightedBlock = codeBlock.id
+                        highlightedInlineBlock = UUID() // removing inline highlights
                     }
                     
                     // running the blocks
@@ -379,8 +379,8 @@ struct SecondLevelView: View {
                             default:
                                 print("No command (\(codeBlock.command ?? "Error") found!")
                         }
+                        
                     } else { // if it is a for loop block
-
                         // iterating for the defined number of times
                         for _ in 0 ..< (Int(codeBlock.command ?? "0") ?? 0) {
                             // if stop button is pressed, stop the execution
@@ -393,14 +393,7 @@ struct SecondLevelView: View {
                                 var inlineListIndex = 0
                                 
                                 // highlighting the current inline running blocks
-                                for codeBlockFromInlineList in codeBlocksList[inlineListIndex].inlineBlocks {
-                                    if codeBlockFromInlineList.id == codeBlock.id {
-                                        codeBlocksList[inlineListIndex].highlighted = true
-                                    } else {
-                                        codeBlocksList[inlineListIndex].highlighted = false
-                                    }
-                                    inlineListIndex += 1
-                                }
+                                self.highlightedInlineBlock = inlineBlock.id
                                 
                                 // running the commands
                                 switch inlineBlock.command {
@@ -471,6 +464,7 @@ struct SecondLevelView: View {
                                     if ribboNode.position.z >= 1.2 {
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
+                                            errorCount += 1
                                         }
                                         break
                                         
@@ -478,6 +472,7 @@ struct SecondLevelView: View {
                                     } else if ribboNode.position.z < -6 {
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
+                                            errorCount += 1
                                         }
                                         break
                                     }
@@ -489,6 +484,7 @@ struct SecondLevelView: View {
                                         if ribboNode.position.z < -1 {
                                             withAnimation(.spring) {
                                                 showLevelFailedSheet = true
+                                                errorCount += 1
                                             }
                                             break
                                         }
@@ -500,6 +496,7 @@ struct SecondLevelView: View {
                                         if ribboNode.position.x < -11 {
                                             withAnimation(.spring) {
                                                 showLevelFailedSheet = true
+                                                errorCount += 1
                                             }
                                             break
                                         }
@@ -511,6 +508,7 @@ struct SecondLevelView: View {
                                             if ribboNode.position.z > -5 {
                                                 withAnimation(.spring) {
                                                     showLevelFailedSheet = true
+                                                    errorCount += 1
                                                 }
                                                 break
                                             } else if ribboNode.position.x < 13 {
@@ -591,11 +589,16 @@ struct SecondLevelView: View {
                             }
                         }
                     }
+                    
+                    // updating current block index
+                    if currentBlockIndex < codeBlocksList.count - 1 {
+                        currentBlockIndex += 1
+                    }
                 }
                 
-                for int in 0 ..< codeBlocksList.count {
-                    codeBlocksList[int].highlighted = false
-                }
+                // removing highlights
+                highlightedBlock = UUID()
+                highlightedInlineBlock = UUID()
                 
                 if ribboNode.position.x <= -14.3 {
                     showLevelCompleteSheet = true

@@ -12,7 +12,10 @@ struct ThirdLevelView: View {
     @State var codeBlocksList: [CodeBlock] = []
     @Environment (\.colorScheme) var colorScheme
     @State var currentMap: [[String]] = [[]]
+    @State var errorCount = 0
     @EnvironmentObject var gameManager: GameManager
+    @State var highlightedBlock: UUID = UUID()
+    @State var highlightedInlineBlock: UUID = UUID()
     @State var isCodeEditorExpanded = false
     @State var isIntroductionExpanded = false
     @State var isSceneExpanded = false
@@ -150,7 +153,7 @@ struct ThirdLevelView: View {
                     } label: {
                         Image(systemName: "questionmark.circle")
                             .font(.title2)
-                            .foregroundStyle(Color("green"))
+                            .foregroundStyle(Color("purple"))
                     }
                     .buttonStyle(.plain)
                     .sheet(isPresented: $showDescriptionSheet, content: {
@@ -164,7 +167,7 @@ struct ThirdLevelView: View {
                 HStack {
                     // Code editor
                     if showCodeEditor {
-                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 3, hasCodeBlocksLimit: true, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
+                        CodeEditorView(codeBlocksList: $codeBlocksList, currentMission: 3, errorCount: $errorCount, hasCodeBlocksLimit: true, highlightedBlock: $highlightedBlock, highlightedInlineBlock: $highlightedInlineBlock, isCodeEditorExpanded: $isCodeEditorExpanded, runningScene: $runningScene, showCodeEditor: $showCodeEditor, showIntroduction: $showIntroduction, showScene: $showScene)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.trailing, 8)
                     }
@@ -282,6 +285,7 @@ struct ThirdLevelView: View {
                                             Button {
                                                 withAnimation(.interactiveSpring) {
                                                     showLevelWarningSheet = false
+                                                    errorCount += 1
                                                 }
                                             } label: {
                                                 Image(systemName: "xmark.circle.fill")
@@ -305,6 +309,7 @@ struct ThirdLevelView: View {
                                     .onTapGesture {
                                         withAnimation(.interactiveSpring) {
                                             showLevelWarningSheet = false
+                                            errorCount += 1
                                         }
                                     }
                                     .padding(.horizontal)
@@ -321,6 +326,7 @@ struct ThirdLevelView: View {
                                             Button {
                                                 withAnimation(.interactiveSpring) {
                                                     showLevelFailedSheet = false
+                                                    errorCount += 1
                                                 }
                                             } label: {
                                                 Image(systemName: "xmark.circle.fill")
@@ -330,7 +336,7 @@ struct ThirdLevelView: View {
                                         }
                                         .fontWeight(.semibold)
                                         
-                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on ”Read More...”.")
+                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on 􀁜.")
                                             .multilineTextAlignment(.leading)
                                             .font(.subheadline)
                                     }
@@ -343,6 +349,7 @@ struct ThirdLevelView: View {
                                     .onTapGesture {
                                         withAnimation(.interactiveSpring) {
                                             showLevelFailedSheet = false
+                                            errorCount += 1
                                         }
                                     }
                                     .padding(.horizontal)
@@ -432,8 +439,7 @@ struct ThirdLevelView: View {
             showLevelFailedSheet = false
         }
         
-        
-        
+
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
             var ribboMatrixColPosition = 0
             var ribboMatrixRowPosition = 4
@@ -466,6 +472,9 @@ struct ThirdLevelView: View {
                     // storing startPosition to see if any commands are being run. if not, Ribbo is stuck and the code should stop running
                     let whileRibboStartPosition = (ribboMatrixRowPosition, ribboMatrixColPosition)
                     
+                    
+                    var currentBlockIndex = 0
+                    
                     for codeBlock in codeBlocksList {
                         // if stop button is pressed, stop the execution
                         if stopRunningScene {
@@ -473,16 +482,9 @@ struct ThirdLevelView: View {
                         }
                         
                         // highlighting the current running blocks
-                        var listIndex = 0
-                        var currentBlockIndex = 0
-                        for codeBlockFromList in codeBlocksList {
-                            if codeBlockFromList.id == codeBlock.id {
-                                codeBlocksList[listIndex].highlighted = true
-                                currentBlockIndex = listIndex
-                            } else {
-                                codeBlocksList[listIndex].highlighted = false
-                            }
-                            listIndex += 1
+                        withAnimation(.interactiveSpring) {
+                            highlightedBlock = codeBlock.id
+                            highlightedInlineBlock = UUID() // removing inline highlights
                         }
                         
                         // running the blocks
@@ -556,6 +558,8 @@ struct ThirdLevelView: View {
                             }
                             
                             var runCodeBlockCommands = false
+                            
+                            
                             switch codeBlock.command {
                                 case "isOnBlueTile":
                                     if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "b" {
@@ -577,17 +581,9 @@ struct ThirdLevelView: View {
                             if runCodeBlockCommands {
                                 // going through each inline block
                                 for inlineBlock in codeBlocksList[currentBlockIndex].inlineBlocks {
-                                    var inlineListIndex = 0
                                     
                                     // highlighting the current inline running blocks
-                                    for codeBlockFromInlineList in codeBlocksList[inlineListIndex].inlineBlocks {
-                                        if codeBlockFromInlineList.id == codeBlock.id {
-                                            codeBlocksList[inlineListIndex].highlighted = true
-                                        } else {
-                                            codeBlocksList[inlineListIndex].highlighted = false
-                                        }
-                                        inlineListIndex += 1
-                                    }
+                                    highlightedInlineBlock = inlineBlock.id
                                     
                                     // running the commands
                                     switch inlineBlock.command {
@@ -670,6 +666,7 @@ struct ThirdLevelView: View {
                                     if ribboMatrixRowPosition >= currentMap.count || ribboMatrixRowPosition < 0 { // if its out of the map row wise
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
+                                            errorCount += 1
                                         }
                                         break
                                     }
@@ -677,6 +674,7 @@ struct ThirdLevelView: View {
                                     if ribboMatrixColPosition < 0 { // if its out of the map column wise
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
+                                            errorCount += 1
                                         }
                                         break
                                     }
@@ -684,6 +682,7 @@ struct ThirdLevelView: View {
                                     if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if it hits a barrier
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
+                                            errorCount += 1
                                         }
                                         break
                                     }
@@ -710,6 +709,7 @@ struct ThirdLevelView: View {
                         if ribboMatrixRowPosition >= currentMap.count || ribboMatrixRowPosition < 0 { // if its out of the map row wise
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
+                                errorCount += 1
                             }
                             break
                         }
@@ -717,6 +717,7 @@ struct ThirdLevelView: View {
                         if ribboMatrixColPosition < 0 { // if its out of the map column wise
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
+                                errorCount += 1
                             }
                             break
                         }
@@ -724,8 +725,14 @@ struct ThirdLevelView: View {
                         if currentMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if it hits a barrier
                             withAnimation(.spring) {
                                 showLevelFailedSheet = true
+                                errorCount += 1
                             }
                             break
+                        }
+                        
+                        // updating current block index
+                        if currentBlockIndex < codeBlocksList.count - 1 {
+                            currentBlockIndex += 1
                         }
                     }
                     
@@ -735,13 +742,14 @@ struct ThirdLevelView: View {
                     }
                 }
 
-                for int in 0 ..< codeBlocksList.count {
-                    codeBlocksList[int].highlighted = false
-                }
+                // removing block highlights
+                highlightedBlock = UUID()
+                
                 
                 if !showLevelCompleteSheet && !showLevelFailedSheet { // if ribbo did not die and did not win (stopped in the middle of the way)
                     withAnimation(.spring) {
                         showLevelWarningSheet = true
+                        errorCount += 1
                         ribboNode.position.x = 0
                         ribboNode.position.z = 0
                         ribboNode.eulerAngles.x = 0
@@ -751,6 +759,7 @@ struct ThirdLevelView: View {
                 }
                 
                 runningScene = false
+                stopRunningScene = false
             }
         }
     }

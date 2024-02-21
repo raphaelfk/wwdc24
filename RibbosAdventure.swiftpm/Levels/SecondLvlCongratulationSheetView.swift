@@ -71,7 +71,7 @@ struct SecondLvlCongratulationSheetView: View {
                     Button(action: {
                         withAnimation(.easeInOut(duration: 1)) {
                             sheetVisibility = false
-                            gameManager.playingFirstLevel = false
+                            gameManager.playingSecondLevel = false
                         }
                         
                     }, label: {

@@ -9,11 +9,12 @@ import Foundation
 import SceneKit
 import SwiftUI
 
-class SceneManager
-{
+class SceneManager: ObservableObject {
+    private let cameraOrbit: SCNNode
+    @Published var hasRotatedCamera: Bool = false
     var scene: SCNScene
     let view: SCNView
-    private let cameraOrbit: SCNNode
+    
     // let grassPlanetSoundtrack: SCNAudioSource
     
     private var maxWidthRatioRight: Float = 0.2
@@ -32,14 +33,6 @@ class SceneManager
         self.cameraOrbit = SCNNode()
         self.cameraOrbit.addChildNode(self.view.pointOfView!)
         
-        // background music
-//        self.grassPlanetSoundtrack = SCNAudioSource(fileNamed: "grassPlanetSoundtrack.m4a")!
-//        grassPlanetSoundtrack.loops = true
-//        grassPlanetSoundtrack.load()
-//        
-//        let musicPlayer = SCNAudioPlayer(source: grassPlanetSoundtrack)
-//        self.scene.rootNode.childNode(withName: "ribbo", recursively: true)?.addAudioPlayer(musicPlayer)
-        
         self.scene.rootNode.addChildNode(self.cameraOrbit)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panHandler))
         panGesture.maximumNumberOfTouches = 1
@@ -55,6 +48,8 @@ class SceneManager
         let ratioWidth = Float(translation.x) / Float(sender.view!.frame.size.width)
         if (sender.state == UIGestureRecognizer.State.changed) {
             withAnimation(.easeInOut) {
+                hasRotatedCamera = true
+                
                 if ratioWidth > 0.25 {
                     self.cameraOrbit.eulerAngles.y -= Float(Double.pi / 12) * 0.25 * 0.5
                     
