@@ -188,8 +188,8 @@ struct PlanetsLogsView: View {
                                 }
                                 .padding(.top, 8)
                                 .padding(.bottom)
-                                .sheet(isPresented: $showGrassPlanetLog) {
-                                    PartyPlanetLogView(sheetVisibility: $showCastlePlanetLog)
+                                .sheet(isPresented: $showPartyPlanetLog) {
+                                    PartyPlanetLogView(sheetVisibility: $showPartyPlanetLog)
                                 }
                                 
                             }

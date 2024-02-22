@@ -32,6 +32,20 @@ struct FirstLevelView: View {
     @State var showRotateTip = true
     @State var stopRunningScene = false
 
+    let levelMap = [
+        // Ribbo starting position is (4 , 1)
+        // "o" represents a tile that Ribbo can be on
+        // "x" represents a tile that is dangerous to Ribbo
+        // "g" represents the destination tile ("g" for green)
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+        ["o", "o", "x", "o", "o", "o", "g", "o"],
+        ["o", "o", "o", "o", "x", "x", "x", "o"],
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+        ["o", "o", "x", "x", "x", "x", "x", "o"],
+    ]
     
     var body: some View {
         if loadingLevel {
@@ -254,31 +268,24 @@ struct FirstLevelView: View {
                                 
                                 // rotate simulator tip
                                 if showRotateTip {
-                                    HStack(alignment: .center) {
-                                        VStack(alignment: .leading, spacing: 10) {
-                                            HStack(spacing: 4) {
-                                                Text("Tip:")
-                                                
-                                            }
-                                            .fontWeight(.semibold)
-                                            
-                                            Text("You can rotate the simulator to get other points of view.")
-                                                .multilineTextAlignment(.leading)
-                                                .font(.subheadline)
-                                        }
-                                        
-                                        Spacer()
-                                        
+                                    Spacer()
+                                    
+                                    VStack(alignment: .center, spacing: 16) {
                                         Image("rotationIcon")
                                             .resizable()
                                             .scaledToFit()
                                             .frame(height: 36)
+                                        
+                                        Text("You can rotate the simulator to get other points of view.")
+                                            .multilineTextAlignment(.center)
+                                            .font(.subheadline)
                                     }
                                     .foregroundStyle(.white)
+                                    .frame(maxWidth: 200)
                                     .padding(16)
                                     .background {
                                         RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color(hex: "highlighted").opacity(0.9))
+                                            .fill(.black.opacity(0.5))
                                     }
                                     .onTapGesture {
                                         withAnimation(.interactiveSpring) {
@@ -321,6 +328,10 @@ struct FirstLevelView: View {
         }
         
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
+            // Ribbo's levelMap coordinates
+            var ribboMatrixColPosition = 1
+            var ribboMatrixRowPosition = 4
+            
             // move actions
             let moveFront = SCNAction.moveBy(x: -1.5, y: 0, z: 0, duration: 1)
             let moveBack = SCNAction.moveBy(x: 1.5, y: 0, z: 0, duration: 1)
@@ -347,17 +358,27 @@ struct FirstLevelView: View {
                     }
                     
                     // highlighting blocks
-                    highlightedBlock = codeBlock.id
+                    withAnimation(.interactiveSpring) {
+                        highlightedBlock = codeBlock.id
+                    }
                     
+                    // running command
                     switch codeBlock.command {
                         case "moveForward()":
                             if ribboDirection == 0 {
+                                ribboMatrixColPosition += 1
                                 await ribboNode.runAction(moveFront)
+                                
                             } else if ribboDirection == 1 {
+                                ribboMatrixRowPosition -= 1
                                 await ribboNode.runAction(moveLeft)
+                                
                             } else if ribboDirection == 2 {
+                                ribboMatrixColPosition -= 1
                                 await ribboNode.runAction(moveBack)
+                                
                             } else if ribboDirection == -1 {
+                                ribboMatrixRowPosition += 1
                                 await ribboNode.runAction(moveRight)
                             }
                             
@@ -412,13 +433,7 @@ struct FirstLevelView: View {
                     try await Task.sleep(nanoseconds: 500_000)
                     
                     // checking for allowed ribbo coordinates (to see if the code failed)
-                    if ribboNode.position.z <= -1.4 {
-                        withAnimation(.spring) {
-                            showLevelFailedSheet = true
-                            errorCount += 1
-                        }
-                        break
-                    } else if ribboNode.position.z >= 2.8 {
+                    if ribboMatrixRowPosition >= levelMap.count || ribboMatrixRowPosition < 0 { // if its out of the levelMap row wise
                         withAnimation(.spring) {
                             showLevelFailedSheet = true
                             errorCount += 1
@@ -426,54 +441,62 @@ struct FirstLevelView: View {
                         break
                     }
                     
-                    if ribboNode.position.x  >= -1.4 {
-                        if ribboNode.position.z >= 1.4 {
-                            withAnimation(.spring) {
-                                showLevelFailedSheet = true
-                                errorCount += 1
-                            }
-                            break
+                    if ribboMatrixColPosition >= 8 || ribboMatrixColPosition < 0 { // if its out of the levelMap column wise
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                            errorCount += 1
                         }
-                    } else if ribboNode.position.x  < -3.2 {
-                        if ribboNode.position.z < 1.2 {
-                            withAnimation(.spring) {
-                                showLevelFailedSheet = true
-                                errorCount += 1
-                            }
-                            break
-                        }
+                        break
                     }
+                    
+                    if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if ribbo is on a dangerous tile
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                            errorCount += 1
+                        }
+                        break
+                    }
+                    
+                    // checking for level completion
+                    if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "g" { // if its on green tile, complete level
+                        gameManager.firstLevelComplete = true
+                        gameManager.secondLevelAvailable = true
+                        showLevelCompleteSheet = true
+                        break
+                        
+                    }
+                }
+                
+                // if Ribbo did not reach its destination, and did not go to dangerous tiles
+                if !showLevelFailedSheet && !showLevelCompleteSheet {
+                    withAnimation(.spring) {
+                        showLevelWarningSheet = true
+                        errorCount += 1
+                    }
+                }
+                
+                // if Ribbo did not reach its destination, return to start position
+                if !showLevelCompleteSheet {
+                    // returning Ribbo to start position
+                    ribboNode.position.x = 0
+                    ribboNode.position.z = 0
+                    ribboNode.eulerAngles.x = 0
+                    ribboNode.eulerAngles.y = 0
+                    ribboNode.eulerAngles.z = 0
                 }
 
-                // removing highlights
-                highlightedBlock = UUID()
-                
-                if ribboNode.position.x < -4.75 {
-                    gameManager.firstLevelComplete = true
-                    gameManager.secondLevelAvailable = true
-                    showLevelCompleteSheet = true
-                } else {
-                    withAnimation(.spring) {
-                        if !showLevelFailedSheet {
-                            showLevelWarningSheet = true
-                            errorCount += 1
-                        }
-                        
-                        ribboNode.position.x = 0
-                        ribboNode.position.z = 0
-                        ribboNode.eulerAngles.x = 0
-                        ribboNode.eulerAngles.y = 0
-                        ribboNode.eulerAngles.z = 0
-                    }
-                    
+                // removing code block highlights
+                withAnimation(.interactiveSpring) {
+                    highlightedBlock = UUID()
                 }
                 
-                runningScene = false
-                stopRunningScene = false
+                // stop running scene
+                withAnimation(.spring) {
+                    runningScene = false
+                    stopRunningScene = false
+                }
             }
         }
-        
-        
     }
 }
 

@@ -134,17 +134,13 @@ struct MissionControlTerminalView: View {
                                 .scaledToFit()
                                 .frame(maxHeight: 180)
                                 .opacity(colorScheme == .light ? 1 : 0.5)
-                        }
-                        
-                        if showStars2 {
+                        } else if showStars2 {
                             Image("badgeStars2")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(maxHeight: 180)
                                 .opacity(colorScheme == .light ? 1 : 0.5)
-                        }
-                        
-                        if showStars3 {
+                        } else if showStars3 {
                             Image("badgeStars3")
                                 .resizable()
                                 .scaledToFit()

@@ -336,7 +336,7 @@ struct ThirdLevelView: View {
                                         }
                                         .fontWeight(.semibold)
                                         
-                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on 􀁜.")
+                                        Text("It looks like your code did not pass our test's safety requirements for Ribbo! But don’t worry, this is just a simulator, so Ribbo is fine!\nIf you need any help you can read the entire mission description by clicking on the \"?\" icon.")
                                             .multilineTextAlignment(.leading)
                                             .font(.subheadline)
                                     }
@@ -441,6 +441,7 @@ struct ThirdLevelView: View {
         
 
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
+            // Ribbo's map coordinates
             var ribboMatrixColPosition = 0
             var ribboMatrixRowPosition = 4
             
@@ -589,17 +590,21 @@ struct ThirdLevelView: View {
                                     switch inlineBlock.command {
                                         case "moveForward()":
                                             if ribboDirection == 0 {
-                                                ribboMatrixColPosition += 1
-                                                await ribboNode.runAction(moveFront)
+                                                ribboMatrixColPosition += 1 // updating ribbo coordinates
+                                                await ribboNode.runAction(moveFront) // running action on scene
+                                                
                                             } else if ribboDirection == 1 {
                                                 ribboMatrixRowPosition -= 1
                                                 await ribboNode.runAction(moveLeft)
+                                                
                                             } else if ribboDirection == 2 {
                                                 ribboMatrixColPosition -= 1
                                                 await ribboNode.runAction(moveBack)
+                                                
                                             } else if ribboDirection == -1 {
                                                 ribboMatrixRowPosition += 1
                                                 await ribboNode.runAction(moveRight)
+                                                
                                             }
                                             
                                             
@@ -671,7 +676,7 @@ struct ThirdLevelView: View {
                                         break
                                     }
                                     
-                                    if ribboMatrixColPosition < 0 { // if its out of the map column wise
+                                    if ribboMatrixColPosition >= 10 || ribboMatrixColPosition < 0 { // if its out of the map column wise
                                         withAnimation(.spring) {
                                             showLevelFailedSheet = true
                                             errorCount += 1
@@ -756,6 +761,13 @@ struct ThirdLevelView: View {
                         ribboNode.eulerAngles.y = 0
                         ribboNode.eulerAngles.z = 0
                     }
+                } else if showLevelFailedSheet { // if ribbo collided with a barrier
+                    errorCount += 1
+                    ribboNode.position.x = 0
+                    ribboNode.position.z = 0
+                    ribboNode.eulerAngles.x = 0
+                    ribboNode.eulerAngles.y = 0
+                    ribboNode.eulerAngles.z = 0
                 }
                 
                 runningScene = false

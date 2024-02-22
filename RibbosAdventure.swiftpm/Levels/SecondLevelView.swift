@@ -32,6 +32,21 @@ struct SecondLevelView: View {
     @State var showScene = true
     @State var stopRunningScene = false
     
+    let levelMap = [
+        // Ribbo starting position is (1 , 1)
+        // "o" represents a tile that Ribbo can be on
+        // "x" represents a tile that is dangerous to Ribbo
+        // "g" represents the destination tile ("g" for green)
+        ["o", "o", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x"],
+        ["o", "o", "o", "o", "o", "o", "o", "o", "o", "o", "x", "x", "x", "x"],
+        ["o", "o", "x", "x", "x", "x", "x", "x", "x", "o", "x", "x", "x", "x"],
+        ["o", "x", "x", "x", "x", "x", "x", "x", "x", "o", "x", "x", "x", "x"],
+        ["x", "x", "x", "x", "x", "x", "x", "x", "x", "o", "x", "x", "x", "x"],
+        ["x", "x", "x", "x", "x", "x", "x", "x", "x", "o", "o", "o", "g", "g"],
+        ["x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x"],
+        ["x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x", "x"],
+    ]
+    
     var body: some View {
         if loadingLevel {
             LoaderView(currentMission: 2, showLoaderView: $loadingLevel)
@@ -285,7 +300,10 @@ struct SecondLevelView: View {
         }
         
         if let ribboNode = sceneManager.scene.rootNode.childNode(withName: "ribbo", recursively: true) {
-
+            // Ribbo's levelMap coordinates
+            var ribboMatrixColPosition = 1
+            var ribboMatrixRowPosition = 1
+            
             // move actions
             let moveFront = SCNAction.moveBy(x: -1.3, y: 0, z: 0, duration: 1)
             let moveBack = SCNAction.moveBy(x: 1.3, y: 0, z: 0, duration: 1)
@@ -324,12 +342,19 @@ struct SecondLevelView: View {
                         switch codeBlock.command {
                             case "moveForward()":
                                 if ribboDirection == 0 {
+                                    ribboMatrixColPosition += 1
                                     await ribboNode.runAction(moveFront)
+                                    
                                 } else if ribboDirection == 1 {
+                                    ribboMatrixRowPosition -= 1
                                     await ribboNode.runAction(moveLeft)
+                                    
                                 } else if ribboDirection == 2 {
+                                    ribboMatrixColPosition -= 1
                                     await ribboNode.runAction(moveBack)
+                                    
                                 } else if ribboDirection == -1 {
+                                    ribboMatrixRowPosition += 1
                                     await ribboNode.runAction(moveRight)
                                 }
                                 
@@ -384,13 +409,12 @@ struct SecondLevelView: View {
                         // iterating for the defined number of times
                         for _ in 0 ..< (Int(codeBlock.command ?? "0") ?? 0) {
                             // if stop button is pressed, stop the execution
-                            if stopRunningScene {
+                            if stopRunningScene || showLevelCompleteSheet {
                                 break
                             }
                             
                             // going through each inline block
                             for inlineBlock in codeBlocksList[currentBlockIndex].inlineBlocks {
-                                var inlineListIndex = 0
                                 
                                 // highlighting the current inline running blocks
                                 self.highlightedInlineBlock = inlineBlock.id
@@ -399,12 +423,19 @@ struct SecondLevelView: View {
                                 switch inlineBlock.command {
                                     case "moveForward()":
                                         if ribboDirection == 0 {
+                                            ribboMatrixColPosition += 1
                                             await ribboNode.runAction(moveFront)
+                                            
                                         } else if ribboDirection == 1 {
+                                            ribboMatrixRowPosition -= 1
                                             await ribboNode.runAction(moveLeft)
+                                            
                                         } else if ribboDirection == 2 {
+                                            ribboMatrixColPosition -= 1
                                             await ribboNode.runAction(moveBack)
+                                            
                                         } else if ribboDirection == -1 {
+                                            ribboMatrixRowPosition += 1
                                             await ribboNode.runAction(moveRight)
                                         }
                                         
@@ -459,71 +490,39 @@ struct SecondLevelView: View {
                                 try await Task.sleep(nanoseconds: 1_000_000)
                                 
                                 // checking for allowed ribbo coordinates (to see if the code failed)
-                                if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
-                                    // if its left to the first bridge (from ribbo's start perspective)
-                                    if ribboNode.position.z >= 1.2 {
-                                        withAnimation(.spring) {
-                                            showLevelFailedSheet = true
-                                            errorCount += 1
-                                        }
-                                        break
-                                        
-                                        // if its more right than the second bridge (from ribbo's perspective)
-                                    } else if ribboNode.position.z < -6 {
-                                        withAnimation(.spring) {
-                                            showLevelFailedSheet = true
-                                            errorCount += 1
-                                        }
-                                        break
+                                if ribboMatrixRowPosition >= levelMap.count || ribboMatrixRowPosition < 0 { // if its out of the levelMap row wise
+                                    withAnimation(.spring) {
+                                        showLevelFailedSheet = true
+                                        errorCount += 1
                                     }
+                                    break
+                                }
+                                
+                                if ribboMatrixColPosition >= 14 || ribboMatrixColPosition < 0 { // if its out of the levelMap column wise
+                                    withAnimation(.spring) {
+                                        showLevelFailedSheet = true
+                                        errorCount += 1
+                                    }
+                                    break
+                                }
+                                
+                                if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if ribbo is on a dangerous tile
+                                    withAnimation(.spring) {
+                                        showLevelFailedSheet = true
+                                        errorCount += 1
+                                    }
+                                    break
+                                }
+                                
+                                // checking for level completion
+                                if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "g" { // if its on green tile, complete level
+                                    gameManager.secondLevelComplete = true
+                                    gameManager.thirdLevelAvailable = true
+                                    showLevelCompleteSheet = true
+                                    break
                                     
-                                    // if ribbo is on the first bridge
-                                    if ribboNode.position.x > 10 {
-                                        // his left side is already taken care of
-                                        // if his z position is less than -1, it means he will fall to the right side of the bridge
-                                        if ribboNode.position.z < -1 {
-                                            withAnimation(.spring) {
-                                                showLevelFailedSheet = true
-                                                errorCount += 1
-                                            }
-                                            break
-                                        }
-                                        
-                                        // if ribbo is on the middle bridge
-                                    } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
-                                        // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
-                                        // if his x position is less than -11, it means he will fall to the left side of the bridge
-                                        if ribboNode.position.x < -11 {
-                                            withAnimation(.spring) {
-                                                showLevelFailedSheet = true
-                                                errorCount += 1
-                                            }
-                                            break
-                                        }
-                                        
-                                        // if ribbo is on the last bridge
-                                    } else {
-                                        if ribboNode.position.x < -11 {
-                                            // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
-                                            if ribboNode.position.z > -5 {
-                                                withAnimation(.spring) {
-                                                    showLevelFailedSheet = true
-                                                    errorCount += 1
-                                                }
-                                                break
-                                            } else if ribboNode.position.x < 13 {
-                                                withAnimation(.spring) {
-                                                    showLevelCompleteSheet = true
-                                                    gameManager.thirdLevelAvailable = true
-                                                    gameManager.secondLevelComplete = true
-                                                }
-                                                break
-                                            }
-                                        }
-                                    }
                                 }
                             }
-                            
                         }
                     }
                     
@@ -531,63 +530,37 @@ struct SecondLevelView: View {
                     try await Task.sleep(nanoseconds: 500_000)
                     
                     // checking for allowed ribbo coordinates (to see if the code failed)
-                    if ribboNode.position.x < 1 { // if ribbo is out of his safe zone
-                        // if its left to the first bridge (from ribbo's start perspective)
-                        if ribboNode.position.z >= 1.2 {
-                            withAnimation(.spring) {
-                                showLevelFailedSheet = true
-                            }
-                            break
-                            
-                        // if its more right than the second bridge (from ribbo's perspective)
-                        } else if ribboNode.position.z < -6 {
-                            withAnimation(.spring) {
-                                showLevelFailedSheet = true
-                            }
-                            break
+                    if ribboMatrixRowPosition >= levelMap.count || ribboMatrixRowPosition < 0 { // if its out of the levelMap row wise
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                            errorCount += 1
                         }
+                        break
+                    }
+                    
+                    if ribboMatrixColPosition >= 14 || ribboMatrixColPosition < 0 { // if its out of the levelMap column wise
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                            errorCount += 1
+                        }
+                        break
+                    }
+                    
+                    if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "x" { // if ribbo is on a dangerous tile
+                        withAnimation(.spring) {
+                            showLevelFailedSheet = true
+                            errorCount += 1
+                        }
+                        break
+                    }
+                    
+                    // checking for level completion
+                    if levelMap[ribboMatrixRowPosition][ribboMatrixColPosition] == "g" { // if its on green tile, complete level
+                        gameManager.secondLevelAvailable = true
+                        gameManager.thirdLevelAvailable = true
+                        showLevelCompleteSheet = true
+                        break
                         
-                        // if ribbo is on the first bridge
-                        if ribboNode.position.x > 10 {
-                            // his left side is already taken care of
-                            // if his z position is less than -1, it means he will fall to the right side of the bridge
-                            if ribboNode.position.z < -1 {
-                                withAnimation(.spring) {
-                                    showLevelFailedSheet = true
-                                }
-                                break
-                            }
-                            
-                        // if ribbo is on the middle bridge
-                        } else if ribboNode.position.x > 11 && ribboNode.position.z > -5 {
-                            // now, considering he is facing in the correct direction while crossing the middle bridge, his back and forward directions are already taken care of, as well as his right side
-                            // if his x position is less than -11, it means he will fall to the left side of the bridge
-                            if ribboNode.position.x < -11 {
-                                withAnimation(.spring) {
-                                    showLevelFailedSheet = true
-                                }
-                                break
-                            }
-                            
-                        // if ribbo is on the last bridge
-                        } else {
-                            if ribboNode.position.x < -11 {
-                                // if his z position is more than -5, it means he will fall to the left side of the bridge (from his perspective)
-                                if ribboNode.position.z > -5 {
-                                    withAnimation(.spring) {
-                                        showLevelFailedSheet = true
-                                    }
-                                    break
-                                } else if ribboNode.position.x < 13 {
-                                    withAnimation(.spring) {
-                                        showLevelCompleteSheet = true
-                                        gameManager.thirdLevelAvailable = true
-                                        gameManager.secondLevelComplete = true
-                                    }
-                                    break
-                                }
-                            }
-                        }
                     }
                     
                     // updating current block index
@@ -596,31 +569,35 @@ struct SecondLevelView: View {
                     }
                 }
                 
-                // removing highlights
-                highlightedBlock = UUID()
-                highlightedInlineBlock = UUID()
-                
-                if ribboNode.position.x <= -14.3 {
-                    showLevelCompleteSheet = true
-                    gameManager.thirdLevelAvailable = true
-                    gameManager.secondLevelComplete = true
-                } else {
+                // if Ribbo did not reach its destination, and did not go to dangerous tiles
+                if !showLevelFailedSheet && !showLevelCompleteSheet {
                     withAnimation(.spring) {
-                        if !showLevelFailedSheet {
-                            showLevelWarningSheet = true
-                        }
-                        
-                        ribboNode.position.x = 0
-                        ribboNode.position.z = 0
-                        ribboNode.eulerAngles.x = 0
-                        ribboNode.eulerAngles.y = 0
-                        ribboNode.eulerAngles.z = 0
+                        showLevelWarningSheet = true
+                        errorCount += 1
                     }
-                    
                 }
                 
-                runningScene = false
-                stopRunningScene = false
+                // if Ribbo did not reach its destination, return to start position
+                if !showLevelCompleteSheet {
+                    // returning Ribbo to start position
+                    ribboNode.position.x = 0
+                    ribboNode.position.z = 0
+                    ribboNode.eulerAngles.x = 0
+                    ribboNode.eulerAngles.y = 0
+                    ribboNode.eulerAngles.z = 0
+                }
+                
+                // removing code block highlights
+                withAnimation(.interactiveSpring) {
+                    highlightedBlock = UUID()
+                    highlightedInlineBlock = UUID()
+                }
+                
+                // stop running scene
+                withAnimation(.spring) {
+                    runningScene = false
+                    stopRunningScene = false
+                }
             }
         }
         
