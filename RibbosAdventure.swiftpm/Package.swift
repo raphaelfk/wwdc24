@@ -29,9 +29,6 @@ let package = Package(
                 .landscapeRight,
                 .landscapeLeft
             ],
-            capabilities: [
-                .camera(purposeString: "Access to camera is needed to show the simulator in AR.")
-            ],
             appCategory: .education
         )
     ],

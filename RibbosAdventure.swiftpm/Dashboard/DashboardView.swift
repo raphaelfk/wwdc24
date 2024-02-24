@@ -158,11 +158,14 @@ struct DashboardView: View {
                     
                     // second level card
                     Button {
-                        withAnimation(.easeInOut(duration: 2)) {
-                            gameManager.playingFirstLevel = false
-                            gameManager.playingSecondLevel = true
-                            gameManager.playingThirdLevel = false
+                        if gameManager.secondLevelAvailable {
+                            withAnimation(.easeInOut(duration: 2)) {
+                                gameManager.playingFirstLevel = false
+                                gameManager.playingSecondLevel = true
+                                gameManager.playingThirdLevel = false
+                            }
                         }
+                        
                     } label: {
                         ZStack {
                             // background image
@@ -317,11 +320,14 @@ struct DashboardView: View {
                     
                     // third level card
                     Button {
-                        withAnimation(.easeInOut(duration: 2)) {
-                            gameManager.playingFirstLevel = false
-                            gameManager.playingSecondLevel = false
-                            gameManager.playingThirdLevel = true
+                        if gameManager.thirdLevelAvailable {
+                            withAnimation(.easeInOut(duration: 2)) {
+                                gameManager.playingFirstLevel = false
+                                gameManager.playingSecondLevel = false
+                                gameManager.playingThirdLevel = true
+                            }
                         }
+                        
                     } label: {
                         ZStack {
                             // background image
