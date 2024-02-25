@@ -10,7 +10,7 @@
 </p> -->
 
 ## About
-PawTask is an app that teaches users some basic principles about programming, through an interactive game experience. Join Ribbo, Ribbo Space Center's newest robot in its missions through space and help it go through challenging landscapes by creating a series of algorithms!
+Ribbo's Adventure is an app that teaches users some basic principles about programming, through an interactive game experience. Join Ribbo, Ribbo Space Center's newest robot in its missions through space and help it go through challenging landscapes by creating a series of algorithms!
 
 ![](Resources/app-preview.png)
 
