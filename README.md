@@ -4,6 +4,11 @@
 
 <br/>
 
+<p align="center">
+  <img align="center" src="Resources/swift-challenge-distinguished-winner-light.png#gh-light-mode-only" width=275px>
+  <img align="center" src="Resources/swift-challenge-distinguished-winner-dark.png#gh-dark-mode-only" width=275px>
+</p>
+
 <!-- <p align="center">
   <img align="center" src="Resources/swift-challenge-winner-light.png#gh-light-mode-only" width=275px>
   <img align="center" src="Resources/swift-challenge-winner-dark.png#gh-dark-mode-only" width=275px>
